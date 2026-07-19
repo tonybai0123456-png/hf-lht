@@ -24,7 +24,7 @@
 
 8 个 Agent 已覆盖 AIOS 第一阶段的管理汇总、营销、门店、CRM、Shopify、开发、数据和客服职责。原岗位章程存在 5 处潜在交叉和 4 处运行机制空白；本次通过 `AIOS/Agent-RACI.md` 明确单一 A、协作接口、移交字段和升级所有权后，没有发现需要新增 Agent 才能解决的重大职责空白。
 
-尚未确定的金额、数量、时限、数据权限和完整现实管理人员审批映射，属于后续治理参数，不应由 Agent 自行推断。在正式治理参数生效前，高风险动作适用临时审批兜底规则：统一提交 Tony 或其明确书面授权的人工负责人；无法确认审批人、授权范围或阈值时暂停执行，由 CEO Agent 升级。
+尚未确定的金额、数量、时限、数据权限和完整现实管理人员审批映射，属于后续治理参数，不应由 Agent 自行推断。在正式治理参数生效前，高风险动作适用临时审批兜底规则：统一提交 Tony 或 Stone，二人均可独立批准；也可由二人之一明确书面授权的人工负责人审批。无法确认审批人、授权范围或阈值时暂停执行，由 CEO Agent 升级。
 
 ## Overlap findings and resolution
 
@@ -45,7 +45,7 @@
 | 缺少跨 Agent 事故协调归属 | 高风险事件可能多头处理或无人统筹 | Developer Agent 对生产故障和技术安全事件的专业分析、控制、修复与回滚方案承担 A/R；Shopify 评估店铺业务影响；CEO Agent 负责协调和人工升级 | Resolved |
 | 缺少公司知识库版本治理责任 | 可能出现不同 Agent 更新不同版本 | CEO Agent 对结构与版本治理 A；各领域 Agent 对本领域内容 R；Data 对指标定义 R | Resolved |
 | 未定义金额、数量、影响范围和时限阈值 | “重大”“大规模”“明显异常”无法完全自动判断 | 后续建立 Approval Threshold Registry；在此之前相关动作一律进入临时人工审批，不得自动执行 | Open — safe interim control active |
-| 未映射 Tony、Stone、部门负责人及专业人员到每类人工审批 | Agent 知道需要审批，但未必知道具体找谁 | 后续建立 Human Authority Matrix；在完成前统一提交 Tony 或其明确书面授权人，无法确认时暂停并由 CEO Agent 升级 | Open — safe interim control active |
+| 未映射 Tony、Stone、部门负责人及专业人员到每类人工审批 | Agent 知道需要审批，但未必知道具体找谁 | 后续建立 Human Authority Matrix；在完成前统一提交 Tony 或 Stone，二人均可独立批准；也可由二人之一明确书面授权的人工负责人审批；无法确认时暂停并由 CEO Agent 升级 | Open — safe interim control active |
 | 未建立数据源访问清单和字段级授权 | “已授权数据”缺少可审计清单 | 后续建立 Data Source Registry 与 Access Matrix | Open — needs system inventory |
 | 未建立每个 Agent 的可运行 Prompt/触发器/测试样例 | 岗位章程已定义，但无法稳定复用和验收 | 下一建设项：Prompt Library 初版与场景测试 | Open — executable without production access |
 
@@ -61,7 +61,7 @@
 - 数据删除、不可逆迁移和正式业务记录调整
 - 合同、法律、赔偿、退款或财务承诺
 
-审计未发现岗位章程明确授权 Agent 自动执行上述动作。正式 Human Authority Matrix 与 Approval Threshold Registry 生效前，上述动作以及任何标记为“重大”“大额”“大规模”“敏感”“不可逆”或权限类的动作，统一提交 Tony 或其明确书面授权的人工负责人审批；无法确认审批人、授权范围或阈值时暂停执行。
+审计未发现岗位章程明确授权 Agent 自动执行上述动作。正式 Human Authority Matrix 与 Approval Threshold Registry 生效前，上述动作以及任何标记为“重大”“大额”“大规模”“敏感”“不可逆”或权限类的动作，统一提交 Tony 或 Stone 审批，二人均可独立批准；也可由二人之一明确书面授权的人工负责人审批；无法确认审批人、授权范围或阈值时暂停执行。
 
 ## Business-fact consistency check
 
