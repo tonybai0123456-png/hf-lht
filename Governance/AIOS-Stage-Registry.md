@@ -33,7 +33,7 @@ This registry is the Single Source of Truth for current BUW AIOS Stage assignmen
 | CH-01 | Controlled Harness（受控验证框架） | BUW AIOS Official Governance Thread | Historical combined execution in [Issue #9](https://github.com/tonybai0123456-png/hf-lht/issues/9) / [Draft PR #10](https://github.com/tonybai0123456-png/hf-lht/pull/10) | Reported | Draft PR #10 records synthetic-only harness evidence | Pre-freeze combined-execution exception; no new Stage may copy this pattern. |
 | RO-01 | Runtime Orchestrator（运行时编排器） | BUW AIOS Official Governance Thread | Not assigned | Planned | No execution return yet | Governance Thread must create a dedicated Issue and assign one Execution Thread before Executing. |
 | PR-01 | Production Readiness（生产就绪） | BUW AIOS Official Governance Thread | Not assigned | Planned | No execution return yet | Must remain Planned until prior governance gates, safety review and explicit human authorization are complete. |
-| TG-01 | Thread Governance v1.0（线程治理第 1.0 版） | BUW AIOS Official Governance Thread | [Issue #11](https://github.com/tonybai0123456-png/hf-lht/issues/11) / branch `agent/aios-thread-governance-v1` | Executing | Issue #11 defines scope and safety boundary | Create independent Draft PR, submit Mandatory Return, then set Reported. |
+| TG-01 | Thread Governance v1.0（线程治理第 1.0 版） | BUW AIOS Official Governance Thread | [Issue #11](https://github.com/tonybai0123456-png/hf-lht/issues/11) / branch `agent/aios-thread-governance-v1` / [Draft PR #12](https://github.com/tonybai0123456-png/hf-lht/pull/12) | Reported | Issue #11 and Draft PR #12 contain scope, safety boundary, validation and return evidence | Governance Thread must review the Mandatory Return and alone may confirm Archived. |
 
 ## Pre-freeze exception record
 
@@ -67,3 +67,4 @@ PR #10 contains both Workflow Schema and Controlled Harness work. This register 
 | Date | Governance version | Change | Authority |
 |---|---|---|---|
 | 2026-07-20 | 1.0 | Initial Stage Registry created; historical stages mapped; TG-01 entered Executing. | BUW AIOS Official Governance Thread |
+| 2026-07-20 | 1.0 | TG-01 linked to Draft PR #12 and moved from Executing to Reported after Mandatory Return evidence was assembled. | TG-01 Execution Thread |
