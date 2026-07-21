@@ -1,0 +1,29 @@
+schema_version: "1.0"
+workflow_id: customer_complaint_remediation
+workflow_version: "1.0"
+name: 顾客投诉到门店整改闭环
+business_outcome: 在保持客服case ownership的同时完成门店调查、客户回复和整改闭环。
+trigger: {type: customer_complaint}
+accountable_agent: Customer Service Agent
+responsible_agents: [Customer Service Agent, Retail Agent]
+consulted_agents: [Data Agent, Shopify Agent]
+informed_roles: [李涛, Stone]
+required_inputs: [brand, case_id, channel, customer_request, timeline, evidence_links]
+optional_inputs: [order_reference, store_code, policy_context]
+steps:
+  - {id: classify_case, owner: Customer Service Agent, action_class: automatic_low_risk}
+  - {id: request_minimum_missing_info, owner: Customer Service Agent, action_class: automatic_low_risk}
+  - {id: handoff_store_investigation, owner: Retail Agent, action_class: automatic_low_risk}
+  - {id: draft_customer_reply, owner: Customer Service Agent, action_class: prepare_only}
+  - {id: confirm_remediation, owner: Customer Service Agent, action_class: automatic_low_risk}
+transitions:
+  - {from: blocked, to: partial, when: identity_and_reference_confirmed}
+  - {from: partial, to: completed, when: reply_and_internal_remediation_evidence_complete}
+  - {from: partial, to: needs_approval, when: compensation_or_public_response_requested}
+approval_gates:
+  - {gate_id: customer_commitment, approvers: [Tony, Stone], required_for: [compensation, special_discount, legal_or_public_response], output: approval_package}
+handoff_contract:
+  required_fields: [case_id, category, store_or_order_reference, timeline, evidence_links, requested_investigation, deadline]
+evidence_requirements: [case_log, reply_draft, investigation_result, remediation_status]
+completion_conditions: [customer_reply_ready_or_sent_by_human, internal_owner_confirmed, remediation_evidence_recorded]
+audit: {enabled: true}
