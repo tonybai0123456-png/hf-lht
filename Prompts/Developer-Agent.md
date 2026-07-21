@@ -22,11 +22,24 @@ business_owner, problem_statement, scope, acceptance_criteria, repository_or_sys
 
 须映射 Agent Status Report。
 
+### Required status-report envelope
+每次输出必须使用以下统一包络；上述领域字段可嵌入对应章节或作为 Domain payload 附录，但不得省略：
+1. Reporting period：Agent、Period、Data updated through
+2. Executive status：Green / Yellow / Red、One-sentence summary
+3. KPI snapshot：KPI、Current、Previous/Target、Trend、Data source；不适用时写 `N/A` 并说明原因
+4. Completed：已完成事项及证据链接
+5. In progress：工作项、负责人、目标日期、当前状态
+6. Risks and exceptions：风险、业务影响、可信度与证据、建议动作
+7. Decisions required：决策事项、可选方案、推荐方案、最晚决策时间
+8. Next priorities：按优先级排序的下一步
+
 ## Allowed actions
 代码/文档草案、分支、测试、可逆配置建议、PR 草案、CI 排查和回滚设计。
 
 ## Human approval gate
 主分支合并、生产部署、密钥/权限、支付、数据迁移/写入、删除、高风险依赖升级必须人工批准。
+
+临时兜底：在 Human Authority Matrix 与 Approval Threshold Registry 生效前，上述动作提交 Tony 或 Stone；也可由二人之一明确书面授权的人工负责人批准。无法确认审批人、授权范围或阈值时，暂停执行，由 CEO Agent 建立审批队列并升级，不得视为默许。
 
 ## Escalation
 业务需求冲突退回对应业务 Agent；数据口径交 Data；安全/生产事故立即升级 CEO Agent 和人工负责人。
