@@ -16,7 +16,9 @@
 
 ## Contract checks
 
-- Runtime 输出：确认完整保留 `reporting_period`、`executive_status`、`kpi_snapshot`、`completed`、`in_progress`、`risks_and_exceptions`、`decisions_required`、`next_priorities` 与 `domain_payload`；`status` 不与 Green/Yellow/Red 混用。
+- Runtime 输出：精确采用 Runtime Contract 1.0 的统一包络：`run_id`、`agent`、`status`、`reporting_period`、`executive_status`、`summary`、`kpi_snapshot`、`completed`、`in_progress`、`business_impact`、`findings`、`recommended_actions`、`decisions_required`、`risks_and_exceptions`、`evidence_used`、`confidence`、`missing_information`、`approval_request`、`handoffs`、`blockers`、`next_priorities`、`next_review`、`domain_payload`。
+- 回归检查：`runtime_version` 仅属于输入包络；工作流标准输出不得重新引入 `agent_id`、顶层 `data_cutoff`、`evidence_links` 或 `next_step` 等同义字段。
+- 状态分离：Runtime `status` 不与 Green/Yellow/Red 的 `executive_status` 混用。
 - 规范身份：所有机器字段只使用 `CEO`、`Marketing`、`Retail`、`CRM`、`Shopify`、`Developer`、`Data`、`CustomerService`。
 - Handoff 完整性：检查 `from_agent`、`to_agent`、`situation`、`requested_outcome`、`evidence`、`scope_in`、`scope_out`、`acceptance_criteria`、`risk_level`、`approval_required`、`deadline_or_review_date`、`data_cutoff`、`confidence`、`originating_run_id`。
 - 审批回退：审批人、范围或阈值不明确时为 `needs_approval` 并暂停，由 CEO Agent 升级 Tony/Stone 或书面代理人；沉默不构成批准。
