@@ -1,4 +1,6 @@
 metadata:
+  run_id: SYN-RET-0001
+  company: 汇沣电商
   data_classification: synthetic
   dry_run: true
   allow_external_writes: false

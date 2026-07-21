@@ -26,9 +26,11 @@ python3 Tests/validate_aios_workflow_schema.py
 
 The validator checks:
 
-- one non-empty accountable agent per workflow;
+- canonical IDs for all Agent ownership fields;
+- one accountable Agent per workflow run, including the Marketing/CRM runtime selector;
 - required input declarations;
 - Runtime Contract 1.0 status and action enums;
+- the complete Runtime output envelope and 14-field handoff contract;
 - explicit transition conditions;
 - approval-package output for approval gates;
 - handoff, evidence, completion and audit fields;
@@ -36,8 +38,9 @@ The validator checks:
 - exactly five unique workflow IDs;
 - schema-version consistency across split files;
 - exact semantic equality between embedded and split instances;
-- Retail dynamic supervisor dispatch by 李涛 and escalation to Stone.
+- Retail ownership of supervisor-response preparation, 李涛 human approval and escalation to Stone;
+- separation of BUW/PC, explicit approval for shared-brand views and prohibition on mixing 汇沣电商 with 六合通.
 
-Four synthetic negative cases confirm rejection of missing ownership, missing required inputs, invalid approval output and invalid transition state.
+Four schema mutation cases confirm rejection of missing ownership, missing required inputs, invalid approval output and invalid transition state. Harness behavior tests separately cover runtime ownership, handoff, approval and company/brand boundaries.
 
 The GitHub Actions workflow runs the same validator on relevant pull-request and branch changes. This validation uses repository-only synthetic structures and does not access production systems or real business records.

@@ -19,6 +19,57 @@ EXPECTED_IDS = {
 }
 EXPECTED_STATUSES = {"completed", "partial", "blocked", "needs_approval", "escalated", "rejected"}
 EXPECTED_ACTIONS = {"automatic_low_risk", "prepare_only", "prohibited"}
+CANONICAL_AGENT_IDS = {
+    "CEO",
+    "Marketing",
+    "Retail",
+    "CRM",
+    "Shopify",
+    "Developer",
+    "Data",
+    "CustomerService",
+}
+REQUIRED_HANDOFF_FIELDS = {
+    "from_agent",
+    "to_agent",
+    "situation",
+    "requested_outcome",
+    "evidence",
+    "scope_in",
+    "scope_out",
+    "acceptance_criteria",
+    "risk_level",
+    "approval_required",
+    "deadline_or_review_date",
+    "data_cutoff",
+    "confidence",
+    "originating_run_id",
+}
+REQUIRED_RUNTIME_OUTPUT_FIELDS = {
+    "run_id",
+    "agent",
+    "status",
+    "reporting_period",
+    "executive_status",
+    "summary",
+    "kpi_snapshot",
+    "completed",
+    "in_progress",
+    "business_impact",
+    "findings",
+    "recommended_actions",
+    "decisions_required",
+    "risks_and_exceptions",
+    "evidence_used",
+    "confidence",
+    "missing_information",
+    "approval_request",
+    "handoffs",
+    "blockers",
+    "next_priorities",
+    "next_review",
+    "domain_payload",
+}
 
 
 def require(condition: bool, message: str, errors: list[str]) -> None:
@@ -32,6 +83,14 @@ def validate_contract(contract: dict[str, Any]) -> list[str]:
     wc = contract.get("workflow_contract", {})
     require(set(wc.get("runtime_status_enum", [])) == EXPECTED_STATUSES, "runtime status enum is incomplete", errors)
     require(set(wc.get("action_class_enum", [])) == EXPECTED_ACTIONS, "action class enum is incomplete", errors)
+    require(set(wc.get("canonical_agent_ids", [])) == CANONICAL_AGENT_IDS, "canonical Agent IDs are incomplete", errors)
+    require(set(wc.get("handoff_contract", {}).get("required_fields", [])) == REQUIRED_HANDOFF_FIELDS, "Runtime handoff contract is not canonical", errors)
+    require(set(wc.get("runtime_output_contract", {}).get("required_fields", [])) == REQUIRED_RUNTIME_OUTPUT_FIELDS, "Runtime output contract is incomplete", errors)
+    boundaries = wc.get("company_brand_boundaries", {})
+    require(boundaries.get("company") == "汇沣电商", "company boundary must be 汇沣电商", errors)
+    require(set(boundaries.get("brands", [])) == {"BUW", "PC"}, "brand boundary must preserve BUW and PC", errors)
+    require(boundaries.get("shared_requires_explicit_approval") is True, "shared brand views must require explicit approval", errors)
+    require(boundaries.get("cross_company_mixing_prohibited") is True, "cross-company mixing must be prohibited", errors)
     rules = wc.get("rules", {})
     require(rules.get("single_accountable_agent") is True, "single accountable rule is not enabled", errors)
     require(set(rules.get("missing_required_input_status", [])) == {"blocked", "partial"}, "missing-input behavior is invalid", errors)
@@ -52,7 +111,23 @@ def validate_workflow(workflow: dict[str, Any], contract: dict[str, Any]) -> lis
     required = set(contract["workflow_contract"].get("required_fields", []))
     missing = sorted(required - workflow.keys())
     require(not missing, f"{wid}: missing fields: {', '.join(missing)}", errors)
-    require(isinstance(workflow.get("accountable_agent"), str) and bool(workflow["accountable_agent"].strip()), f"{wid}: accountable_agent must be one non-empty string", errors)
+    accountable = workflow.get("accountable_agent")
+    if isinstance(accountable, str):
+        require(accountable in CANONICAL_AGENT_IDS, f"{wid}: accountable_agent is not canonical", errors)
+    elif isinstance(accountable, dict):
+        require(accountable.get("type") == "runtime_selection", f"{wid}: accountable_agent selector type is invalid", errors)
+        require(accountable.get("input_field") == "workflow_owner_agent", f"{wid}: accountable_agent selector input is invalid", errors)
+        require(set(accountable.get("allowed_values", [])) == {"Marketing", "CRM"}, f"{wid}: accountable_agent selector values are invalid", errors)
+        require(accountable.get("selection_basis") == "primary_business_outcome", f"{wid}: accountable_agent selection basis is invalid", errors)
+        require(accountable.get("mapping") == {"acquisition_or_content": "Marketing", "lifecycle_or_recall": "CRM"}, f"{wid}: accountable_agent mapping is invalid", errors)
+        require("workflow_owner_agent" in workflow.get("required_inputs", []), f"{wid}: workflow owner input is required", errors)
+        require("primary_business_outcome" in workflow.get("required_inputs", []), f"{wid}: primary outcome input is required", errors)
+    else:
+        require(False, f"{wid}: accountable_agent must be canonical or a runtime selector", errors)
+
+    for role_field in ("responsible_agents", "consulted_agents"):
+        values = workflow.get(role_field, [])
+        require(all(value in CANONICAL_AGENT_IDS for value in values), f"{wid}: {role_field} contains noncanonical Agent IDs", errors)
     require(isinstance(workflow.get("required_inputs"), list) and bool(workflow["required_inputs"]), f"{wid}: required_inputs must be non-empty", errors)
 
     steps = workflow.get("steps", [])
@@ -64,6 +139,7 @@ def validate_workflow(workflow: dict[str, Any], contract: dict[str, Any]) -> lis
         require(sid not in step_ids, f"{wid}: duplicate step id {sid}", errors)
         step_ids.add(sid)
         require(step.get("action_class") in EXPECTED_ACTIONS, f"{wid}: invalid action class in {sid}", errors)
+        require(step.get("owner") in CANONICAL_AGENT_IDS, f"{wid}: step owner in {sid} is not a canonical Agent", errors)
 
     transitions = workflow.get("transitions", [])
     require(isinstance(transitions, list) and bool(transitions), f"{wid}: transitions are missing", errors)
@@ -79,7 +155,7 @@ def validate_workflow(workflow: dict[str, Any], contract: dict[str, Any]) -> lis
         require(gate.get("output") == "approval_package", f"{wid}: approval gate output must be approval_package", errors)
         require(bool(gate.get("approvers")), f"{wid}: approval gate has no approver", errors)
 
-    require(bool(workflow.get("handoff_contract", {}).get("required_fields")), f"{wid}: handoff fields are missing", errors)
+    require(set(workflow.get("handoff_contract", {}).get("required_fields", [])) == REQUIRED_HANDOFF_FIELDS, f"{wid}: handoff fields do not match Runtime Contract 1.0", errors)
     require(bool(workflow.get("evidence_requirements")), f"{wid}: evidence requirements are missing", errors)
     require(bool(workflow.get("completion_conditions")), f"{wid}: completion conditions are missing", errors)
     require(workflow.get("audit", {}).get("enabled") is True, f"{wid}: audit is not enabled", errors)
@@ -88,6 +164,9 @@ def validate_workflow(workflow: dict[str, Any], contract: dict[str, Any]) -> lis
         notes = " ".join(str(step.get("notes", "")) for step in steps)
         require("李涛" in notes and "动态派遣" in notes, f"{wid}: dynamic supervisor dispatch fact is missing", errors)
         require(any(step.get("escalate_to") == "Stone" for step in steps), f"{wid}: escalation to Stone is missing", errors)
+        supervisor = next((step for step in steps if step.get("id") == "assign_supervisor_response"), {})
+        require(supervisor.get("owner") == "Retail", f"{wid}: supervisor preparation must remain owned by Retail", errors)
+        require(supervisor.get("approval_owner") == "李涛", f"{wid}: 李涛 must remain the human approval owner", errors)
     return errors
 
 
