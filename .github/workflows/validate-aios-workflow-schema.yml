@@ -5,6 +5,9 @@ on:
     paths:
       - "Schemas/**"
       - "Tests/validate_aios_workflow_schema.py"
+      - "Tests/test_controlled_orchestrator.py"
+      - "Tests/Fixtures/**"
+      - "Runtime/**"
       - "requirements-dev.txt"
       - ".github/workflows/validate-aios-workflow-schema.yml"
   push:
@@ -13,6 +16,9 @@ on:
     paths:
       - "Schemas/**"
       - "Tests/validate_aios_workflow_schema.py"
+      - "Tests/test_controlled_orchestrator.py"
+      - "Tests/Fixtures/**"
+      - "Runtime/**"
       - "requirements-dev.txt"
       - ".github/workflows/validate-aios-workflow-schema.yml"
 
@@ -45,3 +51,6 @@ jobs:
 
       - name: Run AIOS Workflow Schema validation
         run: python Tests/validate_aios_workflow_schema.py
+
+      - name: Run Controlled Orchestrator Harness tests
+        run: python -m unittest Tests/test_controlled_orchestrator.py
