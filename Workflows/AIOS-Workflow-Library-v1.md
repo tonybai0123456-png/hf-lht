@@ -10,7 +10,8 @@
 
 - `workflow_owner_agent` 必须使用一个规范 Agent ID，并作为工作流结果的单一专业 A/R。允许的规范 ID：`CEO`、`Marketing`、`Retail`、`CRM`、`Shopify`、`Developer`、`Data`、`CustomerService`。
 - 输入、证据、风险和审批字段沿用 Runtime Contract，不建立第二套同义字段。
-- 标准输出必须包含：`run_id`、`agent_id`、`runtime_version`、`reporting_period`、`data_cutoff`、`status`、`executive_status`、`kpi_snapshot`、`completed`、`in_progress`、`risks_and_exceptions`、`decisions_required`、`next_priorities`、`evidence_links`、`confidence`、`domain_payload`。
+- 标准输出必须精确采用 Runtime Contract 1.0 的统一包络：`run_id`、`agent`、`status`、`reporting_period`、`executive_status`、`summary`、`kpi_snapshot`、`completed`、`in_progress`、`business_impact`、`findings`、`recommended_actions`、`decisions_required`、`risks_and_exceptions`、`evidence_used`、`confidence`、`missing_information`、`approval_request`、`handoffs`、`blockers`、`next_priorities`、`next_review`、`domain_payload`。
+- `runtime_version` 仅属于调用输入包络；标准输出不得使用 `agent_id`、顶层 `data_cutoff` 或 `evidence_links` 替代契约字段 `agent`、`reporting_period.data_updated_through` 和 `evidence_used`。
 - `status` 只允许 `completed`、`partial`、`blocked`、`needs_approval`、`escalated`、`rejected`；业务灯号使用独立的 `executive_status`（Green/Yellow/Red），不得混用。
 - 工作流专有结果写入 `domain_payload`，并保留 `workflow_id`，不得用旧字段 `next_step` 代替 `next_priorities`。
 - Agent 间 handoff 必须包含：`from_agent`、`to_agent`、`situation`、`requested_outcome`、`evidence`、`scope_in`、`scope_out`、`acceptance_criteria`、`risk_level`、`approval_required`、`deadline_or_review_date`、`data_cutoff`、`confidence`、`originating_run_id`。
