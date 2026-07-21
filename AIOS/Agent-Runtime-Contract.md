@@ -36,6 +36,8 @@ approval_context: {}
 - decision_owner
 - operating_owner
 
+公司与品牌边界：本契约服务于汇沣电商的 BUW AIOS，不得把汇沣电商与六合通合并为同一 `company`。`brand: shared` 仅在 Tony/Stone 或明确业务决策人授权跨品牌视图时使用；输出仍须保留 BUW、PC 的来源、客户、门店、指标和结果分项，不得用合计替代品牌明细。无明确授权时返回 `partial` 或 `blocked` 并要求确认，不得默认合并。
+
 ### task
 
 - objective
@@ -78,31 +80,55 @@ Every Agent response must return:
 
 ```yaml
 run_id: "same-as-input"
-agent: "agent-name"
+agent: "CEO|Marketing|Retail|CRM|Shopify|Developer|Data|CustomerService"
 status: "completed|partial|blocked|needs_approval|escalated|rejected"
+reporting_period:
+  period: "date-range-or-review-window"
+  data_updated_through: "date-or-timestamp"
+executive_status: "Green|Yellow|Red"
 summary: "business-first conclusion"
+kpi_snapshot:
+  items: []
+  not_applicable_reason: "required when items is empty"
+completed: []
+in_progress: []
+business_impact: "impact-or-none"
 findings: []
 recommended_actions: []
-decisions_needed: []
-risks: []
+decisions_required: []
+risks_and_exceptions: []
 evidence_used: []
-missing_information: []
-handoffs: []
-approval_request: {}
-next_review: "date-or-null"
 confidence: "high|medium|low"
+missing_information: []
+approval_request: {}
+handoffs: []
+blockers: []
+next_priorities: []
+next_review: "date-or-null"
+domain_payload: {}
 ```
+
+统一包络的子结构要求：
+
+- 每个 `kpi_snapshot.items` 项包含 `kpi`、`current`、`previous_or_target`、`trend`、`data_source`；无适用 KPI 时保持空数组并填写 `not_applicable_reason`。
+- 每个 `completed` 项包含 `item` 和 `evidence_links`。
+- 每个 `in_progress` 项包含 `item`、`owner`、`target_date`、`current_status`。
+- 每个 `risks_and_exceptions` 项包含 `risk`、`business_impact`、`confidence`、`evidence`、`recommended_action`。
+- 每个 `decisions_required` 项包含 `decision`、`options`、`recommended_option`、`latest_decision_time`。
+- `next_priorities` 必须按优先级排序。
 
 This output must map to `Templates/Agent-Status-Report.md`:
 
-- summary → Executive summary
-- findings → Findings / progress
-- recommended_actions → Next actions
-- decisions_needed → Decision queue
-- risks → Risks / blockers
-- evidence_used → Evidence
-- handoffs → Cross-Agent work
-- confidence + missing_information → Data quality / caveats
+- agent + reporting_period → Reporting period（Agent、Period、Data updated through）
+- executive_status + summary → Executive status（Green / Yellow / Red、One-sentence summary）
+- kpi_snapshot → KPI snapshot（KPI、Current、Previous/Target、Trend、Data source；不适用时说明原因）
+- completed → Completed（事项与证据）
+- in_progress → In progress（事项、负责人、目标日期、当前状态）
+- risks_and_exceptions → Risks and exceptions（风险、业务影响、可信度、证据、建议动作）
+- decisions_required → Decisions required（事项、选项、推荐、最晚决策时间）
+- next_priorities → Next priorities
+
+`status` 表示 Runtime 执行状态，`executive_status` 表示经营红黄绿状态，两者不得混用。`domain_payload` 保留各 Agent 的领域输出，但不得替代以上统一包络。
 
 ## 4. Status rules
 
@@ -166,6 +192,8 @@ When approval is required, output `status: needs_approval` and include:
 
 No Agent may treat silence as approval.
 
+在 Human Authority Matrix 与 Approval Threshold Registry 生效前，所有高风险、重大、大额、大规模、敏感、不可逆或权限类动作统一提交 Tony 或 Stone；二人之一明确书面授权的人工负责人也可在授权范围内批准。无法确认审批人、授权范围或阈值时，保持 `needs_approval`、暂停执行，并由 CEO Agent 建立审批队列升级，不得视为默许。
+
 ## 7. Escalation logic
 
 ### Business hierarchy
@@ -183,7 +211,7 @@ No Agent may treat silence as approval.
 
 ### Agent coordination
 
-- specialist Agent remains Responsible for its domain.
+- 每个跨 Agent 事项必须指定一个专业 Agent 为单一 Accountable / Responsible（A/R）；CEO Agent 不替代专业 A/R。
 - CEO Agent coordinates conflicts and decision queues.
 - Data Agent owns data definition and quality; domain Agent owns business action.
 

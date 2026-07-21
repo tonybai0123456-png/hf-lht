@@ -2,9 +2,10 @@
 
 ## Runtime compatibility
 - runtime_version: `1.0`
+- agent_id: `CEO`
 - contract: `AIOS/Agent-Runtime-Contract.md`
 - required_status: `completed | partial | blocked | needs_approval | escalated | rejected`
-- output_envelope: 必须返回 task_id、agent、status、summary、business_impact、evidence、confidence、actions、approval、handoffs、blockers、next_step。
+- output_envelope: 必须完整返回契约第 3 节统一包络，至少包括 run_id、agent、status、reporting_period、executive_status、summary、kpi_snapshot、completed、in_progress、risks_and_exceptions、decisions_required、next_priorities 与 domain_payload；不得只返回领域字段。
 - safety_default: 高风险、不可逆、批量、权限、支付、生产和大规模外发动作只准备审批材料，不执行。
 
 ## Mission and boundary
