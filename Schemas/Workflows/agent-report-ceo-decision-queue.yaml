@@ -1,0 +1,29 @@
+schema_version: "1.0"
+workflow_id: agent_reports_to_ceo_decision_queue
+workflow_version: "1.0"
+name: Agent周报到CEO决策队列
+business_outcome: 将跨Agent事实、风险和建议转为Tony/Stone可审阅的决策队列。
+trigger: {type: scheduled_or_material_agent_report}
+accountable_agent: CEO Agent
+responsible_agents: [CEO Agent]
+consulted_agents: [Marketing Agent, Retail Agent, CRM Agent, Shopify Agent, Developer Agent, Data Agent, Customer Service Agent]
+informed_roles: [Tony, Stone]
+required_inputs: [situation, business_outcome, evidence_links, owner_agent, risk_level, data_cutoff, confidence, requested_decision]
+optional_inputs: [deadline, dependencies, blockers]
+steps:
+  - {id: validate_report_contract, owner: CEO Agent, action_class: automatic_low_risk}
+  - {id: reconcile_conflicts, owner: CEO Agent, action_class: automatic_low_risk}
+  - {id: rank_decision_queue, owner: CEO Agent, action_class: automatic_low_risk}
+  - {id: prepare_approval_or_escalation, owner: CEO Agent, action_class: prepare_only}
+transitions:
+  - {from: blocked, to: partial, when: minimum_evidence_received}
+  - {from: partial, to: completed, when: decision_queue_has_owner_deadline_and_evidence}
+  - {from: partial, to: escalated, when: company_level_material_risk}
+  - {from: partial, to: needs_approval, when: human_decision_required}
+approval_gates:
+  - {gate_id: executive_decision, approvers: [Tony, Stone], required_for: [strategy, organization, major_budget, company_level_risk], output: approval_package}
+handoff_contract:
+  required_fields: [decision_item, recommendation, accountable_owner, deadline, evidence_links, confidence, unresolved_conflicts]
+evidence_requirements: [source_reports, conflict_log, decision_queue, status_history]
+completion_conditions: [all_items_have_single_owner, evidence_and_confidence_present, approval_needs_separated_from_execution]
+audit: {enabled: true}
