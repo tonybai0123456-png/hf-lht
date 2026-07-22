@@ -230,7 +230,7 @@ def validate_model(model: dict[str, Any]) -> list[str]:
         "execution_thread": "019f8a35-6d4e-7c60-b35a-79de8626d4e3",
         "branch": "feat/aios-operational-resilience-v1",
         "mode": "synthetic_tabletop_validation",
-        "stage_status": "Reported",
+        "stage_status": "Archived",
         "owner_state": UNASSIGNED,
     }
     for key, expected in expected_metadata.items():
@@ -658,8 +658,8 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     stage_registry = _text(root / STAGE_REGISTRY, errors)
     stage13 = next((line for line in stage_registry.splitlines() if line.startswith("| 13 |")), "")
     stage14 = next((line for line in stage_registry.splitlines() if line.startswith("| 14 |")), "")
-    if not all(token in stage13 for token in ("Issue #32", "019f8a35-6d4e-7c60-b35a-79de8626d4e3", "feat/aios-operational-resilience-v1", "| Reported |")):
-        errors.append("Stage 13 registry row must record the Reported assignment")
+    if not all(token in stage13 for token in ("Issue #32", "Issue #34", "019f8a35-6d4e-7c60-b35a-79de8626d4e3", "feat/aios-operational-resilience-v1", "7b16a5c", "19/19", "80/80", "| Archived |")):
+        errors.append("Stage 13 registry row must record the reviewed, published archive evidence")
     if "No Execution Thread assigned" not in stage14 or "| Planned |" not in stage14:
         errors.append("Stage 14 must remain Planned and unassigned")
     return errors
