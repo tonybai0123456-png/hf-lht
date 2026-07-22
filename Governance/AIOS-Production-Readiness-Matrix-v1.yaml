@@ -1,0 +1,247 @@
+metadata:
+  stage: 10
+  stage_id: PR-01
+  issue: 21
+  governance_version: "2.1"
+  project_governance_version: "1.0"
+  main_baseline: 6cffaed4f4bc693aa897864396ae097b972bff80
+  execution_thread: 019f8937-ac22-71a2-bb35-d8f6d2e0f55f
+  branch: feat/aios-production-readiness-v1
+  stage_status: Executing
+  mode: prepare_only
+  assessed_on: "2026-07-22"
+
+six_system_questions:
+  business_loop: >-
+    A later pilot would accept one explicitly approved, brand-bounded request,
+    preflight every dependency and approval, run a reversible canary, observe the
+    result, stop on any gate failure, and require a separate human release decision.
+    Stage 10 only assesses that future loop and performs no pilot.
+  core_objects: >-
+    Project, pilot candidate, readiness gate, dependency, operating boundary,
+    control, evidence, risk, gap, approval, audit event, rollback point, incident,
+    support handoff and release decision.
+  data_flow: >-
+    Stage 10 reads repository documentation and synthetic fixtures and writes only
+    review artifacts to the authorized branch. Production, customer and real
+    business data flows are undefined and therefore blocked, not assumed.
+  operators: >-
+    The Governance Thread decides readiness, risk acceptance and future pilot
+    authority. This single Execution Thread prepares evidence. Future security,
+    privacy, data, operations and support owners remain unassigned until governance
+    names them.
+  ai_human_boundary: >-
+    Tests and AI may validate structure, deterministic policy behavior and evidence
+    references. Humans alone approve architecture, permissions, real data, risk
+    acceptance, pilot entry, release, rollback decisions and incident disposition.
+  proof: >-
+    Issue #21, the unique thread and branch, this matrix, the inventory and risk
+    register, synthetic/read-only tests, PR-only CI, a Draft PR and Mandatory Return
+    prove completion of the assessment only; they do not prove production readiness.
+
+assessment_decision:
+  recommendation: blocked
+  production_ready: false
+  release_authorized: false
+  decision_authority: BUW AIOS Official Governance Thread
+  rationale: >-
+    Repository evidence proves deterministic synthetic validation and governance
+    controls, but not production architecture, identity/security, governed data,
+    persistent observability, rollback, incident response or support operations.
+
+decision_rules:
+  ready: >-
+    Every required gate has accepted evidence, no blocker remains, risks have named
+    governance-approved owners and disposition, and every human approval gate is
+    separately authorized.
+  conditional: >-
+    Only the Governance Thread may define a bounded conditional pilot after all
+    critical blockers are closed and rollback and observation evidence exists.
+  blocked: >-
+    Any missing production evidence, unaccepted risk, undefined owner, unavailable
+    rollback or unauthorized human gate keeps the recommendation blocked.
+  most_restrictive_wins: true
+
+business_boundaries:
+  BUW: One independent brand scope; its customers, stores, metrics and evidence remain separate.
+  PC: Independent from BUW; no shared result or customer scope is inferred.
+  汇沣电商: Company boundary containing separate BUW and PC brand scopes; company totals do not replace brand evidence.
+  六合通: Separate company and excluded from BUW AIOS production scope.
+  cross_boundary_default: deny
+
+readiness_gates:
+  - id: PR-ARCH-01
+    dimension: architecture_dependencies
+    criterion: A versioned deployable architecture and complete dependency chain are reviewed for one bounded pilot.
+    status: blocked
+    current_evidence: The repository contains a synthetic in-memory Runtime and conceptual architecture only.
+    evidence_paths:
+      - AIOS/AIOS-Architecture.md
+      - Runtime/runtime_orchestrator.py
+      - Runtime/controlled_orchestrator.py
+      - requirements-dev.txt
+    gap: No deployable service topology, environment model, persistence, connector or capacity design exists.
+    owner_state: unassigned / governance decision required
+    human_gate: Governance must approve a bounded architecture and its accountable technical owner.
+    production_action_allowed: false
+
+  - id: PR-BOUNDARY-01
+    dimension: operating_boundary
+    criterion: The pilot has one company, one brand, one system scope and explicit prohibited actions.
+    status: pass
+    current_evidence: Runtime and Harness fail closed on cross-company, shared/unknown brand, real data and writes.
+    evidence_paths:
+      - Runtime/runtime_orchestrator.py
+      - Runtime/controlled_orchestrator.py
+      - Tests/test_runtime_orchestrator.py
+      - Tests/test_controlled_orchestrator.py
+    gap: A future pilot scope still requires a separate human decision and cannot be inferred from these controls.
+    owner_state: unassigned / governance decision required
+    human_gate: Governance selects the exact company, brand, system and pilot window.
+    production_action_allowed: false
+
+  - id: PR-SEC-01
+    dimension: security
+    criterion: Identity, authentication, least privilege, secrets, threat controls and security review are evidenced.
+    status: blocked
+    current_evidence: Current code avoids connectors and credentials; this is an absence boundary, not a production security implementation.
+    evidence_paths:
+      - AIOS/Agent-Runtime-Contract.md
+      - Runtime/runtime_orchestrator.py
+      - Tests/test_runtime_orchestrator.py
+    gap: No production identity, authorization, secrets lifecycle, threat model or security acceptance evidence exists.
+    owner_state: unassigned / governance decision required
+    human_gate: A named human security approver must accept reviewed controls before any credential or access exists.
+    production_action_allowed: false
+
+  - id: PR-PRIV-01
+    dimension: privacy
+    criterion: Data classification, minimization, retention, access, deletion and privacy review are defined and accepted.
+    status: blocked
+    current_evidence: Runtime accepts only privacy_classification=synthetic and synthetic evidence identifiers.
+    evidence_paths:
+      - AIOS/Agent-Runtime-Contract.md
+      - Runtime/runtime_orchestrator.py
+      - Tests/test_runtime_orchestrator.py
+    gap: No approved treatment for customer, employee or other real personal data exists.
+    owner_state: unassigned / governance decision required
+    human_gate: A named human privacy/data authority must approve classification and lifecycle before real data use.
+    production_action_allowed: false
+
+  - id: PR-DATA-01
+    dimension: data
+    criterion: Authoritative sources, contracts, quality checks, lineage, reconciliation and failure behavior are evidenced.
+    status: blocked
+    current_evidence: Synthetic YAML fixtures and a Runtime envelope are validated deterministically.
+    evidence_paths:
+      - AIOS/Agent-Runtime-Contract.md
+      - Schemas/AIOS-Workflow-Schema-v1.yaml
+      - Tests/Fixtures/runtime-orchestrator/store-anomaly.yaml
+      - Tests/validate_aios_workflow_schema.py
+    gap: No production source mapping, data-quality SLO, lineage, reconciliation or retention evidence exists.
+    owner_state: unassigned / governance decision required
+    human_gate: Governance must name data and business approvers for each future source and metric definition.
+    production_action_allowed: false
+
+  - id: PR-OBS-01
+    dimension: observability
+    criterion: Persistent logs, metrics, traces, SLOs, alerts, dashboards and evidence retention are demonstrated.
+    status: blocked
+    current_evidence: Runtime returns deterministic in-memory audit events in test output.
+    evidence_paths:
+      - Runtime/runtime_orchestrator.py
+      - Runtime/controlled_orchestrator.py
+      - Tests/test_runtime_orchestrator.py
+    gap: No persistent telemetry, SLO, alert routing, dashboard or retention control exists.
+    owner_state: unassigned / governance decision required
+    human_gate: Operations and governance must approve observable success/failure thresholds and escalation routes.
+    production_action_allowed: false
+
+  - id: PR-ROLLBACK-01
+    dimension: rollback
+    criterion: A tested rollback point, trigger, authority, recovery target and verification procedure exist.
+    status: blocked
+    current_evidence: Harness stops before writes, so current tests need no production rollback.
+    evidence_paths:
+      - Tests/Controlled-Orchestrator-Harness-v0.md
+      - Tests/Runtime-Orchestrator-v1.md
+      - Tests/test_runtime_orchestrator.py
+    gap: No deployable version, state restoration, rollback automation, RTO/RPO or rollback drill evidence exists.
+    owner_state: unassigned / governance decision required
+    human_gate: Human operations and business authorities must approve rollback triggers and restored-state verification.
+    production_action_allowed: false
+
+  - id: PR-INC-01
+    dimension: incident_response
+    criterion: Severity, triage, containment, escalation, evidence preservation and post-incident review are defined.
+    status: blocked
+    current_evidence: Governance defines stop gates and Mandatory Return, but no production incident runbook exists.
+    evidence_paths:
+      - Governance/AIOS-Thread-Governance-v2.1.md
+      - Governance/AIOS-Project-Governance-Baseline-v1.md
+      - AIOS/AIOS-Architecture.md
+    gap: No incident taxonomy, on-call path, containment procedure, exercise or communications authority is published.
+    owner_state: unassigned / governance decision required
+    human_gate: Governance must approve incident owners, severity rules and any outbound communication authority.
+    production_action_allowed: false
+
+  - id: PR-SUPPORT-01
+    dimension: support
+    criterion: Operating hours, intake, escalation, service targets, knowledge, training and handoff are accepted.
+    status: blocked
+    current_evidence: Agent roles and handoff schema exist as design-time controls.
+    evidence_paths:
+      - AIOS/Agent-RACI.md
+      - AIOS/Agent-Runtime-Contract.md
+      - README.md
+    gap: No production support model, named service owner, coverage, SLA, training or support runbook exists.
+    owner_state: unassigned / governance decision required
+    human_gate: Governance must assign accountable support and escalation owners before a pilot.
+    production_action_allowed: false
+
+  - id: PR-AUDIT-01
+    dimension: audit_governance
+    criterion: Immutable execution, approval, access, change and rollback evidence can be retained and reviewed.
+    status: blocked
+    current_evidence: GitHub governance evidence and deterministic synthetic audit payloads are reviewable.
+    evidence_paths:
+      - Governance/AIOS-Stage-Registry.md
+      - Governance/AIOS-Project-Registry.md
+      - Tests/test_project_governance.py
+      - Tests/test_runtime_orchestrator.py
+    gap: Runtime audit and idempotency state are in memory; no immutable production audit store or retention review exists.
+    owner_state: unassigned / governance decision required
+    human_gate: Governance and security/privacy authorities must approve audit scope, access and retention.
+    production_action_allowed: false
+
+human_approval_gates:
+  - id: HAG-ARCH
+    type: architecture
+    approval_mode: explicit_human
+    status: not_authorized
+    silence_is_approval: false
+  - id: HAG-SEC
+    type: security
+    approval_mode: explicit_human
+    status: not_authorized
+    silence_is_approval: false
+  - id: HAG-DATA
+    type: privacy_data
+    approval_mode: explicit_human
+    status: not_authorized
+    silence_is_approval: false
+  - id: HAG-OPS
+    type: operations
+    approval_mode: explicit_human
+    status: not_authorized
+    silence_is_approval: false
+  - id: HAG-PILOT
+    type: pilot
+    approval_mode: explicit_human
+    status: not_authorized
+    silence_is_approval: false
+  - id: HAG-RELEASE
+    type: release
+    approval_mode: explicit_human
+    status: not_authorized
+    silence_is_approval: false

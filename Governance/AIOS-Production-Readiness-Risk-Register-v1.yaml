@@ -1,0 +1,148 @@
+metadata:
+  stage: 10
+  stage_id: PR-01
+  issue: 21
+  status: assessment_only
+  owner_rule: unassigned / governance decision required
+  risk_acceptance_authority: BUW AIOS Official Governance Thread
+
+risks:
+  - id: PR-RISK-001
+    category: architecture
+    severity: critical
+    likelihood: high
+    risk: A conceptual, in-memory validator could be mistaken for a deployable production service.
+    impact: Unsupported deployment could fail, lose state or bypass required operating controls.
+    evidence_paths: [AIOS/AIOS-Architecture.md, Runtime/runtime_orchestrator.py, requirements-dev.txt]
+    mitigation: Define and review a bounded deployable topology, environment model, persistence and dependency plan in a separately authorized Stage.
+    next_evidence: Approved architecture decision record and tested non-production environment evidence.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-002
+    category: security
+    severity: critical
+    likelihood: high
+    risk: Production identity, authorization, credential and secret controls are absent.
+    impact: Any connector or deployment could create unauthorized access or secret exposure.
+    evidence_paths: [AIOS/Agent-Runtime-Contract.md, Runtime/runtime_orchestrator.py, Tests/test_runtime_orchestrator.py]
+    mitigation: Produce a reviewed threat model and least-privilege identity/secrets design without creating credentials in this Stage.
+    next_evidence: Human-approved security design and isolated non-production control test.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-003
+    category: privacy
+    severity: critical
+    likelihood: high
+    risk: Only synthetic data handling is defined; real personal-data obligations are not.
+    impact: A pilot using customer or employee data could violate minimization, access, retention or deletion requirements.
+    evidence_paths: [AIOS/Agent-Runtime-Contract.md, Runtime/runtime_orchestrator.py, Tests/Runtime-Orchestrator-v1.md]
+    mitigation: Define and approve data classifications, purpose limits, minimization, retention and deletion before any real-data request.
+    next_evidence: Approved privacy/data assessment with no production access created by this Stage.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-004
+    category: data
+    severity: high
+    likelihood: high
+    risk: Production source contracts, lineage, quality thresholds and reconciliation are undefined.
+    impact: AI output could use stale, mixed-brand or incorrect business facts.
+    evidence_paths: [Schemas/AIOS-Workflow-Schema-v1.yaml, Tests/validate_aios_workflow_schema.py, Governance/AIOS-Project-Registry.md]
+    mitigation: Register each future source, brand scope, owner, cutoff, quality rule and reconciliation procedure.
+    next_evidence: Governance-approved synthetic contract tests for a separately authorized source integration.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-005
+    category: observability
+    severity: high
+    likelihood: high
+    risk: Audit and idempotency state are in memory and no production SLO, metric, alert or durable log exists.
+    impact: Failures, duplicate actions or degraded behavior might not be detected or reconstructed.
+    evidence_paths: [Runtime/runtime_orchestrator.py, Runtime/controlled_orchestrator.py, Tests/test_runtime_orchestrator.py]
+    mitigation: Define persistent telemetry, audit retention, SLOs, alerts and evidence access before a pilot.
+    next_evidence: Deterministic non-production alert and audit-retention test results.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-006
+    category: rollback
+    severity: critical
+    likelihood: medium
+    risk: No deployment rollback, state recovery, RTO/RPO or restoration drill is defined.
+    impact: A failed pilot could be irreversible or leave inconsistent business state.
+    evidence_paths: [Tests/Controlled-Orchestrator-Harness-v0.md, Tests/Runtime-Orchestrator-v1.md, AIOS/AIOS-Architecture.md]
+    mitigation: Require zero-write canary boundaries first, then document and test rollback before any reversible write is proposed.
+    next_evidence: Human-reviewed rollback runbook and synthetic restoration drill.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-007
+    category: incident_response
+    severity: high
+    likelihood: medium
+    risk: Incident severity, containment, escalation and communication procedures are not published.
+    impact: An event could spread or be communicated without authority or preserved evidence.
+    evidence_paths: [Governance/AIOS-Thread-Governance-v2.1.md, AIOS/AIOS-Architecture.md, README.md]
+    mitigation: Define severity, stop authority, containment, evidence and approved communication paths.
+    next_evidence: Tabletop exercise using synthetic events and named governance-approved roles.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-008
+    category: support
+    severity: high
+    likelihood: high
+    risk: No production support owner, coverage, intake, service target, training or runbook exists.
+    impact: Operators could not reliably identify, escalate or resolve pilot failures.
+    evidence_paths: [AIOS/Agent-RACI.md, AIOS/Agent-Runtime-Contract.md, README.md]
+    mitigation: Governance assigns support and escalation roles and accepts a tested operating runbook.
+    next_evidence: Approved support model and synthetic handoff exercise.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-009
+    category: business_boundary
+    severity: critical
+    likelihood: medium
+    risk: Future integration could collapse BUW with PC or 汇沣电商 with 六合通.
+    impact: Customers, stores, metrics, permissions or operating decisions could be attributed to the wrong entity.
+    evidence_paths: [Governance/AIOS-Project-Governance-Baseline-v1.md, Governance/AIOS-Project-Registry.md, Tests/test_project_governance.py]
+    mitigation: Preserve fail-closed company/brand fields and require separate approval for any combined view.
+    next_evidence: Negative synthetic tests for every future integration boundary.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
+
+  - id: PR-RISK-010
+    category: release_governance
+    severity: critical
+    likelihood: medium
+    risk: Passing documentation and synthetic tests could be misread as production or release approval.
+    impact: Work could advance without risk acceptance, pilot authority, merge or release approval.
+    evidence_paths: [Governance/AIOS-Thread-Governance-v2.1.md, Governance/AIOS-Stage-Registry.md, Governance/AIOS-Production-Readiness-Matrix-v1.yaml]
+    mitigation: Keep recommendation blocked, every human gate not_authorized, Draft PR unmerged and Stage 10 stopped at Reported.
+    next_evidence: Separate Governance Thread decisions for any future remediation Stage, pilot and release.
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    acceptance_authority: BUW AIOS Official Governance Thread
+    production_action_allowed: false
