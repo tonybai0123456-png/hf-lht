@@ -124,6 +124,7 @@ def validate_model(model: dict[str, Any]) -> list[str]:
         "data_assets",
         "purposes",
         "basis_decisions",
+        "consent_or_preference_records",
         "access_policies",
         "retention_rules",
     ):
@@ -138,6 +139,30 @@ def validate_model(model: dict[str, Any]) -> list[str]:
     for index, asset in enumerate(model.get("data_assets", [])):
         if asset.get("synthetic_only") is not True:
             errors.append(f"data_assets[{index}].synthetic_only must be true")
+
+    for index, basis in enumerate(model.get("basis_decisions", [])):
+        if basis.get("status") != "human_review_recorded_for_synthetic_design":
+            errors.append(
+                f"basis_decisions[{index}].status must be synthetic-design review only"
+            )
+        if basis.get("legal_conclusion") is not False:
+            errors.append(f"basis_decisions[{index}].legal_conclusion must be false")
+        if basis.get("real_data_authorized") is not False:
+            errors.append(f"basis_decisions[{index}].real_data_authorized must be false")
+
+    for index, record in enumerate(model.get("consent_or_preference_records", [])):
+        if record.get("synthetic_only") is not True:
+            errors.append(
+                f"consent_or_preference_records[{index}].synthetic_only must be true"
+            )
+        if record.get("human_review_state") != "human_review_recorded_for_synthetic_design":
+            errors.append(
+                f"consent_or_preference_records[{index}].human_review_state must be synthetic-design review only"
+            )
+        if not isinstance(record.get("purpose_ids"), list) or not record["purpose_ids"]:
+            errors.append(
+                f"consent_or_preference_records[{index}].purpose_ids must be non-empty"
+            )
 
     subject_flow = model.get("subject_request_flow", {})
     lineage = model.get("lineage_policy", {})
@@ -167,8 +192,15 @@ def evaluate_request(model: dict[str, Any], request: dict[str, Any]) -> list[str
     assets = _items_by_id(model.get("data_assets"))
     purposes = _items_by_id(model.get("purposes"))
     bases = _items_by_id(model.get("basis_decisions"))
+    preferences = _items_by_id(model.get("consent_or_preference_records"))
     retention = _items_by_id(model.get("retention_rules"))
+    categories = request.get("categories")
+    fields = request.get("fields")
+    category_set = set(categories) if isinstance(categories, list) else set()
+    field_set = set(fields) if isinstance(fields, list) else set()
 
+    if not isinstance(request.get("request_id"), str) or not request["request_id"].strip():
+        _append_once(reasons, "missing_request_id")
     if request.get("synthetic") is not True:
         _append_once(reasons, "real_or_unmarked_data")
     if (
@@ -176,27 +208,58 @@ def evaluate_request(model: dict[str, Any], request: dict[str, Any]) -> list[str
         or request.get("brand") != boundaries.get("allowed_brand")
     ):
         _append_once(reasons, "cross_boundary")
+    if not isinstance(categories, list) or not categories:
+        _append_once(reasons, "missing_categories")
+    if not isinstance(fields, list) or not fields:
+        _append_once(reasons, "missing_fields")
 
     asset = assets.get(str(request.get("asset_id")))
     if not asset or request.get("subject_type") != asset.get("subject_type"):
         _append_once(reasons, "unknown_asset_or_subject")
     else:
-        if not set(request.get("categories", [])).issubset(set(asset.get("categories", []))):
+        if not category_set.issubset(set(asset.get("categories", []))):
             _append_once(reasons, "unknown_category")
+        if not field_set.issubset(set(asset.get("fields", []))):
+            _append_once(reasons, "field_not_allowed_for_asset")
 
     purpose = purposes.get(str(request.get("purpose_id")))
     if not purpose:
         _append_once(reasons, "unknown_purpose")
     else:
+        if request.get("asset_id") not in purpose.get("allowed_assets", []):
+            _append_once(reasons, "asset_not_allowed_for_purpose")
+        if not category_set.issubset(set(purpose.get("allowed_categories", []))):
+            _append_once(reasons, "category_not_allowed_for_purpose")
+        if request.get("action") not in purpose.get("allowed_actions", []):
+            _append_once(reasons, "action_not_allowed_for_purpose")
         basis_id = request.get("basis_decision_id")
         if not basis_id:
             _append_once(reasons, "missing_basis_decision")
-        elif basis_id not in bases or basis_id not in purpose.get("basis_decision_ids", []):
+        elif (
+            basis_id not in bases
+            or basis_id not in purpose.get("basis_decision_ids", [])
+            or bases[basis_id].get("status")
+            != "human_review_recorded_for_synthetic_design"
+            or bases[basis_id].get("legal_conclusion") is not False
+            or bases[basis_id].get("real_data_authorized") is not False
+        ):
             _append_once(reasons, "invalid_basis_decision")
-        if not set(request.get("fields", [])).issubset(set(purpose.get("allowed_fields", []))):
+        if not field_set.issubset(set(purpose.get("allowed_fields", []))):
             _append_once(reasons, "excessive_fields")
-        if purpose.get("consent_or_preference_required") is True and not request.get("consent_or_preference_id"):
-            _append_once(reasons, "missing_consent_or_preference")
+        if purpose.get("consent_or_preference_required") is True:
+            preference_id = request.get("consent_or_preference_id")
+            if not preference_id:
+                _append_once(reasons, "missing_consent_or_preference")
+            else:
+                preference = preferences.get(str(preference_id))
+                if (
+                    not preference
+                    or request.get("purpose_id") not in preference.get("purpose_ids", [])
+                    or preference.get("synthetic_only") is not True
+                    or preference.get("human_review_state")
+                    != "human_review_recorded_for_synthetic_design"
+                ):
+                    _append_once(reasons, "invalid_consent_or_preference")
 
     action = request.get("action")
     if action in {"delete", "correct", "export", "fulfill_subject_request"}:
@@ -206,7 +269,7 @@ def evaluate_request(model: dict[str, Any], request: dict[str, Any]) -> list[str
         and policy.get("role") == request.get("actor_role")
         and request.get("purpose_id") in policy.get("purpose_ids", [])
         and action in policy.get("actions", [])
-        and set(request.get("categories", [])).issubset(set(policy.get("categories", [])))
+        and category_set.issubset(set(policy.get("categories", [])))
         for policy in model.get("access_policies", [])
     )
     if not access_allowed:
