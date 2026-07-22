@@ -146,6 +146,18 @@ class OperationalResilienceTests(unittest.TestCase):
                 self.assertEqual("denied", result["result"])
                 self.assertIn(reason, result["reason_codes"])
 
+    def test_malformed_extra_recovery_evidence_entries_are_denied(self):
+        for malformed in ({}, "invalid", None, {"id": ""}, {"id": "   "}):
+            with self.subTest(malformed=malformed):
+                scenario = deepcopy(self.fixture)
+                scenario["recovery_evidence"].append(malformed)
+                result = evaluate_scenario(self.model, scenario)
+                self.assertEqual("denied", result["result"])
+                self.assertIn(
+                    "recovery_evidence_contract_mismatch",
+                    result["reason_codes"],
+                )
+
     def test_claim_contract_requires_exact_false_keys(self):
         required_claims = set(self.fixture["claims"])
         cases = []
@@ -452,6 +464,29 @@ class OperationalResilienceTests(unittest.TestCase):
             validate_model(model),
         )
 
+        model = deepcopy(self.model)
+        model["recovery_evidence_requirements"].append(
+            deepcopy(model["recovery_evidence_requirements"][0])
+        )
+        self.assertIn(
+            "recovery_evidence_requirements must contain unique non-empty ids",
+            validate_model(model),
+        )
+
+        for section in (
+            "continuity_tiers",
+            "severity_levels",
+            "impact_classes",
+            "failure_modes",
+        ):
+            with self.subTest(section=section):
+                model = deepcopy(self.model)
+                model[section].append(deepcopy(model[section][0]))
+                self.assertIn(
+                    f"{section} must contain unique non-empty ids",
+                    validate_model(model),
+                )
+
     def test_evaluator_does_not_trust_mutated_action_sets(self):
         model = deepcopy(self.model)
         model["allowed_prepare_actions"].append("perform_failover")
@@ -461,15 +496,6 @@ class OperationalResilienceTests(unittest.TestCase):
         result = evaluate_scenario(model, scenario)
         self.assertEqual("denied", result["result"])
         self.assertIn("unsafe_continuity_action", result["reason_codes"])
-
-        model = deepcopy(self.model)
-        model["recovery_evidence_requirements"].append(
-            deepcopy(model["recovery_evidence_requirements"][0])
-        )
-        self.assertIn(
-            "recovery_evidence_requirements must contain unique non-empty ids",
-            validate_model(model),
-        )
 
     def test_mapping_preserves_stage10_risks_and_stage11_12_traceability(self):
         mapping = yaml.safe_load(MAPPING_PATH.read_text(encoding="utf-8"))
