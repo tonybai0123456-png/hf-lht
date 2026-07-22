@@ -1,0 +1,41 @@
+# BUW AIOS Project Registry
+
+## Registry control
+
+| Field | Value |
+|---|---|
+| Governance authority | BUW AIOS Official Governance Thread（BUW AIOS 官方治理主线程） |
+| Effective Thread Governance | `Governance/AIOS-Thread-Governance-v2.1.md` |
+| Project policy candidate | `Governance/AIOS-Project-Governance-Baseline-v1.md` |
+| Canonical repository | `tonybai0123456-png/hf-lht` |
+| Initial scope | Exactly one governed project: `BUW-AIOS` |
+| Last updated | 2026-07-22 |
+
+This registry is the controlled source for project identity and project status.
+It does not replace `Governance/AIOS-Stage-Registry.md`, which controls Stage
+assignment and Stage lifecycle. Until the baseline candidate is reviewed and
+published, Thread Governance v2.1 and the Stage Registry remain authoritative.
+
+## Registered projects
+
+| Project ID | Project name | Company boundary | Brand boundary | Project owner | Governance Thread | Canonical repository | Policy / Stage Registry | Project status | Active Stage | Review date / evidence | Next gate |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 9 / PG-01 / Issue #13 | 2026-07-22 / branch `feat/aios-project-governance-baseline-v1` | Mandatory Return, human review and controlled publication; Stage 10 remains unauthorized |
+
+## Registry rules
+
+1. Project IDs are unique and immutable.
+2. The Governance Thread alone may create, split, rename, suspend or archive an entry.
+3. Every material field update requires a linked governance decision and evidence.
+4. Missing or conflicting evidence must fail closed; preserve the truthful status.
+5. Project status does not replace Stage status, and this registry does not
+   authorize an Execution Thread.
+6. BUW, PC, 汇沣电商 and 六合通 remain distinct at brand and company level.
+7. GitHub artifacts and ChatGPT Projects are working context only unless promoted
+   through the controlled governance path.
+
+## Change log
+
+| Date | Change | Authority / evidence |
+|---|---|---|
+| 2026-07-22 | Created the initial registry with exactly one `BUW-AIOS` entry for Stage 9 review; no additional project was inferred or registered. | Issue #13 / PG-01 Execution Thread; pending Governance Thread review |
