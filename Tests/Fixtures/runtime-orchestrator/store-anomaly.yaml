@@ -1,0 +1,48 @@
+runtime_version: "1.0"
+run_id: SYN-RO-STORE-001
+agent: Retail
+mode: validate
+requested_by: synthetic-test-suite
+requested_at: "2026-07-22T08:00:00Z"
+business_context:
+  company: 汇沣电商
+  brand: BUW
+  scope_level: store
+  store_code: G0011
+  department: Retail
+  decision_owner: 李涛
+  operating_owner: Retail
+task:
+  workflow_id: store_anomaly_investigation
+  objective: Validate the published store workflow with synthetic evidence
+  requested_output: Runtime Contract 1.0 result
+  acceptance_criteria: [stop before the first prepare_only step]
+  deadline_or_review_date: "2026-07-23"
+  requested_next_action: validate
+  reporting_period: "2026-07-22"
+  workflow_inputs:
+    store_code: G0011
+    period: "2026-07-22"
+    anomaly_type: synthetic-settlement-delay
+evidence:
+  - source_type: synthetic
+    source_name: Synthetic store alert fixture
+    source_link_or_id: synthetic://runtime/store_anomaly_investigation/001
+    data_cutoff: "2026-07-22"
+    owner: Retail
+    confidence: high
+    limitations: Synthetic fixture only
+constraints:
+  prohibited_actions: [external_write, production_execution, human_decision]
+  privacy_classification: synthetic
+  budget_limit_or_unknown: unknown
+  time_limit: test-only
+  known_business_rules: [BUW and PC remain separate]
+  dry_run: true
+  allow_external_writes: false
+approval_context:
+  risk_level: low
+  approval_required: false
+  approval_owner: null
+  approval_status: not_required
+  approval_evidence: []
