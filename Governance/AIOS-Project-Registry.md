@@ -20,7 +20,7 @@ controlled project source chain.
 
 | Project ID | Project name | Company boundary | Brand boundary | Project owner | Governance Thread | Canonical repository | Policy / Stage Registry | Project status | Active Stage | Review date / evidence | Next gate |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 11 / AF-01 / Reported / Issue #24 | 2026-07-22 / Draft PR #26 / foundations and Runtime CI passed | Governance Thread human review; production, real data, permissions, external writes, owner invention, risk acceptance, pilot, release, merge, Reviewed and Archived remain unauthorized |
+| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 11 / AF-01 / Reviewed / Issue #24 | 2026-07-22 / Draft PR #26 / human review and four final CI workflows passed | Separate publication/archive decision required; production, real data, permissions, external writes, owner assignment, risk acceptance, pilot, release and Stage 12 remain unauthorized |
 
 ## Registry rules
 
@@ -45,3 +45,4 @@ controlled project source chain.
 | 2026-07-22 | Accepted the Stage 10 prepare-only assessment as Reviewed while preserving `BLOCKED / NO-GO`; no production, pilot, risk acceptance, release, merge or archive authority was granted. | BUW AIOS Official Governance Thread / PR #23 |
 | 2026-07-22 | Published and archived Stage 10 without changing its `BLOCKED / NO-GO` conclusion; activated Stage 11 / AF-01 through Issue #24 under governance v2.2 while Stages 12–14 remain Planned. | BUW AIOS Official Governance Thread / PR #23 / Issue #24 |
 | 2026-07-22 | Recorded Stage 11 as Reported after Draft PR #26 and its foundations and Runtime CI passed; retained design-only boundaries and inferred no review, production, risk acceptance, pilot, release, merge or archive authority. | AF-01 Mandatory Return / Draft PR #26 |
+| 2026-07-22 | Accepted Stage 11 / AF-01 as Reviewed after independent content, boundary, targeted/full-test and four-workflow verification; preserved Draft/unmerged status and separate publication, archive and Stage 12 gates. | BUW AIOS Official Governance Thread / Draft PR #26 |
