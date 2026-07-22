@@ -1,0 +1,38 @@
+name: Validate AIOS Project Governance
+
+on:
+  pull_request:
+    paths:
+      - "Governance/AIOS-Project-Governance-Baseline-v1.md"
+      - "Governance/AIOS-Project-Registry.md"
+      - "Governance/AIOS-Stage-Registry.md"
+      - "Tests/test_project_governance.py"
+      - "Tests/AIOS-Project-Governance-Baseline-Validation.md"
+      - ".github/workflows/validate-aios-project-governance.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aios-project-governance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate project governance boundaries
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository without persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run project governance positive and negative checks
+        run: python -m unittest Tests.test_project_governance -v
