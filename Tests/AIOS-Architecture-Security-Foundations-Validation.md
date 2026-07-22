@@ -25,4 +25,4 @@ python -m unittest Tests.test_architecture_security_foundations -v
 python -m unittest discover -s Tests -p 'test_*.py' -v
 ```
 
-Passing these checks makes the package a design review candidate only. It is not deployment, pilot, release, Reviewed or Archived evidence.
+Passing these checks verifies the archived design package only. Archive records reviewed publication evidence; it is not deployment, production readiness, pilot, release, risk acceptance or Stage 12 authority.
