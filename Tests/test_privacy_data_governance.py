@@ -97,6 +97,112 @@ class PrivacyDataGovernanceTests(unittest.TestCase):
             validate_model(model),
         )
 
+    def test_basis_decision_cannot_grant_legal_or_real_data_authority(self):
+        cases = [
+            ("legal_conclusion", True, "basis_decisions[0].legal_conclusion must be false"),
+            (
+                "real_data_authorized",
+                True,
+                "basis_decisions[0].real_data_authorized must be false",
+            ),
+            (
+                "status",
+                "approved_for_production",
+                "basis_decisions[0].status must be synthetic-design review only",
+            ),
+        ]
+        for key, value, expected in cases:
+            with self.subTest(key=key):
+                model = deepcopy(self.model)
+                model["basis_decisions"][0][key] = value
+                self.assertIn(expected, validate_model(model))
+                self.assertIn("invalid_basis_decision", evaluate_request(model, VALID_REQUEST))
+
+    def test_request_contract_and_cross_object_links_fail_closed(self):
+        cases = [
+            ("missing_request_id", {}, ["missing_request_id"], ["request_id"]),
+            ("empty_categories", {"categories": []}, ["missing_categories"], []),
+            ("empty_fields", {"fields": []}, ["missing_fields"], []),
+            (
+                "asset_purpose_category_mismatch",
+                {
+                    "asset_id": "synthetic_customer_preference",
+                    "categories": ["preference"],
+                    "fields": ["synthetic_preference"],
+                },
+                ["asset_not_allowed_for_purpose", "category_not_allowed_for_purpose"],
+                [],
+            ),
+            (
+                "field_not_on_asset",
+                {"fields": ["synthetic_preference"]},
+                ["field_not_allowed_for_asset", "excessive_fields"],
+                [],
+            ),
+            (
+                "action_not_allowed_for_purpose",
+                {"action": "write"},
+                ["action_not_allowed_for_purpose"],
+                [],
+            ),
+        ]
+        for name, mutation, expected_reasons, removed_keys in cases:
+            with self.subTest(name=name):
+                request = deepcopy(VALID_REQUEST)
+                request.update(mutation)
+                for key in removed_keys:
+                    request.pop(key)
+                reasons = evaluate_request(self.model, request)
+                for reason in expected_reasons:
+                    self.assertIn(reason, reasons)
+
+    def test_consent_or_preference_reference_must_exist_and_be_compatible(self):
+        request = deepcopy(VALID_REQUEST)
+        request.update(
+            {
+                "asset_id": "synthetic_customer_preference",
+                "categories": ["preference"],
+                "fields": ["synthetic_preference"],
+                "purpose_id": "preference_management",
+                "basis_decision_id": "BASIS-SYN-002",
+                "consent_or_preference_id": "NONEXISTENT",
+            }
+        )
+        self.assertIn(
+            "invalid_consent_or_preference",
+            evaluate_request(self.model, request),
+        )
+
+        request["consent_or_preference_id"] = "PREF-SYN-001"
+        self.assertEqual([], evaluate_request(self.model, request))
+
+        cases = [
+            (
+                "synthetic_only",
+                False,
+                "consent_or_preference_records[0].synthetic_only must be true",
+            ),
+            (
+                "human_review_state",
+                "auto_approved",
+                "consent_or_preference_records[0].human_review_state must be synthetic-design review only",
+            ),
+            (
+                "purpose_ids",
+                [],
+                "consent_or_preference_records[0].purpose_ids must be non-empty",
+            ),
+        ]
+        for key, value, expected in cases:
+            with self.subTest(key=key):
+                model = deepcopy(self.model)
+                model["consent_or_preference_records"][0][key] = value
+                self.assertIn(expected, validate_model(model))
+                self.assertIn(
+                    "invalid_consent_or_preference",
+                    evaluate_request(model, request),
+                )
+
     def test_mapping_preserves_all_ten_unaccepted_risks(self):
         mapping = yaml.safe_load(MAPPING_PATH.read_text(encoding="utf-8"))
         rows = mapping["mappings"]
