@@ -1,0 +1,33 @@
+scenario_id: SYN-OR-001
+synthetic: true
+company: 汇沣电商
+brand: BUW
+service_id: aios_runtime_design
+dependency_ids: [synthetic_policy_registry, synthetic_audit_store]
+signal_type: synthetic_dependency_degradation
+severity: SEV-2
+impact: high
+continuity_target:
+  tier_id: CT-2
+  rto_minutes: 240
+  rpo_minutes: 60
+recovery_evidence:
+  - {id: EVID-SYN-BACKUP-POLICY, state: design_requirement_only}
+  - {id: EVID-SYN-RESTORE-PLAN, state: design_requirement_only}
+  - {id: EVID-SYN-INTEGRITY-PLAN, state: design_requirement_only}
+requested_action: prepare_recovery_recommendation
+human_gates:
+  - incident_declaration
+  - failover
+  - restoration
+  - external_communication
+  - exception
+  - risk_acceptance
+  - release
+claims:
+  sla_achieved: false
+  slo_achieved: false
+  backup_tested: false
+  restore_tested: false
+  real_incident_capability: false
+external_actions_performed: false
