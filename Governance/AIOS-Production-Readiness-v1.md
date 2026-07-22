@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Stage | Stage 10 / PR-01 |
-| Status | Prepare-only assessment complete; Stage is Reported pending human review |
+| Status | Published and Archived; assessment decision remains BLOCKED / NO-GO |
 | Issue | [Issue #21](https://github.com/tonybai0123456-png/hf-lht/issues/21) |
 | Parent Governance Thread | BUW AIOS Official Governance Thread |
 | Single Execution Thread | `019f8937-ac22-71a2-bb35-d8f6d2e0f55f` |
@@ -147,5 +147,7 @@ after tests, CI, Draft PR and Mandatory Return. The current evidence supports a
 **blocked** recommendation for production pilot entry. The Execution Thread must
 not call BUW AIOS production-ready, released, Reviewed or Archived.
 
-The next valid action after Reported is human Governance Thread review. Any risk
-acceptance, remediation plan, pilot or release requires a separate explicit decision.
+Human review, publication through PR #23 at `b8a734f`, post-merge verification and
+the separate archive decision are complete. Archive closes the assessment Stage;
+it does not change the `BLOCKED / NO-GO` result. Any remediation, risk acceptance,
+pilot or release requires a separate explicit governance decision.
