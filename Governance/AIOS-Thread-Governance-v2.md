@@ -5,15 +5,16 @@
 | Field | Value |
 |---|---|
 | Governance version | 2.0 |
-| Status | Approved upgrade draft; repository publication pending |
+| Status | Frozen and published |
 | Governance authority | BUW AIOS Official Governance Thread（BUW AIOS 官方治理主线程） |
 | Repository | `tonybai0123456-png/hf-lht` |
 | Stage control surface | `Governance/AIOS-Stage-Registry.md` |
 | Supersedes on publication | `Governance/AIOS-Thread-Governance-v1.md` (frozen v1.1) |
 | Effective scope | BUW AIOS Stage planning, execution-thread assignment, continuous execution, review, return reporting and archival |
 | Upgrade approved on | 2026-07-22 |
+| Published on | 2026-07-22 via PR #12 |
 
-The Governance Thread approved this major-version upgrade so the lifecycle can distinguish technical review from archival. This document becomes the repository's published governance authority only after PR #12 is approved for merge and published. Until then, frozen v1.1 remains readable and remains the published repository baseline; the Governance Thread's explicit decisions remain authoritative for the Stage statuses recorded in the Draft PR.
+The Governance Thread approved this major-version upgrade so the lifecycle can distinguish technical review from archival. Version 2.0 was published through the authorized merge of PR #12 on 2026-07-22 and is the repository's current frozen governance authority. Frozen v1.1 remains readable as historical evidence.
 
 This document governs work coordination. It does not authorize merge, deployment, production access, permission changes, real-business-data access, external writes or any other high-risk action.
 
@@ -146,7 +147,7 @@ If sources conflict, the Governance Thread resolves the conflict and updates the
 
 ## 8. Governance Freeze and version upgrades（治理冻结与版本升级）
 
-Version 2.0 is frozen upon repository publication. Frozen means the rules cannot be silently edited, reinterpreted through tool behavior or bypassed by starting another thread.
+Version 2.0 is frozen as of its repository publication through PR #12 on 2026-07-22. Frozen means the rules cannot be silently edited, reinterpreted through tool behavior or bypassed by starting another thread.
 
 Every proposed governance change requires:
 
@@ -162,7 +163,7 @@ Version numbering follows these rules:
 - **Minor (`2.x`)**: backward-compatible governance additions or clarifications that add a controlled capability.
 - **Major (`3.0`)**: changes to governance authority, lifecycle, Parent Thread rules, execution exclusivity, source-of-truth hierarchy or archival rights.
 
-An approved upgrade draft does not silently become published authority. The new version becomes the repository's published authority only after governance-approved merge and publication. Historical frozen versions and their evidence remain readable.
+A future approved upgrade draft does not silently become published authority. A new version becomes the repository's published authority only after governance-approved merge and publication. Version 2.0 became published authority through the authorized merge of PR #12; historical frozen versions and their evidence remain readable.
 
 ## 9. ChatGPT Project transition strategy（ChatGPT 项目过渡策略）
 
@@ -209,7 +210,7 @@ The Single Governance Authority, Governance Thread, Execution Thread, Parent Thr
 
 ### 11.3 Migration rule
 
-Upon v2.0 publication:
+With v2.0 publication through PR #12:
 
 1. preserve `Governance/AIOS-Thread-Governance-v1.md` unchanged as the frozen v1.1 historical version;
 2. use `Governance/AIOS-Thread-Governance-v2.md` for new governance decisions;
