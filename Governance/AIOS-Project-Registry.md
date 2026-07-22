@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Governance authority | BUW AIOS Official Governance Thread（BUW AIOS 官方治理主线程） |
-| Effective Thread Governance | `Governance/AIOS-Thread-Governance-v2.1.md` |
+| Effective Thread Governance | `Governance/AIOS-Thread-Governance-v2.2.md` |
 | Published Project policy | `Governance/AIOS-Project-Governance-Baseline-v1.md` (v1.0) |
 | Canonical repository | `tonybai0123456-png/hf-lht` |
 | Initial scope | Exactly one governed project: `BUW-AIOS` |
@@ -13,14 +13,14 @@
 
 This registry is the controlled source for project identity and project status.
 It does not replace `Governance/AIOS-Stage-Registry.md`, which controls Stage
-assignment and Stage lifecycle. The published baseline, Thread Governance v2.1 and the Stage Registry form the
+assignment and Stage lifecycle. The published baseline, Thread Governance v2.2 and the Stage Registry form the
 controlled project source chain.
 
 ## Registered projects
 
 | Project ID | Project name | Company boundary | Brand boundary | Project owner | Governance Thread | Canonical repository | Policy / Stage Registry | Project status | Active Stage | Review date / evidence | Next gate |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 10 / PR-01 / Reviewed / Issue #21 | 2026-07-22 / Draft PR #23 / readiness and regression CI passed | Human review of the BLOCKED / NO-GO assessment; production, real data, permissions, external writes, risk acceptance, release and merge remain unauthorized |
+| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 11 / AF-01 / Executing / Issue #24 | 2026-07-22 / Stage 10 published at `b8a734f` and archived with NO-GO | Stage 11 documentation/design/synthetic work only; production, real data, permissions, external writes, owner invention, risk acceptance, pilot and release remain unauthorized |
 
 ## Registry rules
 
@@ -43,3 +43,4 @@ controlled project source chain.
 | 2026-07-22 | Published Project Governance Baseline v1.0 through PR #20 at `62b2aaa`, archived Stage 9 after post-merge verification, and activated Stage 10 / PR-01 under Issue #21 with assessment-only boundaries. | BUW AIOS Official Governance Thread |
 | 2026-07-22 | Recorded Stage 10 as Reported after Draft PR #23 and the required readiness and regression CI passed; retained the BLOCKED / NO-GO assessment recommendation and inferred no production or release authority. | PR-01 Mandatory Return |
 | 2026-07-22 | Accepted the Stage 10 prepare-only assessment as Reviewed while preserving `BLOCKED / NO-GO`; no production, pilot, risk acceptance, release, merge or archive authority was granted. | BUW AIOS Official Governance Thread / PR #23 |
+| 2026-07-22 | Published and archived Stage 10 without changing its `BLOCKED / NO-GO` conclusion; activated Stage 11 / AF-01 through Issue #24 under governance v2.2 while Stages 12–14 remain Planned. | BUW AIOS Official Governance Thread / PR #23 / Issue #24 |

@@ -13,7 +13,7 @@ access, permission change, external write, outbound message or risk acceptance.
 - all required readiness dimensions and human approval gates exist;
 - BUW, PC, 汇沣电商 and 六合通 boundaries are explicit and fail closed;
 - every evidence path is repository-relative and readable;
-- Stage Registry status matches the structured matrix;
+- Stage Registry status matches the structured matrix, including final Archived disposition;
 - CI is pull-request-only, contents-read and does not persist credentials.
 
 ## Deterministic negative checks

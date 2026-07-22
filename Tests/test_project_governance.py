@@ -73,7 +73,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stage_9_is_archived_and_stage_10_is_reviewed(self):
+    def test_stage_10_is_archived_and_stage_11_is_executing(self):
         stage9 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 9 |"))
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
         self.assertIn("| Archived |", stage9)
@@ -83,8 +83,16 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("Issue #21", stage10)
         self.assertIn("019f8937-ac22-71a2-bb35-d8f6d2e0f55f", stage10)
         self.assertIn("feat/aios-production-readiness-v1", stage10)
-        self.assertIn("Draft PR #23", stage10)
-        self.assertIn("| Reviewed |", stage10)
+        self.assertIn("PR #23", stage10)
+        self.assertIn("| Archived |", stage10)
+        stage11 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 11 |"))
+        self.assertIn("Issue #24", stage11)
+        self.assertIn("019f89ac-e3b7-7b90-ad27-286708c407e0", stage11)
+        self.assertIn("feat/aios-architecture-security-foundations-v1", stage11)
+        self.assertIn("| Executing |", stage11)
+        for stage_number in (12, 13, 14):
+            stage = next(line for line in self.stage_registry.splitlines() if line.startswith(f"| {stage_number} |"))
+            self.assertIn("| Planned |", stage)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
