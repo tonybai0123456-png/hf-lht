@@ -1,0 +1,88 @@
+metadata:
+  source_stage: 10
+  architecture_security_stage: 11
+  privacy_data_stage: 12
+  target_stage: 13
+  rule: OR-01 design evidence may refine mitigation but cannot close or accept a risk or claim operational capability.
+
+mappings:
+  - stage10_risk_id: PR-RISK-001
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Foundations-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-v1.md]
+    or01_control: Conceptual service and dependency inventory with no deployment claim and unknown-service default deny.
+    residual_status: blocked
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-002
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Threat-Model-v1.yaml, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml]
+    or01_control: Prepare-only recovery and incident contracts create no identity secret permission or connector.
+    residual_status: blocked
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-003
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Foundations-v1.md]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-v1.md, Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml]
+    or01_control: Synthetic fixture and audit contract prohibit real or raw personal content.
+    residual_status: blocked
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-004
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml, Governance/AIOS-Privacy-Data-Governance-Stage10-Mapping-v1.yaml]
+    or01_control: Exact 汇沣电商 and BUW boundary plus known dependency IDs; unknown and cross-boundary inputs deny.
+    residual_status: blocked
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-005
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Model-v1.yaml, Governance/AIOS-Architecture-Security-Acceptance-Matrix-v1.yaml]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-v1.md]
+    or01_control: Observability and audit evidence contracts are explicit while connectors alerts SLOs and durable telemetry remain absent.
+    residual_status: blocked
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-006
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Foundations-v1.md, Governance/AIOS-Architecture-Security-Stage10-Mapping-v1.yaml]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml]
+    or01_control: Bounded RTO/RPO design targets recovery evidence requirements and restore/failover human gates; no backup or restore is tested.
+    residual_status: blocked
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-007
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Foundations-v1.md]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-Stage10-Mapping-v1.yaml]
+    or01_control: Severity impact incident lifecycle runbook escalation recovery validation and communication gates are deterministic and prepare-only.
+    residual_status: blocked
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-008
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-v1.md]
+    or01_control: Abstract roles and runbook contract define future evidence while all real operational owners remain unassigned.
+    residual_status: blocked
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-009
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Model-v1.yaml, Governance/AIOS-Architecture-Security-Stage10-Mapping-v1.yaml]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml, Governance/AIOS-Privacy-Data-Governance-Stage10-Mapping-v1.yaml]
+    or01_control: 汇沣电商 BUW is the only allowed scope; PC 六合通 wildcard shared and unknown scopes fail closed.
+    residual_status: open
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
+  - stage10_risk_id: PR-RISK-010
+    stage11_evidence: [Governance/AIOS-Architecture-Security-Acceptance-Matrix-v1.yaml]
+    stage12_evidence: [Governance/AIOS-Privacy-Data-Governance-Acceptance-Matrix-v1.yaml]
+    or01_control: Every operational authority flag is false; valid scenarios stop at human approval and Stage 13 stops at Reported.
+    residual_status: open
+    risk_accepted: false
+    owner_state: unassigned / governance decision required
+    production_action_allowed: false
