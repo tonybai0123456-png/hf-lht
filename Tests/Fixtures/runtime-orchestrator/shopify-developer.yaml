@@ -1,0 +1,49 @@
+runtime_version: "1.0"
+run_id: SYN-RO-SHP-001
+agent: Shopify
+mode: validate
+requested_by: synthetic-test-suite
+requested_at: "2026-07-22T08:00:00Z"
+business_context:
+  company: 汇沣电商
+  brand: BUW
+  scope_level: system
+  department: Shopify
+  decision_owner: Tony
+  operating_owner: Shopify
+task:
+  workflow_id: shopify_to_developer_draft_pr
+  objective: Validate the published Shopify workflow with synthetic evidence
+  requested_output: Runtime Contract 1.0 result
+  acceptance_criteria: [stop before the first prepare_only step]
+  deadline_or_review_date: "2026-07-23"
+  requested_next_action: validate
+  reporting_period: "2026-07-22"
+  workflow_inputs:
+    business_goal: Synthetic conversion clarification
+    page_or_flow: synthetic-product-page
+    current_state: Synthetic baseline copy
+    desired_outcome: Synthetic reviewable copy draft
+    acceptance_criteria: [draft is testable, rollback remains available]
+evidence:
+  - source_type: synthetic
+    source_name: Synthetic Shopify fixture
+    source_link_or_id: synthetic://runtime/shopify_to_developer_draft_pr/001
+    data_cutoff: "2026-07-22"
+    owner: Shopify
+    confidence: high
+    limitations: Synthetic fixture only
+constraints:
+  prohibited_actions: [external_write, production_execution, human_decision]
+  privacy_classification: synthetic
+  budget_limit_or_unknown: unknown
+  time_limit: test-only
+  known_business_rules: [BUW and PC remain separate]
+  dry_run: true
+  allow_external_writes: false
+approval_context:
+  risk_level: low
+  approval_required: false
+  approval_owner: null
+  approval_status: not_required
+  approval_evidence: []
