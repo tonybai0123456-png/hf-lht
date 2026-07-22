@@ -73,7 +73,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stages_10_through_12_are_archived_and_stage_13_is_planned(self):
+    def test_stages_10_through_12_are_archived_stage13_reported_stage14_planned(self):
         stage9 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 9 |"))
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
         self.assertIn("| Archived |", stage9)
@@ -100,11 +100,16 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("11/11", stage12)
         self.assertIn("61/61", stage12)
         self.assertIn("| Archived |", stage12)
-        for stage_number in (13, 14):
-            stage = next(line for line in self.stage_registry.splitlines() if line.startswith(f"| {stage_number} |"))
-            self.assertIn("| Planned |", stage)
+        stage13 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 13 |"))
+        self.assertIn("Issue #32", stage13)
+        self.assertIn("019f8a35-6d4e-7c60-b35a-79de8626d4e3", stage13)
+        self.assertIn("feat/aios-operational-resilience-v1", stage13)
+        self.assertIn("| Reported |", stage13)
+        stage14 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 14 |"))
+        self.assertIn("No Execution Thread assigned", stage14)
+        self.assertIn("| Planned |", stage14)
         self.assertIn(
-            "No active Execution Stage / Stage 12 Archived / Stage 13 Planned",
+            "Stage 13 Reported / Stage 14 Planned",
             self.project_registry,
         )
 
