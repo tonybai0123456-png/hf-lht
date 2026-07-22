@@ -540,7 +540,7 @@ class OperationalResilienceTests(unittest.TestCase):
         ):
             self.assertNotIn(prohibited, workflow)
 
-    def test_registry_stops_at_reported_and_stage14_remains_planned(self):
+    def test_registry_records_archived_stage13_and_planned_stage14(self):
         stage_registry = STAGE_REGISTRY.read_text(encoding="utf-8")
         project_registry = PROJECT_REGISTRY.read_text(encoding="utf-8")
         stage13 = next(line for line in stage_registry.splitlines() if line.startswith("| 13 |"))
@@ -548,12 +548,15 @@ class OperationalResilienceTests(unittest.TestCase):
         self.assertIn("Issue #32", stage13)
         self.assertIn("019f8a35-6d4e-7c60-b35a-79de8626d4e3", stage13)
         self.assertIn("feat/aios-operational-resilience-v1", stage13)
-        self.assertIn("| Reported |", stage13)
-        self.assertNotIn("| Reviewed |", stage13)
-        self.assertNotIn("| Archived |", stage13)
+        self.assertIn("Issue #34", stage13)
+        self.assertIn("327d9e9", stage13)
+        self.assertIn("7b16a5c", stage13)
+        self.assertIn("19/19", stage13)
+        self.assertIn("80/80", stage13)
+        self.assertIn("| Archived |", stage13)
         self.assertIn("No Execution Thread assigned", stage14)
         self.assertIn("| Planned |", stage14)
-        self.assertIn("Stage 13 Reported / Stage 14 Planned", project_registry)
+        self.assertIn("Stage 13 Archived / Stage 14 Planned", project_registry)
 
 
 if __name__ == "__main__":
