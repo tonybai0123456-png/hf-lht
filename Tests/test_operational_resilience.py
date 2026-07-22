@@ -60,6 +60,121 @@ class OperationalResilienceTests(unittest.TestCase):
         )
         self.assertFalse(result["external_actions_performed"])
         self.assertGreaterEqual(len(result["evidence_refs"]), 3)
+        record = result["incident_record"]
+        self.assertEqual(
+            self.model["incident_record_contract"]["required_fields"],
+            list(record),
+        )
+        self.assertEqual(self.fixture["scenario_id"], record["scenario_id"])
+        self.assertEqual("2.2", record["policy_version"])
+        for field in (
+            "synthetic",
+            "company",
+            "brand",
+            "service_id",
+            "dependency_ids",
+            "signal_type",
+            "severity",
+            "impact",
+        ):
+            self.assertEqual(self.fixture[field], record[field], field)
+        self.assertEqual(result["result"], record["decision"])
+        self.assertEqual(result["reason_codes"], record["reason_codes"])
+        self.assertEqual(result["required_human_gates"], record["human_gates"])
+        self.assertEqual(result["evidence_refs"], record["evidence_refs"])
+
+    def test_missing_or_empty_scenario_identity_is_denied(self):
+        for value in (None, "", "   "):
+            with self.subTest(value=value):
+                scenario = deepcopy(self.fixture)
+                if value is None:
+                    scenario.pop("scenario_id")
+                else:
+                    scenario["scenario_id"] = value
+                result = evaluate_scenario(self.model, scenario)
+                self.assertEqual("denied", result["result"])
+                self.assertIn("missing_scenario_id", result["reason_codes"])
+                self.assertEqual(
+                    value.strip() if isinstance(value, str) else "",
+                    result["incident_record"]["scenario_id"],
+                )
+
+    def test_scenario_collections_must_be_exact_and_unique(self):
+        cases = []
+
+        duplicate_dependency = deepcopy(self.fixture)
+        duplicate_dependency["dependency_ids"].append(
+            duplicate_dependency["dependency_ids"][0]
+        )
+        cases.append((duplicate_dependency, "duplicate_dependency"))
+
+        reordered_dependencies = deepcopy(self.fixture)
+        reordered_dependencies["dependency_ids"].reverse()
+        cases.append((reordered_dependencies, "dependency_contract_mismatch"))
+
+        duplicate_evidence = deepcopy(self.fixture)
+        duplicate_evidence["recovery_evidence"].append(
+            deepcopy(duplicate_evidence["recovery_evidence"][0])
+        )
+        cases.append((duplicate_evidence, "duplicate_recovery_evidence"))
+
+        reordered_evidence = deepcopy(self.fixture)
+        reordered_evidence["recovery_evidence"].reverse()
+        cases.append(
+            (reordered_evidence, "recovery_evidence_contract_mismatch")
+        )
+
+        duplicate_gate = deepcopy(self.fixture)
+        duplicate_gate["human_gates"].append(duplicate_gate["human_gates"][0])
+        cases.append((duplicate_gate, "duplicate_human_gate"))
+
+        reordered_gates = deepcopy(self.fixture)
+        reordered_gates["human_gates"].reverse()
+        cases.append((reordered_gates, "human_gate_contract_mismatch"))
+
+        non_scalar_dependency = deepcopy(self.fixture)
+        non_scalar_dependency["dependency_ids"] = [{}]
+        cases.append((non_scalar_dependency, "unknown_dependency"))
+
+        non_scalar_gate = deepcopy(self.fixture)
+        non_scalar_gate["human_gates"] = [{}]
+        cases.append((non_scalar_gate, "human_gate_contract_mismatch"))
+
+        for scenario, reason in cases:
+            with self.subTest(reason=reason):
+                result = evaluate_scenario(self.model, scenario)
+                self.assertEqual("denied", result["result"])
+                self.assertIn(reason, result["reason_codes"])
+
+    def test_claim_contract_requires_exact_false_keys(self):
+        required_claims = set(self.fixture["claims"])
+        cases = []
+
+        empty = deepcopy(self.fixture)
+        empty["claims"] = {}
+        cases.append((empty, "invalid_claim_contract"))
+
+        missing = deepcopy(self.fixture)
+        missing["claims"].pop(next(iter(required_claims)))
+        cases.append((missing, "invalid_claim_contract"))
+
+        unknown = deepcopy(self.fixture)
+        unknown["claims"]["unknown_claim"] = False
+        cases.append((unknown, "invalid_claim_contract"))
+
+        non_boolean = deepcopy(self.fixture)
+        non_boolean["claims"]["sla_achieved"] = 0
+        cases.append((non_boolean, "invalid_claim_contract"))
+
+        truthy = deepcopy(self.fixture)
+        truthy["claims"]["restore_tested"] = True
+        cases.append((truthy, "achievement_claim"))
+
+        for scenario, reason in cases:
+            with self.subTest(reason=reason):
+                result = evaluate_scenario(self.model, scenario)
+                self.assertEqual("denied", result["result"])
+                self.assertIn(reason, result["reason_codes"])
 
     def test_required_fail_closed_scenario_mutations(self):
         cases = [
@@ -163,6 +278,196 @@ class OperationalResilienceTests(unittest.TestCase):
         model["recovery_evidence_requirements"][0]["claim_state"] = "tested"
         self.assertIn(
             "recovery_evidence_requirements[0].claim_state must be design_requirement_only",
+            validate_model(model),
+        )
+
+    def test_model_rejects_every_unsafe_contract_mutation(self):
+        cases = (
+            (
+                "automatic incident declaration",
+                lambda model: model["incident_lifecycle"].__setitem__(
+                    "incident_declaration_automatic", True
+                ),
+                "incident_lifecycle must be exact, manual, and unassigned",
+            ),
+            (
+                "automatic containment",
+                lambda model: model["incident_lifecycle"].__setitem__(
+                    "containment_automatic", True
+                ),
+                "incident_lifecycle must be exact, manual, and unassigned",
+            ),
+            (
+                "automatic recovery",
+                lambda model: model["incident_lifecycle"].__setitem__(
+                    "recovery_automatic", True
+                ),
+                "incident_lifecycle must be exact, manual, and unassigned",
+            ),
+            (
+                "automatic closure",
+                lambda model: model["incident_lifecycle"].__setitem__(
+                    "closure_automatic", True
+                ),
+                "incident_lifecycle must be exact, manual, and unassigned",
+            ),
+            (
+                "incident lifecycle owner",
+                lambda model: model["incident_lifecycle"].__setitem__(
+                    "owner_state", "Incident Manager"
+                ),
+                "incident_lifecycle must be exact, manual, and unassigned",
+            ),
+            (
+                "unsafe runbook mode",
+                lambda model: model["runbook_contract"].__setitem__(
+                    "execution_mode", "execute"
+                ),
+                "runbook_contract must be exact, prepare-only, and unassigned",
+            ),
+            (
+                "runbook owner",
+                lambda model: model["runbook_contract"].__setitem__(
+                    "owner_state", "Runbook Owner"
+                ),
+                "runbook_contract must be exact, prepare-only, and unassigned",
+            ),
+            (
+                "runbook real commands",
+                lambda model: model["runbook_contract"].__setitem__(
+                    "real_commands_allowed", True
+                ),
+                "runbook_contract must be exact, prepare-only, and unassigned",
+            ),
+            (
+                "paging",
+                lambda model: model["escalation_contract"].__setitem__(
+                    "paging_enabled", True
+                ),
+                "escalation_contract must be exact, non-operational, and unassigned",
+            ),
+            (
+                "escalation owner",
+                lambda model: model["escalation_contract"].__setitem__(
+                    "owner_state", "On-call Manager"
+                ),
+                "escalation_contract must be exact, non-operational, and unassigned",
+            ),
+            (
+                "external communication",
+                lambda model: model["escalation_contract"].__setitem__(
+                    "external_communication_enabled", True
+                ),
+                "escalation_contract must be exact, non-operational, and unassigned",
+            ),
+            (
+                "alert delivery",
+                lambda model: model["observability_contract"].__setitem__(
+                    "alert_delivery_enabled", True
+                ),
+                "observability_contract must be exact, disconnected, and unassigned",
+            ),
+            (
+                "observability owner",
+                lambda model: model["observability_contract"].__setitem__(
+                    "owner_state", "Monitoring Owner"
+                ),
+                "observability_contract must be exact, disconnected, and unassigned",
+            ),
+            (
+                "monitoring connector",
+                lambda model: model["observability_contract"].__setitem__(
+                    "monitoring_connector_enabled", True
+                ),
+                "observability_contract must be exact, disconnected, and unassigned",
+            ),
+            (
+                "durable telemetry",
+                lambda model: model["observability_contract"].__setitem__(
+                    "durable_telemetry_claimed", True
+                ),
+                "observability_contract must be exact, disconnected, and unassigned",
+            ),
+            (
+                "mutable audit",
+                lambda model: model["audit_contract"].__setitem__(
+                    "append_only_design", False
+                ),
+                "audit_contract must be exact, non-persistent, and unassigned",
+            ),
+            (
+                "audit owner",
+                lambda model: model["audit_contract"].__setitem__(
+                    "owner_state", "Audit Owner"
+                ),
+                "audit_contract must be exact, non-persistent, and unassigned",
+            ),
+            (
+                "persistent audit",
+                lambda model: model["audit_contract"].__setitem__(
+                    "persistent_store_provisioned", True
+                ),
+                "audit_contract must be exact, non-persistent, and unassigned",
+            ),
+            (
+                "personal audit content",
+                lambda model: model["audit_contract"].__setitem__(
+                    "raw_personal_content_allowed", True
+                ),
+                "audit_contract must be exact, non-persistent, and unassigned",
+            ),
+            (
+                "audit credentials",
+                lambda model: model["audit_contract"].__setitem__(
+                    "credentials_allowed", True
+                ),
+                "audit_contract must be exact, non-persistent, and unassigned",
+            ),
+            (
+                "unsafe allowed action",
+                lambda model: model["allowed_prepare_actions"].append(
+                    "perform_failover"
+                ),
+                "allowed_prepare_actions must equal the authorized prepare-only actions",
+            ),
+            (
+                "missing prohibited action",
+                lambda model: model["prohibited_real_actions"].remove(
+                    "perform_restore"
+                ),
+                "prohibited_real_actions must equal the authorized real-action denials",
+            ),
+        )
+        for name, mutate, expected in cases:
+            with self.subTest(name=name):
+                model = deepcopy(self.model)
+                mutate(model)
+                self.assertIn(expected, validate_model(model))
+
+    def test_model_identity_collections_require_unique_non_empty_ids(self):
+        model = deepcopy(self.model)
+        model["dependencies"].append(deepcopy(model["dependencies"][0]))
+        self.assertIn(
+            "dependencies must contain unique non-empty ids",
+            validate_model(model),
+        )
+
+    def test_evaluator_does_not_trust_mutated_action_sets(self):
+        model = deepcopy(self.model)
+        model["allowed_prepare_actions"].append("perform_failover")
+        model["prohibited_real_actions"].remove("perform_failover")
+        scenario = deepcopy(self.fixture)
+        scenario["requested_action"] = "perform_failover"
+        result = evaluate_scenario(model, scenario)
+        self.assertEqual("denied", result["result"])
+        self.assertIn("unsafe_continuity_action", result["reason_codes"])
+
+        model = deepcopy(self.model)
+        model["recovery_evidence_requirements"].append(
+            deepcopy(model["recovery_evidence_requirements"][0])
+        )
+        self.assertIn(
+            "recovery_evidence_requirements must contain unique non-empty ids",
             validate_model(model),
         )
 
