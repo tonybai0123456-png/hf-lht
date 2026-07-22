@@ -12,7 +12,7 @@
 | Supersedes on publication | `Governance/AIOS-Thread-Governance-v2.md` (frozen v2.0) |
 | Effective scope | BUW AIOS Stage planning, execution-thread assignment, continuous execution, review, return reporting and archival |
 | Upgrade approved on | 2026-07-22 |
-| Published on | 2026-07-22 via PR #TBD |
+| Published on | 2026-07-22 via PR #18 |
 
 The Governance Thread approved this minor-version roadmap upgrade after Stage 8 publication and review. Version 2.1 preserves the v2.0 authority, lifecycle and safety model, inserts PG-01 / Project Governance Baseline before Production Readiness, and extends the roadmap through Stage 10. Frozen v2.0 and v1.1 remain readable as historical evidence.
 
@@ -147,7 +147,7 @@ If sources conflict, the Governance Thread resolves the conflict and updates the
 
 ## 8. Governance Freeze and version upgrades（治理冻结与版本升级）
 
-Version 2.1 is frozen as of its repository publication through PR #TBD on 2026-07-22. Frozen means the rules cannot be silently edited, reinterpreted through tool behavior or bypassed by starting another thread.
+Version 2.1 is frozen as of its repository publication through PR #18 on 2026-07-22. Frozen means the rules cannot be silently edited, reinterpreted through tool behavior or bypassed by starting another thread.
 
 Every proposed governance change requires:
 
@@ -163,7 +163,7 @@ Version numbering follows these rules:
 - **Minor (`2.x`)**: backward-compatible governance additions or clarifications that add a controlled capability.
 - **Major (`3.0`)**: changes to governance authority, lifecycle, Parent Thread rules, execution exclusivity, source-of-truth hierarchy or archival rights.
 
-A future approved upgrade draft does not silently become published authority. A new version becomes the repository's published authority only after governance-approved merge and publication. Version 2.1 became published authority through the authorized merge of PR #TBD; historical frozen versions and their evidence remain readable.
+A future approved upgrade draft does not silently become published authority. A new version becomes the repository's published authority only after governance-approved merge and publication. Version 2.1 became published authority through the authorized merge of PR #18; historical frozen versions and their evidence remain readable.
 
 ## 9. ChatGPT Project transition strategy（ChatGPT 项目过渡策略）
 
@@ -211,7 +211,7 @@ Version 2.1 is a backward-compatible minor governance upgrade. It does not chang
 
 ### 11.3 Migration rule
 
-With v2.1 publication through PR #TBD:
+With v2.1 publication through PR #18:
 
 1. preserve `Governance/AIOS-Thread-Governance-v1.md` and `Governance/AIOS-Thread-Governance-v2.md` unchanged as frozen historical versions;
 2. use `Governance/AIOS-Thread-Governance-v2.1.md` for new governance decisions;
