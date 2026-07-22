@@ -1,0 +1,458 @@
+#!/usr/bin/env python3
+"""Read-only validator for Stage 13 Operational Resilience."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+import yaml
+
+
+ROOT = Path(__file__).resolve().parents[1]
+MODEL = Path("Governance/AIOS-Operational-Resilience-Model-v1.yaml")
+POLICY = Path("Governance/AIOS-Operational-Resilience-v1.md")
+MAPPING = Path("Governance/AIOS-Operational-Resilience-Stage10-12-Mapping-v1.yaml")
+ACCEPTANCE = Path("Governance/AIOS-Operational-Resilience-Acceptance-Matrix-v1.yaml")
+FIXTURE = Path("Tests/Fixtures/operational-resilience/synthetic-service-degradation.yaml")
+VALIDATION = Path("Tests/AIOS-Operational-Resilience-Validation.md")
+TESTS = Path("Tests/test_operational_resilience.py")
+WORKFLOW = Path(".github/workflows/validate-aios-operational-resilience.yml")
+SPEC = Path("docs/superpowers/specs/2026-07-22-operational-resilience-v1-design.md")
+PLAN = Path("docs/superpowers/plans/2026-07-22-operational-resilience-v1.md")
+STAGE_REGISTRY = Path("Governance/AIOS-Stage-Registry.md")
+PROJECT_REGISTRY = Path("Governance/AIOS-Project-Registry.md")
+UNASSIGNED = "unassigned / governance decision required"
+STAGE10_RISKS = {f"PR-RISK-{number:03d}" for number in range(1, 11)}
+REQUIRED_GATES = [
+    "incident_declaration",
+    "failover",
+    "restoration",
+    "external_communication",
+    "exception",
+    "risk_acceptance",
+    "release",
+]
+AUTHORITY_FLAGS = (
+    "incident_authority_granted",
+    "failover_authorized",
+    "restoration_authorized",
+    "external_communication_authorized",
+    "exception_authorized",
+    "risk_acceptance_granted",
+    "pilot_authorized",
+    "release_authorized",
+    "production_ready",
+    "sla_slo_achieved",
+    "backup_restore_tested",
+    "real_incident_capability",
+)
+
+
+def _yaml(path: Path, errors: list[str]) -> dict[str, Any]:
+    if not path.is_file():
+        errors.append(f"missing required file: {path.as_posix()}")
+        return {}
+    try:
+        value = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError) as exc:
+        errors.append(f"could not parse {path.as_posix()}: {exc}")
+        return {}
+    if not isinstance(value, dict):
+        errors.append(f"{path.as_posix()} must contain a mapping")
+        return {}
+    return value
+
+
+def _text(path: Path, errors: list[str]) -> str:
+    if not path.is_file():
+        errors.append(f"missing required file: {path.as_posix()}")
+        return ""
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError as exc:
+        errors.append(f"could not read {path.as_posix()}: {exc}")
+        return ""
+
+
+def _items_by_id(items: Any) -> dict[str, dict[str, Any]]:
+    if not isinstance(items, list):
+        return {}
+    return {
+        str(item.get("id")): item
+        for item in items
+        if isinstance(item, dict) and item.get("id")
+    }
+
+
+def _append_once(values: list[str], value: str) -> None:
+    if value not in values:
+        values.append(value)
+
+
+def validate_model(model: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    metadata = model.get("metadata", {})
+    expected_metadata = {
+        "stage": 13,
+        "stage_id": "OR-01",
+        "issue": 32,
+        "governance_version": "2.2",
+        "main_baseline": "c5dde2171c65e75b595c411854cba0016f3623f7",
+        "execution_thread": "019f8a35-6d4e-7c60-b35a-79de8626d4e3",
+        "branch": "feat/aios-operational-resilience-v1",
+        "mode": "synthetic_tabletop_validation",
+        "stage_status": "Reported",
+        "owner_state": UNASSIGNED,
+    }
+    for key, expected in expected_metadata.items():
+        if metadata.get(key) != expected:
+            errors.append(f"metadata.{key} must equal {expected!r}")
+
+    questions = model.get("six_system_questions", {})
+    required_questions = {
+        "business_loop",
+        "core_objects",
+        "data_flow",
+        "operators",
+        "ai_human_boundary",
+        "proof",
+    }
+    if set(questions) != required_questions or any(
+        not str(value).strip() for value in questions.values()
+    ):
+        errors.append("six_system_questions must contain six non-empty answers")
+
+    boundaries = model.get("business_boundaries", {})
+    expected_boundaries = {
+        "allowed_company": "汇沣电商",
+        "allowed_brand": "BUW",
+        "excluded_brand": "PC",
+        "excluded_company": "六合通",
+        "cross_boundary_default": "deny",
+    }
+    for key, expected in expected_boundaries.items():
+        if boundaries.get(key) != expected:
+            errors.append(f"business_boundaries.{key} must equal {expected!r}")
+
+    for section in ("services", "dependencies"):
+        items = model.get(section, [])
+        if not isinstance(items, list) or not items:
+            errors.append(f"{section} must be a non-empty list")
+            continue
+        for index, item in enumerate(items):
+            if not isinstance(item, dict):
+                errors.append(f"{section}[{index}] must be a mapping")
+                continue
+            if item.get("owner_state") != UNASSIGNED:
+                errors.append(f"{section}[{index}].owner_state must remain unassigned")
+            if item.get("synthetic_only") is not True:
+                errors.append(f"{section}[{index}].synthetic_only must be true")
+            if section == "services" and item.get("deployed") is not False:
+                errors.append(f"{section}[{index}].deployed must be false")
+            if section == "dependencies" and item.get("external_connection") is not False:
+                errors.append(f"{section}[{index}].external_connection must be false")
+
+    failure_modes = model.get("failure_modes", [])
+    if not isinstance(failure_modes, list) or not failure_modes:
+        errors.append("failure_modes must be a non-empty list")
+    else:
+        for index, failure_mode in enumerate(failure_modes):
+            if failure_mode.get("real_signal_source") is not False:
+                errors.append(f"failure_modes[{index}].real_signal_source must be false")
+            if failure_mode.get("automatic_incident_declaration") is not False:
+                errors.append(
+                    f"failure_modes[{index}].automatic_incident_declaration must be false"
+                )
+
+    services = _items_by_id(model.get("services"))
+    dependencies = _items_by_id(model.get("dependencies"))
+    tiers = _items_by_id(model.get("continuity_tiers"))
+    for service_id, service in services.items():
+        if service.get("company") != "汇沣电商" or service.get("brand") != "BUW":
+            errors.append(f"services.{service_id} must remain in 汇沣电商 / BUW")
+        if service.get("continuity_tier_id") not in tiers:
+            errors.append(f"services.{service_id} has unknown continuity tier")
+        unknown = set(service.get("dependency_ids", [])) - set(dependencies)
+        if unknown:
+            errors.append(f"services.{service_id} has unknown dependencies: {sorted(unknown)}")
+
+    for index, tier in enumerate(model.get("continuity_tiers", [])):
+        if tier.get("claim_state") != "design_target_only":
+            errors.append(
+                f"continuity_tiers[{index}].claim_state must be design_target_only"
+            )
+        if not isinstance(tier.get("rto_minutes"), int) or tier["rto_minutes"] <= 0:
+            errors.append(f"continuity_tiers[{index}].rto_minutes must be positive")
+        if not isinstance(tier.get("rpo_minutes"), int) or tier["rpo_minutes"] < 0:
+            errors.append(f"continuity_tiers[{index}].rpo_minutes must be non-negative")
+        if tier.get("human_approval_required") is not True:
+            errors.append(f"continuity_tiers[{index}] must require human approval")
+
+    evidence = model.get("recovery_evidence_requirements", [])
+    if not isinstance(evidence, list) or len(evidence) < 3:
+        errors.append("recovery_evidence_requirements must contain at least three items")
+    for index, requirement in enumerate(evidence):
+        if requirement.get("claim_state") != "design_requirement_only":
+            errors.append(
+                f"recovery_evidence_requirements[{index}].claim_state must be design_requirement_only"
+            )
+        if requirement.get("owner_state") != UNASSIGNED:
+            errors.append(
+                f"recovery_evidence_requirements[{index}].owner_state must remain unassigned"
+            )
+
+    gates = model.get("human_gates", [])
+    if [gate.get("id") for gate in gates if isinstance(gate, dict)] != REQUIRED_GATES:
+        errors.append("human_gates must contain the seven required gates in order")
+    for index, gate in enumerate(gates):
+        if gate.get("required") is not True or gate.get("owner_state") != UNASSIGNED:
+            errors.append(f"human_gates[{index}] must be required and unassigned")
+
+    incident_record = model.get("incident_record_contract", {})
+    incident_fields = {
+        "scenario_id",
+        "synthetic",
+        "company",
+        "brand",
+        "service_id",
+        "dependency_ids",
+        "signal_type",
+        "severity",
+        "impact",
+        "decision",
+        "reason_codes",
+        "human_gates",
+        "evidence_refs",
+    }
+    if (
+        set(incident_record.get("required_fields", [])) != incident_fields
+        or incident_record.get("synthetic_only") is not True
+        or incident_record.get("persistent_store_provisioned") is not False
+        or incident_record.get("real_incident_id_allowed") is not False
+        or incident_record.get("raw_alert_payload_allowed") is not False
+        or incident_record.get("owner_state") != UNASSIGNED
+    ):
+        errors.append(
+            "incident_record_contract must require synthetic fields and prohibit persistence"
+        )
+
+    if model.get("incident_lifecycle", {}).get("terminal_state") != "human_decision_required":
+        errors.append("incident_lifecycle must stop at human_decision_required")
+    if model.get("runbook_contract", {}).get("execution_mode") != "prepare_only":
+        errors.append("runbook_contract.execution_mode must be prepare_only")
+    if model.get("runbook_contract", {}).get("real_commands_allowed") is not False:
+        errors.append("runbook_contract.real_commands_allowed must be false")
+    if model.get("observability_contract", {}).get("monitoring_connector_enabled") is not False:
+        errors.append("observability_contract must not enable a monitoring connector")
+
+    decision = model.get("decision", {})
+    if decision.get("result") != "resilience_review_candidate":
+        errors.append("decision.result must be resilience_review_candidate")
+    for flag in AUTHORITY_FLAGS:
+        if decision.get(flag) is not False:
+            errors.append(f"decision.{flag} must be false")
+    return errors
+
+
+def evaluate_scenario(model: dict[str, Any], scenario: dict[str, Any]) -> dict[str, Any]:
+    """Evaluate declared synthetic facts without performing any external action."""
+
+    reasons: list[str] = []
+    boundaries = model.get("business_boundaries", {})
+    services = _items_by_id(model.get("services"))
+    dependencies = _items_by_id(model.get("dependencies"))
+    severities = _items_by_id(model.get("severity_levels"))
+    impacts = _items_by_id(model.get("impact_classes"))
+    failure_modes = _items_by_id(model.get("failure_modes"))
+    tiers = _items_by_id(model.get("continuity_tiers"))
+    requirements = _items_by_id(model.get("recovery_evidence_requirements"))
+
+    if scenario.get("synthetic") is not True:
+        _append_once(reasons, "real_or_unmarked_signal")
+    if (
+        scenario.get("company") != boundaries.get("allowed_company")
+        or scenario.get("brand") != boundaries.get("allowed_brand")
+    ):
+        _append_once(reasons, "cross_boundary")
+
+    service = services.get(str(scenario.get("service_id")))
+    if not service:
+        _append_once(reasons, "unknown_service")
+
+    dependency_ids = scenario.get("dependency_ids")
+    if (
+        not isinstance(dependency_ids, list)
+        or not dependency_ids
+        or any(str(item) not in dependencies for item in dependency_ids)
+        or (service and set(dependency_ids) != set(service.get("dependency_ids", [])))
+    ):
+        _append_once(reasons, "unknown_dependency")
+
+    if str(scenario.get("severity")) not in severities:
+        _append_once(reasons, "invalid_severity")
+    if str(scenario.get("impact")) not in impacts:
+        _append_once(reasons, "invalid_impact")
+    if str(scenario.get("signal_type")) not in failure_modes:
+        _append_once(reasons, "unknown_failure_mode")
+
+    target = scenario.get("continuity_target")
+    if not isinstance(target, dict):
+        _append_once(reasons, "unsupported_rto_rpo")
+    else:
+        tier = tiers.get(str(target.get("tier_id")))
+        if (
+            not tier
+            or target.get("rto_minutes") != tier.get("rto_minutes")
+            or target.get("rpo_minutes") != tier.get("rpo_minutes")
+            or (service and target.get("tier_id") != service.get("continuity_tier_id"))
+        ):
+            _append_once(reasons, "unsupported_rto_rpo")
+
+    supplied_evidence = scenario.get("recovery_evidence")
+    supplied_by_id = _items_by_id(supplied_evidence)
+    if not supplied_by_id or set(supplied_by_id) != set(requirements):
+        _append_once(reasons, "missing_recovery_evidence")
+    for evidence_id, supplied in supplied_by_id.items():
+        if evidence_id not in requirements:
+            _append_once(reasons, "missing_recovery_evidence")
+        if supplied.get("state") != "design_requirement_only":
+            _append_once(reasons, "invalid_recovery_evidence_state")
+            _append_once(reasons, "achievement_claim")
+
+    supplied_gates = scenario.get("human_gates")
+    if not isinstance(supplied_gates, list) or set(supplied_gates) != set(REQUIRED_GATES):
+        _append_once(reasons, "missing_human_gate")
+
+    if (
+        scenario.get("requested_action") not in model.get("allowed_prepare_actions", [])
+        or scenario.get("requested_action") in model.get("prohibited_real_actions", [])
+        or scenario.get("external_actions_performed") is not False
+    ):
+        _append_once(reasons, "unsafe_continuity_action")
+
+    claims = scenario.get("claims")
+    if not isinstance(claims, dict) or any(value is not False for value in claims.values()):
+        _append_once(reasons, "achievement_claim")
+
+    evidence_refs = [
+        requirement.get("evidence_path")
+        for requirement in requirements.values()
+        if requirement.get("evidence_path")
+    ]
+    return {
+        "result": "denied" if reasons else "needs_human_approval",
+        "reason_codes": reasons,
+        "required_human_gates": REQUIRED_GATES.copy(),
+        "evidence_refs": evidence_refs,
+        "external_actions_performed": False,
+    }
+
+
+def validate_repository(root: Path = ROOT) -> list[str]:
+    errors: list[str] = []
+    required_paths = (
+        MODEL,
+        POLICY,
+        MAPPING,
+        ACCEPTANCE,
+        FIXTURE,
+        VALIDATION,
+        TESTS,
+        WORKFLOW,
+        SPEC,
+        PLAN,
+        STAGE_REGISTRY,
+        PROJECT_REGISTRY,
+    )
+    for relative in required_paths:
+        if not (root / relative).is_file():
+            errors.append(f"missing required file: {relative.as_posix()}")
+
+    model = _yaml(root / MODEL, errors)
+    errors.extend(validate_model(model))
+    fixture = _yaml(root / FIXTURE, errors)
+    result = evaluate_scenario(model, fixture)
+    if result.get("result") != "needs_human_approval" or result.get("reason_codes"):
+        errors.append("positive fixture must stop at needs_human_approval")
+
+    mapping = _yaml(root / MAPPING, errors)
+    entries = mapping.get("mappings", [])
+    if {entry.get("stage10_risk_id") for entry in entries if isinstance(entry, dict)} != STAGE10_RISKS:
+        errors.append("mapping must cover exactly PR-RISK-001 through PR-RISK-010")
+    for index, entry in enumerate(entries):
+        if entry.get("residual_status") not in {"open", "blocked"}:
+            errors.append(f"mappings[{index}].residual_status must remain open or blocked")
+        if entry.get("risk_accepted") is not False:
+            errors.append(f"mappings[{index}].risk_accepted must be false")
+        if entry.get("production_action_allowed") is not False:
+            errors.append(f"mappings[{index}].production_action_allowed must be false")
+        if entry.get("owner_state") != UNASSIGNED:
+            errors.append(f"mappings[{index}].owner_state must remain unassigned")
+
+    acceptance = _yaml(root / ACCEPTANCE, errors)
+    criteria = acceptance.get("criteria", [])
+    if not isinstance(criteria, list) or len(criteria) < 10:
+        errors.append("acceptance matrix must contain at least ten criteria")
+    for index, criterion in enumerate(criteria):
+        if criterion.get("design_only") is not True or criterion.get("expected") != "pass":
+            errors.append(f"criteria[{index}] must be design-only and expect pass")
+        for evidence_path in criterion.get("evidence_paths", []):
+            if not isinstance(evidence_path, str) or Path(evidence_path).is_absolute() or not (root / evidence_path).is_file():
+                errors.append(f"criteria[{index}] has invalid evidence path: {evidence_path!r}")
+    for flag, value in acceptance.get("authority_boundary", {}).items():
+        if value is not False:
+            errors.append(f"acceptance authority boundary {flag} must be false")
+
+    policy = _text(root / POLICY, errors)
+    for required in (
+        "Business loop and six system questions",
+        "Service and dependency inventory",
+        "RTO/RPO design targets",
+        "Human decision gates",
+        "BUW",
+        "PC",
+        "汇沣电商",
+        "六合通",
+        "design target",
+        "unassigned / governance decision required",
+    ):
+        if required not in policy:
+            errors.append(f"policy missing required statement: {required}")
+
+    workflow = _text(root / WORKFLOW, errors)
+    if "pull_request:" not in workflow or "permissions:\n  contents: read" not in workflow:
+        errors.append("workflow must be pull-request-only with contents read")
+    for prohibited in ("push:", "workflow_dispatch:", "contents: write", "git push", "curl ", "wget "):
+        if prohibited in workflow:
+            errors.append(f"workflow contains prohibited token: {prohibited}")
+
+    stage_registry = _text(root / STAGE_REGISTRY, errors)
+    stage13 = next((line for line in stage_registry.splitlines() if line.startswith("| 13 |")), "")
+    stage14 = next((line for line in stage_registry.splitlines() if line.startswith("| 14 |")), "")
+    if not all(token in stage13 for token in ("Issue #32", "019f8a35-6d4e-7c60-b35a-79de8626d4e3", "feat/aios-operational-resilience-v1", "| Reported |")):
+        errors.append("Stage 13 registry row must record the Reported assignment")
+    if "No Execution Thread assigned" not in stage14 or "| Planned |" not in stage14:
+        errors.append("Stage 14 must remain Planned and unassigned")
+    return errors
+
+
+def main() -> int:
+    errors = validate_repository(ROOT)
+    if errors:
+        print("AIOS Operational Resilience validation FAILED")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+    fixture = yaml.safe_load((ROOT / FIXTURE).read_text(encoding="utf-8"))
+    model = yaml.safe_load((ROOT / MODEL).read_text(encoding="utf-8"))
+    result = evaluate_scenario(model, fixture)
+    print("AIOS Operational Resilience validation PASSED")
+    print(f"- deterministic fixture outcome: {result['result']}")
+    print(f"- required human gates: {len(result['required_human_gates'])}")
+    print("- external actions performed: false")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
