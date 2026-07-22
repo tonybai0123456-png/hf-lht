@@ -283,6 +283,15 @@ def validate_model(model: dict[str, Any]) -> list[str]:
             if section == "dependencies" and item.get("external_connection") is not False:
                 errors.append(f"{section}[{index}].external_connection must be false")
 
+    for section in (
+        "continuity_tiers",
+        "severity_levels",
+        "impact_classes",
+        "failure_modes",
+    ):
+        if not _has_unique_non_empty_ids(model.get(section)):
+            errors.append(f"{section} must contain unique non-empty ids")
+
     failure_modes = model.get("failure_modes", [])
     if not isinstance(failure_modes, list) or not failure_modes:
         errors.append("failure_modes must be a non-empty list")
@@ -459,20 +468,41 @@ def evaluate_scenario(model: dict[str, Any], scenario: dict[str, Any]) -> dict[s
             _append_once(reasons, "unsupported_rto_rpo")
 
     supplied_evidence = scenario.get("recovery_evidence")
-    supplied_by_id = _items_by_id(supplied_evidence)
-    supplied_evidence_ids = [
-        str(item.get("id"))
-        for item in supplied_evidence
-        if isinstance(item, dict) and item.get("id")
-    ] if isinstance(supplied_evidence, list) else []
     required_evidence_ids = list(requirements)
-    if len(supplied_evidence_ids) != len(set(supplied_evidence_ids)):
-        _append_once(reasons, "duplicate_recovery_evidence")
-    if not supplied_by_id or set(supplied_by_id) != set(requirements):
+    if not isinstance(supplied_evidence, list) or not supplied_evidence:
         _append_once(reasons, "missing_recovery_evidence")
-    elif supplied_evidence_ids != required_evidence_ids:
-        _append_once(reasons, "recovery_evidence_contract_mismatch")
-    for evidence_id, supplied in supplied_by_id.items():
+    else:
+        entries_are_valid = all(
+            isinstance(item, dict)
+            and isinstance(item.get("id"), str)
+            and bool(item["id"].strip())
+            for item in supplied_evidence
+        )
+        if not entries_are_valid:
+            _append_once(reasons, "recovery_evidence_contract_mismatch")
+        else:
+            supplied_evidence_ids = [item["id"] for item in supplied_evidence]
+            if len(supplied_evidence_ids) != len(set(supplied_evidence_ids)):
+                _append_once(reasons, "duplicate_recovery_evidence")
+            if (
+                len(supplied_evidence) != len(required_evidence_ids)
+                or supplied_evidence_ids != required_evidence_ids
+            ):
+                _append_once(reasons, "recovery_evidence_contract_mismatch")
+            if set(supplied_evidence_ids) != set(required_evidence_ids):
+                _append_once(reasons, "missing_recovery_evidence")
+
+    valid_evidence_entries = (
+        supplied_evidence
+        if isinstance(supplied_evidence, list)
+        else []
+    )
+    for supplied in valid_evidence_entries:
+        if not isinstance(supplied, dict):
+            continue
+        evidence_id = supplied.get("id")
+        if not isinstance(evidence_id, str) or not evidence_id.strip():
+            continue
         if evidence_id not in requirements:
             _append_once(reasons, "missing_recovery_evidence")
         if supplied.get("state") != "design_requirement_only":
