@@ -4,13 +4,13 @@
 
 | Field | Value |
 |---|---|
-| Governance version | 2.0 |
+| Governance version | 2.1 |
 | Governance authority | BUW AIOS Official Governance Thread（BUW AIOS 官方治理主线程） |
-| Source policy | `Governance/AIOS-Thread-Governance-v2.md` |
-| Historical policy | `Governance/AIOS-Thread-Governance-v1.md` (frozen v1.1; preserved unchanged) |
+| Source policy | `Governance/AIOS-Thread-Governance-v2.1.md` |
+| Historical policy | `Governance/AIOS-Thread-Governance-v2.md` (frozen v2.0) and `Governance/AIOS-Thread-Governance-v1.md` (frozen v1.1); preserved unchanged |
 | Lifecycle | Planned → Executing → Reported → Reviewed → Archived |
-| Roadmap | Stage 1 → Stage 9 |
-| Publication status | Published through PR #12 on 2026-07-22 |
+| Roadmap | Stage 1 → Stage 10 |
+| Publication status | Governance v2.1 published through PR #18 on 2026-07-22 |
 | Last updated | 2026-07-22 |
 
 This registry is the Single Source of Truth for current BUW AIOS Stage assignment and lifecycle status. Evidence links document execution; they do not replace the registry or grant archival authority.
@@ -25,7 +25,7 @@ This registry is the Single Source of Truth for current BUW AIOS Stage assignmen
 6. Reviewed does not mean merged, published or Archived. Archived requires a separate Governance Thread confirmation and archive evidence.
 7. A blocker is recorded in the Notes / next gate column without inventing another lifecycle status.
 8. Historical links and pre-v1.1 exceptions are preserved rather than rewritten.
-9. Stage numbers 1 through 9 remain frozen under governance v2.0 and may be changed only by the Governance Thread.
+9. Stage numbers 1 through 10 remain frozen under governance v2.1 and may be changed only by the Governance Thread.
 
 ## Frozen Stage roadmap
 
@@ -37,13 +37,14 @@ This registry is the Single Source of Truth for current BUW AIOS Stage assignmen
 | 4 | WL-01 | Workflow Library（工作流库） | BUW AIOS Official Governance Thread | [Issue #7](https://github.com/tonybai0123456-png/hf-lht/issues/7) / [PR #8](https://github.com/tonybai0123456-png/hf-lht/pull/8) | Archived | Published through PR #8 on 2026-07-22; validation return and human governance re-review passed on 2026-07-22. | Archived by the Governance Thread on 2026-07-22 under [Issue #14](https://github.com/tonybai0123456-png/hf-lht/issues/14) after verified publication and completed re-review; reopen only through a new Stage or approved governance-version change. |
 | 5 | WS-01 | Workflow Schema（工作流模式） | BUW AIOS Official Governance Thread | [Issue #9](https://github.com/tonybai0123456-png/hf-lht/issues/9) / [PR #10](https://github.com/tonybai0123456-png/hf-lht/pull/10) | Archived | Published through PR #10 on 2026-07-22; schema validation and human governance review passed. | Archived by the Governance Thread on 2026-07-22 under [Issue #14](https://github.com/tonybai0123456-png/hf-lht/issues/14) after verified publication and completed review; reopen only through a new Stage or approved governance-version change. |
 | 6 | CH-01 | Controlled Harness（受控验证框架） | BUW AIOS Official Governance Thread | Historical combined execution in [Issue #9](https://github.com/tonybai0123456-png/hf-lht/issues/9) / [PR #10](https://github.com/tonybai0123456-png/hf-lht/pull/10) | Archived | Published through PR #10 on 2026-07-22; synthetic-only harness evidence and human governance review passed. | Archived by the Governance Thread on 2026-07-22 under [Issue #14](https://github.com/tonybai0123456-png/hf-lht/issues/14); the pre-freeze combined-execution exception is historical and must not be reused. |
-| 7 | TG-01 | Thread Governance v2.0（线程治理第 2.0 版） | BUW AIOS Official Governance Thread | [Issue #11](https://github.com/tonybai0123456-png/hf-lht/issues/11) / branch `agent/aios-thread-governance-v1` / [Draft PR #12](https://github.com/tonybai0123456-png/hf-lht/pull/12) | Archived | Governance Thread accepted the Stage 7 technical result and approved the v2.0 migration update. | Archived by the Governance Thread on 2026-07-22 under [Issue #14](https://github.com/tonybai0123456-png/hf-lht/issues/14). Project Governance Baseline remains an unassigned backlog item in [Issue #13](https://github.com/tonybai0123456-png/hf-lht/issues/13) and is not part of TG-01. Stage 8 remains Planned. |
-| 8 | RO-01 | Runtime Orchestrator（运行时编排器） | BUW AIOS Official Governance Thread | [Issue #16](https://github.com/tonybai0123456-png/hf-lht/issues/16) / Execution Thread `019f88ca-9d63-7e13-b1e0-b4db3b6a65df` / branch `feat/aios-runtime-orchestrator-v1` / [Draft PR #17](https://github.com/tonybai0123456-png/hf-lht/pull/17) | Reviewed | Final implementation head [`145f30a`](https://github.com/tonybai0123456-png/hf-lht/commit/145f30a3a0091c662b80c7cf8fc51b06414c66b3) passed [Runtime CI run #2](https://github.com/tonybai0123456-png/hf-lht/actions/runs/29902995811) and [Schema CI run #31](https://github.com/tonybai0123456-png/hf-lht/actions/runs/29902995836); independent Governance Thread verification passed. | Human Governance Thread review passed on 2026-07-22. Draft PR remains unmerged; merge, publication, archival and Stage 9 each require a later separate authorization. Issue #13 remains open and unassigned. |
-| 9 | PR-01 | Production Readiness（生产就绪） | BUW AIOS Official Governance Thread | Not assigned | Planned | No execution return yet | Must remain Planned until prior governance gates, safety review and explicit human authorization are complete. |
+| 7 | TG-01 | Thread Governance v2.0（线程治理第 2.0 版） | BUW AIOS Official Governance Thread | [Issue #11](https://github.com/tonybai0123456-png/hf-lht/issues/11) / branch `agent/aios-thread-governance-v1` / [Draft PR #12](https://github.com/tonybai0123456-png/hf-lht/pull/12) | Archived | Governance Thread accepted the Stage 7 technical result and approved the v2.0 migration update. | Archived by the Governance Thread on 2026-07-22 under [Issue #14](https://github.com/tonybai0123456-png/hf-lht/issues/14). At Stage 7 archival, Project Governance Baseline remained unassigned and was not part of TG-01; governance v2.1 later assigns it to Stage 9 / PG-01 without rewriting Stage 7 history. |
+| 8 | RO-01 | Runtime Orchestrator（运行时编排器） | BUW AIOS Official Governance Thread | [Issue #16](https://github.com/tonybai0123456-png/hf-lht/issues/16) / Execution Thread `019f88ca-9d63-7e13-b1e0-b4db3b6a65df` / branch `feat/aios-runtime-orchestrator-v1` / [PR #17](https://github.com/tonybai0123456-png/hf-lht/pull/17) | Archived | Published through squash merge [`431825c`](https://github.com/tonybai0123456-png/hf-lht/commit/431825c1b10cd482bcc4e1bf80811b3aa9b428bb); post-merge Schema validation, 31/31 tests, Python compilation and diff cleanliness passed. | Archived by the Governance Thread on 2026-07-22 after verified publication and the separately authorized archival decision. Issue #16 remains open unless separately closed. |
+| 9 | PG-01 | Project Governance Baseline（项目治理基线） | BUW AIOS Official Governance Thread | [Issue #13](https://github.com/tonybai0123456-png/hf-lht/issues/13); dedicated Execution Thread to be recorded at authorization | Planned | No execution return yet | Re-adjudicated under governance v2.1; may enter Executing only after one dedicated Execution Thread is assigned with documentation-only, read-only validation and no-production boundaries. |
+| 10 | PR-01 | Production Readiness（生产就绪） | BUW AIOS Official Governance Thread | Not assigned | Planned | No execution return yet | Must remain Planned until PG-01 is Reviewed, published or dispositioned, and Archived, followed by explicit human authorization. |
 
 ## Pre-freeze exception record
 
-PR #10 contains both Workflow Schema and Controlled Harness work. This register preserves that historical fact without modifying PR #10. Under governance v2.0, every new Stage must have its own registered execution assignment; combined historical execution does not grant permission for future combined Stages.
+PR #10 contains both Workflow Schema and Controlled Harness work. This register preserves that historical fact without modifying PR #10. Under governance v2.1, every new Stage must have its own registered execution assignment; combined historical execution does not grant permission for future combined Stages.
 
 ## Governance Dashboard minimum fields
 
@@ -99,3 +100,7 @@ The dashboard is a governance summary. It does not replace this registry or GitH
 | 2026-07-22 | 2.0 | Assigned Stage 8 / RO-01 through Issue #16 to the single dedicated Execution Thread `019f88ca-9d63-7e13-b1e0-b4db3b6a65df`; authorized branch `feat/aios-runtime-orchestrator-v1`; moved Stage 8 from Planned to Executing under approved 方案 A. | BUW AIOS Official Governance Thread authorization / RO-01 Execution Thread implementation |
 | 2026-07-22 | 2.0 | Submitted the Stage 8 / RO-01 Mandatory Return through Draft PR #17 after the Runtime and Schema CI checks passed; moved Stage 8 from Executing to Reported without self-declaring Reviewed. | RO-01 Execution Thread |
 | 2026-07-22 | 2.0 | Human Governance Thread review passed for Stage 8 / RO-01 implementation head `145f30a`; independently revalidated Schema, 31 tests, Python compilation, diff cleanliness and final CI; moved Stage 8 from Reported to Reviewed while preserving Draft/unmerged status and separate gates for merge, publication, archival and Stage 9. | BUW AIOS Official Governance Thread |
+
+| 2026-07-22 | 2.0 | Published Stage 8 / RO-01 through authorized squash merge of PR #17 at `431825c`; post-merge Schema validation, 31/31 tests, Python compilation and diff cleanliness passed. | BUW AIOS Official Governance Thread authorization / RO-01 publication |
+| 2026-07-22 | 2.0 | Archived Stage 8 / RO-01 after verified publication and the separately authorized archival decision; Issue #16 remains open unless separately closed. | BUW AIOS Official Governance Thread |
+| 2026-07-22 | 2.1 | Published governance v2.1 through PR #18; re-adjudicated Issue #13 as Stage 9 / PG-01 and moved PR-01 / Production Readiness to Stage 10 without authorizing Production Readiness. | BUW AIOS Official Governance Thread |
