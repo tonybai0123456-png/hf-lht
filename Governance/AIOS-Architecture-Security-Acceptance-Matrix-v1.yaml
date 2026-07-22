@@ -1,0 +1,21 @@
+metadata:
+  stage: 11
+  stage_id: AF-01
+  acceptance_scope: non_production_design_only
+
+overall_decision:
+  result: design_review_candidate
+  production_ready: false
+  deployment_authorized: false
+  pilot_authorized: false
+  release_authorized: false
+
+criteria:
+  - {id: AF-ACC-01, criterion: Six system questions are answered, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Architecture-Security-Foundations-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]}
+  - {id: AF-ACC-02, criterion: Target topology and eight trust zones are explicit and unprovisioned, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Architecture-Security-Foundations-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]}
+  - {id: AF-ACC-03, criterion: Threats identity least privilege and secrets lifecycle are reviewable without creating access, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Architecture-Security-Threat-Model-v1.yaml, Governance/AIOS-Architecture-Security-Model-v1.yaml]}
+  - {id: AF-ACC-04, criterion: Persistence idempotency audit and connector boundaries fail closed by design, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Architecture-Security-Foundations-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]}
+  - {id: AF-ACC-05, criterion: Capacity and failure claims identify unknowns without inventing targets, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Architecture-Security-Foundations-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]}
+  - {id: AF-ACC-06, criterion: All ten Stage 10 risks remain open or blocked unaccepted and unassigned, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Architecture-Security-Stage10-Mapping-v1.yaml, Governance/AIOS-Production-Readiness-Risk-Register-v1.yaml]}
+  - {id: AF-ACC-07, criterion: BUW PC 汇沣电商 and 六合通 remain explicitly separated, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Project-Governance-Baseline-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]}
+  - {id: AF-ACC-08, criterion: Deterministic positive and negative validation runs in pull-request-only read-only CI, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Tests/validate_aios_architecture_security_foundations.py, Tests/test_architecture_security_foundations.py, .github/workflows/validate-aios-architecture-security-foundations.yml]}

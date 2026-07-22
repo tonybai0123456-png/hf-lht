@@ -1,0 +1,38 @@
+name: Validate AIOS Architecture and Security Foundations
+
+on:
+  pull_request:
+    paths:
+      - "Governance/AIOS-Architecture-Security-*"
+      - "Governance/AIOS-Stage-Registry.md"
+      - "Governance/AIOS-Project-Registry.md"
+      - "Tests/AIOS-Architecture-Security-Foundations-Validation.md"
+      - "Tests/test_architecture_security_foundations.py"
+      - "Tests/validate_aios_architecture_security_foundations.py"
+      - ".github/workflows/validate-aios-architecture-security-foundations.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate design-only foundations
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out without persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install validation dependencies
+        run: python -m pip install --requirement requirements-dev.txt
+      - name: Validate foundations package
+        run: python Tests/validate_aios_architecture_security_foundations.py
+      - name: Run positive and negative tests
+        run: python -m unittest Tests.test_architecture_security_foundations -v

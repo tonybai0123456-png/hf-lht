@@ -1,0 +1,63 @@
+metadata:
+  stage: 11
+  stage_id: AF-01
+  mode: design_only
+  owner_rule: unassigned / governance decision required
+
+threats:
+  - id: AF-THREAT-001
+    category: identity
+    scenario: A human or workload identity is spoofed or uses broader access than its task.
+    control_design: Future approved authentication, workload identity, deny-by-default policy and separation of duties.
+    evidence_paths: [Governance/AIOS-Architecture-Security-Foundations-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    production_action_allowed: false
+  - id: AF-THREAT-002
+    category: secrets
+    scenario: Secret material is exposed in source, payloads, logs or messages, or remains valid after its need ends.
+    control_design: Future manager-backed short-lived retrieval, adapter-local use, rotation, revocation and audited failure-closed lifecycle.
+    evidence_paths: [Governance/AIOS-Architecture-Security-Foundations-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    production_action_allowed: false
+  - id: AF-THREAT-003
+    category: data_boundary
+    scenario: BUW is mixed with PC or 汇沣电商 with 六合通, creating incorrect attribution or access.
+    control_design: Mandatory company and brand scope, explicit allowlists and default-deny cross-boundary validation.
+    evidence_paths: [Governance/AIOS-Project-Governance-Baseline-v1.md, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    production_action_allowed: false
+  - id: AF-THREAT-004
+    category: connector
+    scenario: A connector performs an unauthorized write, reaches an unapproved resource or leaks data through egress.
+    control_design: Isolated per-adapter identity, explicit action/resource allowlist, disabled-by-default egress and stop-before-retry reconciliation.
+    evidence_paths: [Runtime/runtime_orchestrator.py, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    production_action_allowed: false
+  - id: AF-THREAT-005
+    category: execution
+    scenario: Replay, concurrent duplicate, stale workflow or partial result causes an unintended action.
+    control_design: Future durable idempotency reservation, immutable workflow reference and unknown-state stop gate.
+    evidence_paths: [Runtime/runtime_orchestrator.py, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    production_action_allowed: false
+  - id: AF-THREAT-006
+    category: audit
+    scenario: Execution or approval evidence is modified, omitted, reordered or inaccessible during review.
+    control_design: Future append-only ordered audit sink; an unavailable audit dependency stops execution.
+    evidence_paths: [Runtime/runtime_orchestrator.py, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    production_action_allowed: false
+  - id: AF-THREAT-007
+    category: supply_chain
+    scenario: A compromised dependency or workflow definition changes execution behavior.
+    control_design: Version pinning, immutable workflow references, read-only CI and separately reviewed dependency changes.
+    evidence_paths: [requirements-dev.txt, .github/workflows/validate-aios-workflow-schema.yml, Governance/AIOS-Architecture-Security-Model-v1.yaml]
+    owner_state: unassigned / governance decision required
+    acceptance_status: not_accepted
+    production_action_allowed: false
