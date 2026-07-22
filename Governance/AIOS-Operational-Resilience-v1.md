@@ -38,7 +38,7 @@ The allowed scope is 汇沣电商 / BUW. PC remains an independent brand and is 
 
 ## Service and dependency inventory
 
-`aios_runtime_design` is a conceptual service boundary, not a deployment. Its two dependencies are `synthetic_policy_registry`, a repository fixture concept, and `synthetic_audit_store`, an in-memory evidence concept. Neither dependency is connected externally or provisioned. Unknown services and dependencies deny rather than inherit a default.
+`aios_runtime_design` is a conceptual service boundary, not a deployment. Its two dependencies are `synthetic_policy_registry`, a repository fixture concept, and `synthetic_audit_store`, an in-memory evidence concept. Neither dependency is connected externally or provisioned. Every scenario requires a non-empty `scenario_id`; dependency IDs must be unique and exactly match the service contract in declared order. Missing, unknown, duplicated or reordered identity data denies rather than inheriting a default.
 
 Trust-zone labels are proposed design labels only. They do not assert network segmentation, storage, identity, durability or operating controls.
 
@@ -62,13 +62,13 @@ The policy requires three design evidence references:
 2. a human-reviewed synthetic restoration verification plan;
 3. declared integrity and reconciliation checks.
 
-Their only permitted state is `design_requirement_only`. Missing evidence denies. A state such as `tested`, `passed`, `restored` or `achieved` is rejected as an unsupported capability claim. This Stage does not create, inspect, copy, delete, restore or test a backup.
+Their only permitted state is `design_requirement_only`. Evidence IDs must be complete, unique and in the declared contract order. Missing, unknown, duplicated or reordered evidence denies. A state such as `tested`, `passed`, `restored` or `achieved` is rejected as an unsupported capability claim. This Stage does not create, inspect, copy, delete, restore or test a backup.
 
 ## Incident lifecycle and event record
 
 The synthetic lifecycle is `signal_received → classified → policy_evaluated → human_decision_required → synthetic_evidence_ready`. `human_decision_required` is the operational stop. The last label means only that review evidence can be assembled after a human decision; it does not close or resolve an event.
 
-A synthetic incident record contains scenario ID, service/dependencies, declared severity/impact, policy version, decision, reason codes, evidence references and required gates. It contains no personal content, credentials, secrets, real alert payload or real incident identifier.
+Every evaluation emits one complete in-memory synthetic incident record containing scenario ID, policy version, synthetic/company/brand scope, service/dependencies, signal type, declared severity/impact, decision, reason codes, required gates and evidence references. The record is evidence of the validator decision only; it is not persisted and contains no personal content, credentials, secrets, real alert payload or real incident identifier.
 
 ## Runbook contract
 
@@ -98,7 +98,7 @@ No row performs failover or recovery.
 
 ## Human decision gates
 
-The model requires all seven gates in every otherwise-valid scenario:
+The model requires all seven gates exactly once and in contract order in every otherwise-valid scenario:
 
 - incident declaration;
 - failover;
@@ -108,13 +108,13 @@ The model requires all seven gates in every otherwise-valid scenario:
 - risk acceptance;
 - release.
 
-The validator records that these gates are required. It cannot satisfy them. Exceptions and risk acceptance cannot be inferred from a passing test or an approved document.
+The validator records that these gates are required. Empty, missing, duplicated, unknown or reordered gates deny. It cannot satisfy them. Exceptions and risk acceptance cannot be inferred from a passing test or an approved document.
 
 ## Recovery validation and audit
 
 Recovery validation is a future evidence requirement: integrity checks, reconciliation, dependency health, target comparison and human sign-off. Stage 13 does not execute these checks against a system.
 
-The audit contract is append-only by design but has no provisioned persistent store. It forbids personal content, credentials and secrets. Current evidence is only the fixture, deterministic output, tests, commit, Draft PR and CI result.
+The audit contract is append-only by design but has no provisioned persistent store. It forbids personal content, credentials and secrets. Lifecycle, runbook, escalation, observability, audit and allowed/prohibited action contracts are validated as exact fail-closed objects, so enabling automation, paging, communication, durable telemetry, persistence or a named owner invalidates the model. Scenario capability claims must contain exactly the five authorized keys and each value must be the boolean `false`. Current evidence is only the fixture, deterministic output, tests, commit, Draft PR and CI result.
 
 ## Stage 10/11/12 traceability
 
