@@ -16,7 +16,7 @@ criteria:
     design_only: true
     evidence_paths: [Governance/AIOS-Operational-Resilience-Model-v1.yaml, Tests/test_operational_resilience.py]
   - id: OR-AC-03
-    criterion: Unknown service dependency severity and impact deny deterministically.
+    criterion: Scenario ID is non-empty and service dependencies severity and impact are known exact and unique.
     expected: pass
     design_only: true
     evidence_paths: [Tests/validate_aios_operational_resilience.py, Tests/test_operational_resilience.py]
@@ -26,22 +26,22 @@ criteria:
     design_only: true
     evidence_paths: [Governance/AIOS-Operational-Resilience-Model-v1.yaml, Tests/test_operational_resilience.py]
   - id: OR-AC-05
-    criterion: Missing or non-design recovery evidence fails closed without backup or restore execution.
+    criterion: Recovery evidence IDs are exact unique and design-only; any mismatch fails closed without backup or restore execution.
     expected: pass
     design_only: true
     evidence_paths: [Tests/Fixtures/operational-resilience/synthetic-service-degradation.yaml, Tests/test_operational_resilience.py]
   - id: OR-AC-06
-    criterion: Incident failover restoration communication exception risk and release require human gates.
+    criterion: Incident failover restoration communication exception risk and release gates are exact unique ordered and always human.
     expected: pass
     design_only: true
     evidence_paths: [Governance/AIOS-Operational-Resilience-v1.md, Governance/AIOS-Operational-Resilience-Model-v1.yaml]
   - id: OR-AC-07
-    criterion: Unsafe real action and any reported external action deny.
+    criterion: Lifecycle runbook escalation observability audit and action sets are exact; any operational mutation or reported external action denies.
     expected: pass
     design_only: true
     evidence_paths: [Tests/validate_aios_operational_resilience.py, Tests/test_operational_resilience.py]
   - id: OR-AC-08
-    criterion: SLA SLO backup restore and real incident capability claims are rejected.
+    criterion: Claim keys are exact and boolean false; SLA SLO backup restore and real incident capability claims are rejected.
     expected: pass
     design_only: true
     evidence_paths: [Governance/AIOS-Operational-Resilience-Model-v1.yaml, Tests/test_operational_resilience.py]
@@ -51,7 +51,7 @@ criteria:
     design_only: true
     evidence_paths: [Governance/AIOS-Operational-Resilience-Stage10-12-Mapping-v1.yaml, Tests/test_operational_resilience.py]
   - id: OR-AC-10
-    criterion: Positive fixture stops at needs_human_approval with no external action.
+    criterion: Positive fixture stops at needs_human_approval with no external action and emits a complete synthetic incident record.
     expected: pass
     design_only: true
     evidence_paths: [Tests/Fixtures/operational-resilience/synthetic-service-degradation.yaml, Tests/validate_aios_operational_resilience.py]
