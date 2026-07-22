@@ -276,7 +276,7 @@ Run:
 - Stage 12 validator;
 - targeted Stage 12 tests;
 - full repository test discovery;
-- Workflow Schema validation;
+- Workflow Schema validation through `Tests/validate_aios_workflow_schema.py`;
 - Python compilation;
 - diff review for real data, production authority, owner assignment and protected-scope changes.
 
