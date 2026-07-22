@@ -25,7 +25,7 @@ The machine-readable model separates data assets, purposes, basis-decision refer
 
 ## Purpose and processing-basis records
 
-A request must reference a registered purpose and a compatible human-reviewed basis-decision record. The record proves only that a synthetic design decision was documented; it is not a legal conclusion. Missing, unknown or purpose-incompatible references deny the request. Silence never becomes permission.
+A request must reference a registered purpose and a compatible human-reviewed basis-decision record. Every basis record must explicitly retain `legal_conclusion: false` and `real_data_authorized: false`. The record proves only that a synthetic design decision was documented; it is not a legal conclusion. Missing, unknown, unsafe or purpose-incompatible references deny the request. Silence never becomes permission.
 
 ## Classification and minimization
 
@@ -41,7 +41,7 @@ The only sample rule retains a synthetic fixture for 30 days from synthetic requ
 
 ## Data-subject and preference flow
 
-Access, correction, deletion and opt-out are represented only as a synthetic state design: intake → identity verification required → scope review → human approval required → synthetic evidence ready → closed. Automatic fulfillment and real action are false. A purpose that requires consent or preference evidence must include a reference; the validator neither collects consent nor decides when law requires it.
+Access, correction, deletion and opt-out are represented only as a synthetic state design: intake → identity verification required → scope review → human approval required → synthetic evidence ready → closed. Automatic fulfillment and real action are false. A purpose that requires consent or preference evidence must reference a registered synthetic record whose purpose and human-review state are compatible; arbitrary or unknown identifiers are denied. The validator neither collects consent nor decides when law requires it.
 
 ## Lineage and audit
 
