@@ -1,0 +1,272 @@
+schema_version: "1.0"
+kind: AIOSWorkflowSchema
+metadata:
+  name: aios-workflow-schema-v1
+  runtime_contract: "1.0"
+  description: Machine-readable contract for BUW AIOS workflows.
+
+workflow_contract:
+  required_fields:
+    - workflow_id
+    - workflow_version
+    - name
+    - business_outcome
+    - trigger
+    - accountable_agent
+    - required_inputs
+    - steps
+    - transitions
+    - approval_gates
+    - evidence_requirements
+    - completion_conditions
+    - audit
+  runtime_status_enum:
+    - completed
+    - partial
+    - blocked
+    - needs_approval
+    - escalated
+    - rejected
+  action_class_enum:
+    - automatic_low_risk
+    - prepare_only
+    - prohibited
+  canonical_agent_ids: [CEO, Marketing, Retail, CRM, Shopify, Developer, Data, CustomerService]
+  handoff_contract:
+    required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  runtime_output_contract:
+    required_fields: [run_id, agent, status, reporting_period, executive_status, summary, kpi_snapshot, completed, in_progress, business_impact, findings, recommended_actions, decisions_required, risks_and_exceptions, evidence_used, confidence, missing_information, approval_request, handoffs, blockers, next_priorities, next_review, domain_payload]
+  company_brand_boundaries:
+    company: 汇沣电商
+    brands: [BUW, PC]
+    shared_requires_explicit_approval: true
+    shared_requires_brand_breakdown: true
+    cross_company_mixing_prohibited: true
+  rules:
+    single_accountable_agent: true
+    missing_required_input_status:
+      - blocked
+      - partial
+    prepare_only_requires_approval_package: true
+    prohibited_never_executes: true
+    approval_transition_must_be_explicit: true
+    handoff_contract_required: true
+    evidence_links_required_for_completion: true
+  retry_policy:
+    max_attempts: 3
+    retryable_statuses:
+      - partial
+      - blocked
+    non_retryable_statuses:
+      - needs_approval
+      - rejected
+    backoff: exponential
+  timeout_policy:
+    step_timeout_minutes: 60
+    workflow_stale_after_hours: 24
+    stale_status: escalated
+  idempotency:
+    required: true
+    key_template: "{workflow_id}:{business_entity}:{period}:{trigger_event_id}"
+  audit:
+    required_fields:
+      - run_id
+      - started_at
+      - updated_at
+      - actor
+      - source_refs
+      - status_history
+      - decision_log
+
+---
+workflow_id: store_anomaly_investigation
+workflow_version: "1.0"
+name: 门店异常调查与升级
+business_outcome: 识别并闭环门店经营、结算、秩序或货物安全异常。
+trigger:
+  type: anomaly_reported
+  sources: [store_report, supervisor_report, customer_case, data_alert]
+accountable_agent: Retail
+responsible_agents: [Retail]
+consulted_agents: [Data, CustomerService]
+informed_roles: [李涛, Stone]
+required_inputs: [brand, store_code, period, anomaly_type, evidence_links]
+optional_inputs: [metrics, customer_case_id, current_actions]
+steps:
+  - id: validate_scope
+    owner: Retail
+    action_class: automatic_low_risk
+  - id: request_data_validation
+    owner: Data
+    action_class: automatic_low_risk
+  - id: assign_supervisor_response
+    owner: Retail
+    approval_owner: 李涛
+    action_class: prepare_only
+    notes: 李涛根据实际情况动态派遣梁其乐、Jenny或小田，不固定绑定门店。
+  - id: execute_safe_remediation
+    owner: Retail
+    action_class: automatic_low_risk
+  - id: escalate_material_issue
+    owner: Retail
+    action_class: prepare_only
+    escalate_to: Stone
+transitions:
+  - from: blocked
+    to: partial
+    when: minimum_required_inputs_received
+  - from: partial
+    to: completed
+    when: evidence_complete_and_safe_actions_verified
+  - from: partial
+    to: needs_approval
+    when: approval_gate_triggered
+  - from: partial
+    to: escalated
+    when: multi_store_persistent_or_cross_functional
+approval_gates:
+  - gate_id: supervisor_dispatch
+    approvers: [李涛]
+    required_for: [assign_supervisor_response]
+    output: approval_package
+  - gate_id: retail_high_risk
+    approvers: [Tony, Stone]
+    required_for: [financial_adjustment, personnel_action, closure, material_loss]
+    output: approval_package
+handoff_contract:
+  required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  extension_fields: [store_code, anomaly_type, supervisor_dispatch_context]
+evidence_requirements: [store_code, date_range, source_refs, action_log, result]
+completion_conditions: [issue_classified, owner_confirmed, safe_actions_recorded, escalation_resolved_or_accepted]
+audit: {enabled: true}
+
+---
+workflow_id: customer_complaint_remediation
+workflow_version: "1.0"
+name: 顾客投诉到门店整改闭环
+business_outcome: 在保持客服case ownership的同时完成门店调查、客户回复和整改闭环。
+trigger: {type: customer_complaint}
+accountable_agent: CustomerService
+responsible_agents: [CustomerService, Retail]
+consulted_agents: [Data, Shopify]
+informed_roles: [李涛, Stone]
+required_inputs: [brand, case_id, channel, customer_request, timeline, evidence_links]
+optional_inputs: [order_reference, store_code, policy_context]
+steps:
+  - {id: classify_case, owner: CustomerService, action_class: automatic_low_risk}
+  - {id: request_minimum_missing_info, owner: CustomerService, action_class: automatic_low_risk}
+  - {id: handoff_store_investigation, owner: Retail, action_class: automatic_low_risk}
+  - {id: draft_customer_reply, owner: CustomerService, action_class: prepare_only}
+  - {id: confirm_remediation, owner: CustomerService, action_class: automatic_low_risk}
+transitions:
+  - {from: blocked, to: partial, when: identity_and_reference_confirmed}
+  - {from: partial, to: completed, when: reply_and_internal_remediation_evidence_complete}
+  - {from: partial, to: needs_approval, when: compensation_or_public_response_requested}
+approval_gates:
+  - {gate_id: customer_commitment, approvers: [Tony, Stone], required_for: [compensation, special_discount, legal_or_public_response], output: approval_package}
+handoff_contract:
+  required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  extension_fields: [case_id, category, store_or_order_reference, timeline]
+evidence_requirements: [case_log, reply_draft, investigation_result, remediation_status]
+completion_conditions: [customer_reply_ready_or_sent_by_human, internal_owner_confirmed, remediation_evidence_recorded]
+audit: {enabled: true}
+
+---
+workflow_id: shopify_to_developer_draft_pr
+workflow_version: "1.0"
+name: Shopify需求到Developer Draft PR
+business_outcome: 将已确认的Shopify业务需求转为可审查、可回滚的技术变更草案。
+trigger: {type: approved_business_requirement}
+accountable_agent: Shopify
+responsible_agents: [Shopify, Developer]
+consulted_agents: [Marketing, CRM, Data]
+informed_roles: [伍淑娴, Stone]
+required_inputs: [brand, business_goal, page_or_flow, current_state, desired_outcome, acceptance_criteria]
+optional_inputs: [product_scope, constraints, deadline]
+steps:
+  - {id: define_business_requirement, owner: Shopify, action_class: automatic_low_risk}
+  - {id: validate_acceptance_criteria, owner: Shopify, action_class: automatic_low_risk}
+  - {id: technical_design, owner: Developer, action_class: automatic_low_risk}
+  - {id: implement_non_production_change, owner: Developer, action_class: automatic_low_risk}
+  - {id: create_draft_pr, owner: Developer, action_class: automatic_low_risk}
+  - {id: prepare_release_approval, owner: Developer, action_class: prepare_only}
+transitions:
+  - {from: blocked, to: partial, when: acceptance_criteria_complete}
+  - {from: partial, to: completed, when: draft_pr_tests_and_rollback_present}
+  - {from: partial, to: needs_approval, when: production_or_sensitive_change_requested}
+approval_gates:
+  - {gate_id: release_gate, approvers: [Tony, Stone], required_for: [production_release, pricing, payment, permission, data_migration], output: approval_package}
+handoff_contract:
+  required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  extension_fields: [business_owner, rollback_requirement]
+evidence_requirements: [draft_pr_url, test_results, affected_components, rollback_plan]
+completion_conditions: [draft_pr_created, tests_recorded, rollback_documented, approval_needs_explicit]
+audit: {enabled: true}
+
+---
+workflow_id: marketing_crm_campaign
+workflow_version: "1.0"
+name: Marketing与CRM联合活动
+business_outcome: 在内容、渠道、人群、许可和频次职责分离下形成可审批的增长实验。
+trigger: {type: campaign_request}
+accountable_agent:
+  type: runtime_selection
+  input_field: workflow_owner_agent
+  allowed_values: [Marketing, CRM]
+  selection_basis: primary_business_outcome
+  mapping:
+    acquisition_or_content: Marketing
+    lifecycle_or_recall: CRM
+responsible_agents: [Marketing, CRM]
+consulted_agents: [Data, Retail]
+informed_roles: [伍淑娴, 梁其乐, Stone]
+required_inputs: [brand, objective, audience, channel, market_scope, period, evidence_links, primary_business_outcome, workflow_owner_agent]
+optional_inputs: [budget_status, consent_status, exclusions, measurement_plan]
+steps:
+  - {id: define_hypothesis_and_content, owner: Marketing, action_class: automatic_low_risk}
+  - {id: define_audience_consent_exclusions, owner: CRM, action_class: automatic_low_risk}
+  - {id: validate_measurement_plan, owner: Data, action_class: automatic_low_risk}
+  - {id: assemble_campaign_package, owner: Marketing, action_class: prepare_only}
+transitions:
+  - {from: blocked, to: partial, when: brand_market_and_goal_present}
+  - {from: partial, to: needs_approval, when: campaign_package_complete}
+  - {from: needs_approval, to: completed, when: human_approval_recorded_and_execution_evidence_attached}
+approval_gates:
+  - {gate_id: campaign_launch, approvers: [Tony, Stone], required_for: [budget_change, public_publish, large_scale_outbound, offer_rule], output: approval_package}
+handoff_contract:
+  required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  extension_fields: [audience_logic, consent_status, exclusion_rules, content_plan, channel_plan, kpi]
+evidence_requirements: [campaign_brief, audience_definition, consent_check, kpi_plan, approval_record]
+completion_conditions: [single_brand_scope, responsibilities_separated, approval_status_explicit, measurement_plan_complete]
+audit: {enabled: true}
+
+---
+workflow_id: agent_reports_to_ceo_decision_queue
+workflow_version: "1.0"
+name: Agent周报到CEO决策队列
+business_outcome: 将跨Agent事实、风险和建议转为Tony/Stone可审阅的决策队列。
+trigger: {type: scheduled_or_material_agent_report}
+accountable_agent: CEO
+responsible_agents: [CEO]
+consulted_agents: [Marketing, Retail, CRM, Shopify, Developer, Data, CustomerService]
+informed_roles: [Tony, Stone]
+required_inputs: [situation, business_outcome, evidence_links, workflow_owner_agent, risk_level, data_cutoff, confidence, requested_decision]
+optional_inputs: [deadline, dependencies, blockers]
+steps:
+  - {id: validate_report_contract, owner: CEO, action_class: automatic_low_risk}
+  - {id: reconcile_conflicts, owner: CEO, action_class: automatic_low_risk}
+  - {id: rank_decision_queue, owner: CEO, action_class: automatic_low_risk}
+  - {id: prepare_approval_or_escalation, owner: CEO, action_class: prepare_only}
+transitions:
+  - {from: blocked, to: partial, when: minimum_evidence_received}
+  - {from: partial, to: completed, when: decision_queue_has_owner_deadline_and_evidence}
+  - {from: partial, to: escalated, when: company_level_material_risk}
+  - {from: partial, to: needs_approval, when: human_decision_required}
+approval_gates:
+  - {gate_id: executive_decision, approvers: [Tony, Stone], required_for: [strategy, organization, major_budget, company_level_risk], output: approval_package}
+handoff_contract:
+  required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  extension_fields: [decision_item, recommendation, unresolved_conflicts]
+evidence_requirements: [source_reports, conflict_log, decision_queue, status_history]
+completion_conditions: [all_items_have_single_owner, evidence_and_confidence_present, approval_needs_separated_from_execution]
+audit: {enabled: true}

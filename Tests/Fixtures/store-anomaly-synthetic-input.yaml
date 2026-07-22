@@ -1,0 +1,18 @@
+metadata:
+  run_id: SYN-RET-0001
+  company: 汇沣电商
+  data_classification: synthetic
+  dry_run: true
+  allow_external_writes: false
+  trigger_event_id: synthetic-store-alert-001
+  business_entity: BUW:G0011
+  period: "2026-07-19"
+inputs:
+  brand: BUW
+  store_code: G0011
+  period: "2026-07-19"
+  anomaly_type: settlement_delay_and_reception_order
+  evidence_links:
+    - synthetic://store/G0011/alert/001
+  current_actions:
+    - synthetic store report recorded

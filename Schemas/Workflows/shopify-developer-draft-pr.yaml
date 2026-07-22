@@ -1,0 +1,31 @@
+schema_version: "1.0"
+workflow_id: shopify_to_developer_draft_pr
+workflow_version: "1.0"
+name: Shopify需求到Developer Draft PR
+business_outcome: 将已确认的Shopify业务需求转为可审查、可回滚的技术变更草案。
+trigger: {type: approved_business_requirement}
+accountable_agent: Shopify
+responsible_agents: [Shopify, Developer]
+consulted_agents: [Marketing, CRM, Data]
+informed_roles: [伍淑娴, Stone]
+required_inputs: [brand, business_goal, page_or_flow, current_state, desired_outcome, acceptance_criteria]
+optional_inputs: [product_scope, constraints, deadline]
+steps:
+  - {id: define_business_requirement, owner: Shopify, action_class: automatic_low_risk}
+  - {id: validate_acceptance_criteria, owner: Shopify, action_class: automatic_low_risk}
+  - {id: technical_design, owner: Developer, action_class: automatic_low_risk}
+  - {id: implement_non_production_change, owner: Developer, action_class: automatic_low_risk}
+  - {id: create_draft_pr, owner: Developer, action_class: automatic_low_risk}
+  - {id: prepare_release_approval, owner: Developer, action_class: prepare_only}
+transitions:
+  - {from: blocked, to: partial, when: acceptance_criteria_complete}
+  - {from: partial, to: completed, when: draft_pr_tests_and_rollback_present}
+  - {from: partial, to: needs_approval, when: production_or_sensitive_change_requested}
+approval_gates:
+  - {gate_id: release_gate, approvers: [Tony, Stone], required_for: [production_release, pricing, payment, permission, data_migration], output: approval_package}
+handoff_contract:
+  required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  extension_fields: [business_owner, rollback_requirement]
+evidence_requirements: [draft_pr_url, test_results, affected_components, rollback_plan]
+completion_conditions: [draft_pr_created, tests_recorded, rollback_documented, approval_needs_explicit]
+audit: {enabled: true}

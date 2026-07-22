@@ -1,0 +1,88 @@
+name: Validate AIOS Workflow Schema
+
+on:
+  pull_request:
+    paths:
+      - "Schemas/**"
+      - "Workflows/AIOS-Workflow-Library-v1.md"
+      - "Tests/AIOS-Workflow-Library-Validation.md"
+      - "Tests/validate_aios_workflow_schema.py"
+      - "Tests/test_controlled_orchestrator.py"
+      - "Tests/Fixtures/**"
+      - "Runtime/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/validate-aios-workflow-schema.yml"
+  push:
+    branches:
+      - feat/aios-workflow-schema-v1
+    paths:
+      - "Schemas/**"
+      - "Workflows/AIOS-Workflow-Library-v1.md"
+      - "Tests/AIOS-Workflow-Library-Validation.md"
+      - "Tests/validate_aios_workflow_schema.py"
+      - "Tests/test_controlled_orchestrator.py"
+      - "Tests/Fixtures/**"
+      - "Runtime/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/validate-aios-workflow-schema.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aios-workflow-schema-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate schema and workflow instances
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install validation dependencies
+        run: python -m pip install --requirement requirements-dev.txt
+
+      - name: Validate Workflow Library Runtime envelope
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          document = Path("Workflows/AIOS-Workflow-Library-v1.md").read_text(encoding="utf-8")
+          output_line = next(
+              (line for line in document.splitlines() if line.startswith("- 标准输出必须")),
+              "",
+          )
+          required = {
+              "run_id", "agent", "status", "reporting_period", "executive_status",
+              "summary", "kpi_snapshot", "completed", "in_progress", "business_impact",
+              "findings", "recommended_actions", "decisions_required",
+              "risks_and_exceptions", "evidence_used", "confidence",
+              "missing_information", "approval_request", "handoffs", "blockers",
+              "next_priorities", "next_review", "domain_payload",
+          }
+          obsolete = {"agent_id", "runtime_version", "data_cutoff", "evidence_links", "next_step"}
+          missing = sorted(field for field in required if f"`{field}`" not in output_line)
+          present = sorted(field for field in obsolete if f"`{field}`" in output_line)
+          if missing or present:
+              raise SystemExit(
+                  f"Workflow Library Runtime envelope mismatch: missing={missing}, obsolete={present}"
+              )
+          print("Workflow Library Runtime envelope validation PASSED")
+          PY
+
+      - name: Run AIOS Workflow Schema validation
+        run: python Tests/validate_aios_workflow_schema.py
+
+      - name: Run Controlled Orchestrator Harness tests
+        run: python -m unittest Tests/test_controlled_orchestrator.py

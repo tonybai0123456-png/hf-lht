@@ -1,0 +1,38 @@
+schema_version: "1.0"
+workflow_id: store_anomaly_investigation
+workflow_version: "1.0"
+name: 门店异常调查与升级
+business_outcome: 识别并闭环门店经营、结算、秩序或货物安全异常。
+trigger:
+  type: anomaly_reported
+  sources: [store_report, supervisor_report, customer_case, data_alert]
+accountable_agent: Retail
+responsible_agents: [Retail]
+consulted_agents: [Data, CustomerService]
+informed_roles: [李涛, Stone]
+required_inputs: [brand, store_code, period, anomaly_type, evidence_links]
+optional_inputs: [metrics, customer_case_id, current_actions]
+steps:
+  - {id: validate_scope, owner: Retail, action_class: automatic_low_risk}
+  - {id: request_data_validation, owner: Data, action_class: automatic_low_risk}
+  - id: assign_supervisor_response
+    owner: Retail
+    approval_owner: 李涛
+    action_class: prepare_only
+    notes: 李涛根据实际情况动态派遣梁其乐、Jenny或小田，不固定绑定门店。
+  - {id: execute_safe_remediation, owner: Retail, action_class: automatic_low_risk}
+  - {id: escalate_material_issue, owner: Retail, action_class: prepare_only, escalate_to: Stone}
+transitions:
+  - {from: blocked, to: partial, when: minimum_required_inputs_received}
+  - {from: partial, to: completed, when: evidence_complete_and_safe_actions_verified}
+  - {from: partial, to: needs_approval, when: approval_gate_triggered}
+  - {from: partial, to: escalated, when: multi_store_persistent_or_cross_functional}
+approval_gates:
+  - {gate_id: supervisor_dispatch, approvers: [李涛], required_for: [assign_supervisor_response], output: approval_package}
+  - {gate_id: retail_high_risk, approvers: [Tony, Stone], required_for: [financial_adjustment, personnel_action, closure, material_loss], output: approval_package}
+handoff_contract:
+  required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  extension_fields: [store_code, anomaly_type, supervisor_dispatch_context]
+evidence_requirements: [store_code, date_range, source_refs, action_log, result]
+completion_conditions: [issue_classified, owner_confirmed, safe_actions_recorded, escalation_resolved_or_accepted]
+audit: {enabled: true}

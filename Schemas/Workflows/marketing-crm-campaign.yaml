@@ -1,0 +1,36 @@
+schema_version: "1.0"
+workflow_id: marketing_crm_campaign
+workflow_version: "1.0"
+name: Marketing与CRM联合活动
+business_outcome: 在内容、渠道、人群、许可和频次职责分离下形成可审批的增长实验。
+trigger: {type: campaign_request}
+accountable_agent:
+  type: runtime_selection
+  input_field: workflow_owner_agent
+  allowed_values: [Marketing, CRM]
+  selection_basis: primary_business_outcome
+  mapping:
+    acquisition_or_content: Marketing
+    lifecycle_or_recall: CRM
+responsible_agents: [Marketing, CRM]
+consulted_agents: [Data, Retail]
+informed_roles: [伍淑娴, 梁其乐, Stone]
+required_inputs: [brand, objective, audience, channel, market_scope, period, evidence_links, primary_business_outcome, workflow_owner_agent]
+optional_inputs: [budget_status, consent_status, exclusions, measurement_plan]
+steps:
+  - {id: define_hypothesis_and_content, owner: Marketing, action_class: automatic_low_risk}
+  - {id: define_audience_consent_exclusions, owner: CRM, action_class: automatic_low_risk}
+  - {id: validate_measurement_plan, owner: Data, action_class: automatic_low_risk}
+  - {id: assemble_campaign_package, owner: Marketing, action_class: prepare_only}
+transitions:
+  - {from: blocked, to: partial, when: brand_market_and_goal_present}
+  - {from: partial, to: needs_approval, when: campaign_package_complete}
+  - {from: needs_approval, to: completed, when: human_approval_recorded_and_execution_evidence_attached}
+approval_gates:
+  - {gate_id: campaign_launch, approvers: [Tony, Stone], required_for: [budget_change, public_publish, large_scale_outbound, offer_rule], output: approval_package}
+handoff_contract:
+  required_fields: [from_agent, to_agent, situation, requested_outcome, evidence, scope_in, scope_out, acceptance_criteria, risk_level, approval_required, deadline_or_review_date, data_cutoff, confidence, originating_run_id]
+  extension_fields: [audience_logic, consent_status, exclusion_rules, content_plan, channel_plan, kpi]
+evidence_requirements: [campaign_brief, audience_definition, consent_check, kpi_plan, approval_record]
+completion_conditions: [single_brand_scope, responsibilities_separated, approval_status_explicit, measurement_plan_complete]
+audit: {enabled: true}
