@@ -102,8 +102,8 @@ def validate_matrix(matrix: dict[str, Any], root: Path) -> list[str]:
     for field, value in expected.items():
         if metadata.get(field) != value:
             errors.append(f"matrix.metadata.{field} must equal {value!r}")
-    if metadata.get("stage_status") not in {"Executing", "Reported"}:
-        errors.append("matrix.metadata.stage_status must be Executing or Reported")
+    if metadata.get("stage_status") not in {"Executing", "Reported", "Reviewed"}:
+        errors.append("matrix.metadata.stage_status must be Executing, Reported or Reviewed")
 
     questions = matrix.get("six_system_questions")
     if not isinstance(questions, dict) or set(questions) != REQUIRED_QUESTIONS:
