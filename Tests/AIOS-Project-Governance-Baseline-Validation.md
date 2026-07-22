@@ -18,7 +18,7 @@ Automated checks live in `Tests/test_project_governance.py` and run in the
 | Business boundary | BUW, PC, 汇沣电商 and 六合通 remain explicitly separated. |
 | Registry separation | Project Registry and Stage Registry have different control roles. |
 | Assignment | Stage 9 identifies Issue #13, the single Execution Thread and authorized branch. |
-| Lifecycle | Stages 9–11 are Archived; Stage 12 is Reported under Issue #28 and one registered Execution Thread; Stages 13–14 remain Planned. |
+| Lifecycle | Stages 9–12 are Archived; Stage 12 records reviewed and published evidence under PR #29 and Issues #28/#30; Stages 13–14 remain Planned and unassigned. |
 | Return controls | Mandatory Return and human review/archive gates are explicit. |
 
 ## Negative cases

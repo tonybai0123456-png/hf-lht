@@ -73,7 +73,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stages_10_and_11_are_archived_and_stage_12_is_reported(self):
+    def test_stages_10_through_12_are_archived_and_stage_13_is_planned(self):
         stage9 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 9 |"))
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
         self.assertIn("| Archived |", stage9)
@@ -95,10 +95,18 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("Issue #28", stage12)
         self.assertIn("019f8762-4b8c-7452-addb-ba9510988798", stage12)
         self.assertIn("feat/aios-privacy-data-governance-v1", stage12)
-        self.assertIn("| Reported |", stage12)
+        self.assertIn("PR #29", stage12)
+        self.assertIn("454a719", stage12)
+        self.assertIn("11/11", stage12)
+        self.assertIn("61/61", stage12)
+        self.assertIn("| Archived |", stage12)
         for stage_number in (13, 14):
             stage = next(line for line in self.stage_registry.splitlines() if line.startswith(f"| {stage_number} |"))
             self.assertIn("| Planned |", stage)
+        self.assertIn(
+            "No active Execution Stage / Stage 12 Archived / Stage 13 Planned",
+            self.project_registry,
+        )
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
