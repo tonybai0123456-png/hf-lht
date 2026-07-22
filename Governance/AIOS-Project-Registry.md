@@ -20,7 +20,7 @@ published, Thread Governance v2.1 and the Stage Registry remain authoritative.
 
 | Project ID | Project name | Company boundary | Brand boundary | Project owner | Governance Thread | Canonical repository | Policy / Stage Registry | Project status | Active Stage | Review date / evidence | Next gate |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 9 / PG-01 / Issue #13 | 2026-07-22 / branch `feat/aios-project-governance-baseline-v1` | Mandatory Return, human review and controlled publication; Stage 10 remains unauthorized |
+| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 9 / PG-01 / Reported / Issue #13 | 2026-07-22 / Draft PR #20 / CI passed | Human review; publication and archival remain separate gates; Stage 10 remains unauthorized |
 
 ## Registry rules
 
@@ -39,3 +39,4 @@ published, Thread Governance v2.1 and the Stage Registry remain authoritative.
 | Date | Change | Authority / evidence |
 |---|---|---|
 | 2026-07-22 | Created the initial registry with exactly one `BUW-AIOS` entry for Stage 9 review; no additional project was inferred or registered. | Issue #13 / PG-01 Execution Thread; pending Governance Thread review |
+| 2026-07-22 | Recorded Stage 9 as Reported after the independent Draft PR and both required CI workflows passed; project status remains Active and no publication or archival is inferred. | Draft PR #20 / PG-01 Mandatory Return |

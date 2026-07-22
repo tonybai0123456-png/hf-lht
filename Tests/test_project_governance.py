@@ -73,10 +73,11 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stage_9_is_executing_and_stage_10_stays_planned(self):
+    def test_stage_9_is_reported_and_stage_10_stays_planned(self):
         stage9 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 9 |"))
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
-        self.assertIn("| Executing |", stage9)
+        self.assertIn("| Reported |", stage9)
+        self.assertIn("Draft PR #20", stage9)
         self.assertIn("019f7da6-da0c-7310-ad7c-2b4bc15a9906", stage9)
         self.assertIn("feat/aios-project-governance-baseline-v1", stage9)
         self.assertIn("| Planned |", stage10)
