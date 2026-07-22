@@ -6,8 +6,8 @@
 |---|---|
 | Project ID | `BUW-AIOS` |
 | Project name | BUW AIOS |
-| Project-governance version | 1.0 review candidate |
-| Publication status | Draft; pending Governance Thread human review and publication |
+| Project-governance version | 1.0 (frozen published version) |
+| Publication status | Published through PR #20 / squash merge `62b2aaa` on 2026-07-22 |
 | Stage | Stage 9 / PG-01 |
 | Issue | [Issue #13](https://github.com/tonybai0123456-png/hf-lht/issues/13) |
 | Parent Governance Thread | BUW AIOS Official Governance Thread（BUW AIOS 官方治理主线程） |
@@ -17,13 +17,13 @@
 | Stage Registry | `Governance/AIOS-Stage-Registry.md` |
 | Effective governance dependency | `Governance/AIOS-Thread-Governance-v2.1.md` |
 
-This review candidate defines project identity, authority, controlled artifacts,
-change flow, evidence and project lifecycle for `BUW-AIOS`. It does not become a
-frozen published project-governance version until the Governance Thread reviews
-and separately authorizes publication.
+This frozen published baseline defines project identity, authority, controlled
+artifacts, change flow, evidence and project lifecycle for `BUW-AIOS`. It was
+human-reviewed and published through PR #20 at merge `62b2aaa`.
 
-It authorizes no merge, deployment, permission change, production access, real
-business data, customer data, external writes or Stage 10 / PR-01 execution.
+It authorizes no deployment, permission change, production access, real business
+data, customer data or external writes. Stage 10 / PR-01 is separately authorized
+through Issue #21 for assessment and prepare-only evidence, not production.
 
 ## 2. Why this baseline exists
 
@@ -109,7 +109,7 @@ The authoritative project control chain is:
 6. linked Issues, branches, commits, PRs, validation and CI as execution evidence;
 7. ChatGPT Projects, chats, local drafts and tools as working context only.
 
-During review of this candidate, v2.1 and its Stage Registry remain authoritative.
+Thread Governance v2.1 and the Stage Registry remain authoritative.
 If records conflict, the Governance Thread resolves and publishes the correction.
 Safety controls use the most restrictive rule. Missing or ambiguous authority,
 boundary or evidence must fail closed: the affected transition stops.
@@ -248,8 +248,8 @@ means Archived.
 
 ## 16. Governance Freeze and version upgrades
 
-This v1.0 candidate becomes frozen only after Governance Thread approval and
-controlled publication. The Execution Thread cannot freeze it.
+This v1.0 baseline is frozen after Governance Thread approval and controlled
+publication through PR #20. An Execution Thread cannot alter or re-freeze it.
 
 - Patch `1.0.x`: non-semantic wording or citation correction.
 - Minor `1.x`: backward-compatible project-governance addition.
@@ -261,7 +261,7 @@ Frozen historical versions remain readable and must not be silently modified.
 
 ## 17. Stage 9 compliance gate
 
-PG-01 may enter Reported only when the two governance documents, automated
-read-only positive and negative checks, CI evidence, independent Draft PR and
-Mandatory Return are available. It may not self-declare Reviewed or Archived.
-Stage 10 / PR-01 remains Planned and unauthorized.
+PG-01 passed human review, was published through PR #20 and was archived only
+after post-merge verification. Stage 10 / PR-01 is separately authorized through
+Issue #21 for assessment, documentation, synthetic/read-only validation, CI,
+Draft PR and Execution Report only; production execution remains unauthorized.
