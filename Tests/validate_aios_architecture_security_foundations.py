@@ -68,8 +68,8 @@ def validate_model(model: dict[str, Any]) -> list[str]:
     for key, value in expected.items():
         if metadata.get(key) != value:
             errors.append(f"model.metadata.{key} must equal {value!r}")
-    if metadata.get("stage_status") not in {"Executing", "Reported"}:
-        errors.append("model.metadata.stage_status must be Executing or Reported")
+    if metadata.get("stage_status") not in {"Executing", "Reported", "Reviewed"}:
+        errors.append("model.metadata.stage_status must be Executing, Reported or Reviewed")
     if set(model.get("six_system_questions", {})) != QUESTIONS:
         errors.append("model must answer exactly the six system questions")
     elif any(not str(value).strip() for value in model["six_system_questions"].values()):
