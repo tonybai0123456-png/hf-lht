@@ -47,21 +47,22 @@ The Stage 10/11/12 mapping covers all ten Stage 10 risk IDs. It cites Stage 11 a
 
 ## Evaluation contract
 
-`evaluate_scenario(model, scenario)` returns a deterministic dictionary with `result`, ordered unique `reason_codes`, `required_human_gates`, `evidence_refs` and `external_actions_performed`.
+`evaluate_scenario(model, scenario)` returns a deterministic dictionary with `result`, ordered unique `reason_codes`, `required_human_gates`, `evidence_refs`, `external_actions_performed` and one complete in-memory `incident_record`. The record contains exactly the machine-readable contract fields and mirrors the final decision, reasons, gates and evidence references; it creates no real incident or persistent audit entry.
 
 A valid synthetic scenario returns `needs_human_approval`, never `recovered` or `executed`. Invalid scenarios return `denied`. Stable denial reasons include:
 
 - `real_or_unmarked_signal`;
+- `missing_scenario_id`;
 - `cross_boundary`;
-- `unknown_service` and `unknown_dependency`;
+- `unknown_service`, `unknown_dependency`, `duplicate_dependency` and `dependency_contract_mismatch`;
 - `invalid_severity` and `invalid_impact`;
 - `unsupported_rto_rpo`;
-- `missing_recovery_evidence` and `invalid_recovery_evidence_state`;
-- `missing_human_gate`;
+- `missing_recovery_evidence`, `duplicate_recovery_evidence`, `recovery_evidence_contract_mismatch` and `invalid_recovery_evidence_state`;
+- `missing_human_gate`, `duplicate_human_gate` and `human_gate_contract_mismatch`;
 - `unsafe_continuity_action`;
-- `achievement_claim`.
+- `invalid_claim_contract` and `achievement_claim`.
 
-Unknown, missing, wildcarded or internally inconsistent values always deny.
+Unknown, missing, duplicated, reordered, wildcarded or internally inconsistent values always deny. Claim keys must exactly match the authorized set and every claim value must be the boolean `false`. Model validation exact-matches lifecycle, runbook, escalation, observability, audit and allowed/prohibited action contracts, including every unassigned owner and disabled operational capability.
 
 ## Synthetic fixture
 
