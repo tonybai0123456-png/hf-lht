@@ -7,7 +7,7 @@ metadata:
   execution_thread: 019f89ac-e3b7-7b90-ad27-286708c407e0
   branch: feat/aios-architecture-security-foundations-v1
   mode: design_only
-  stage_status: Executing
+  stage_status: Reported
 
 six_system_questions:
   business_loop: A future bounded BUW request is admitted, policy checked, dry-run planned, explicitly approved where required, adapter-executed, audited and reconciled; this Stage performs design only.
