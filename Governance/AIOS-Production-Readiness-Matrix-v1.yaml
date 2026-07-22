@@ -7,7 +7,7 @@ metadata:
   main_baseline: 6cffaed4f4bc693aa897864396ae097b972bff80
   execution_thread: 019f8937-ac22-71a2-bb35-d8f6d2e0f55f
   branch: feat/aios-production-readiness-v1
-  stage_status: Reported
+  stage_status: Reviewed
   mode: prepare_only
   assessed_on: "2026-07-22"
 
