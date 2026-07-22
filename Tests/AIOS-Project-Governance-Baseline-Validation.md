@@ -18,7 +18,7 @@ Automated checks live in `Tests/test_project_governance.py` and run in the
 | Business boundary | BUW, PC, 汇沣电商 and 六合通 remain explicitly separated. |
 | Registry separation | Project Registry and Stage Registry have different control roles. |
 | Assignment | Stage 9 identifies Issue #13, the single Execution Thread and authorized branch. |
-| Lifecycle | Stage 9 is Archived; Stage 10 is Reviewed after its assessment-only Mandatory Return and awaits human review. |
+| Lifecycle | Stages 9 and 10 are Archived; Stage 11 is Executing under Issue #24; Stages 12–14 remain Planned. |
 | Return controls | Mandatory Return and human review/archive gates are explicit. |
 
 ## Negative cases
@@ -32,7 +32,7 @@ Automated checks live in `Tests/test_project_governance.py` and run in the
 | Missing evidence | Fail closed; truthful status remains unchanged. |
 | Self-review or self-archive | Rejected; human Governance Thread decision required. |
 | Production, real data, permission or external write | Rejected under Stage 9 authorization. |
-| Stage 10 production execution | Rejected; PR-01 is authorized only for assessment and prepare-only evidence. |
+| Stage 10 archive interpreted as production approval | Rejected; the published PR-01 assessment remains `BLOCKED / NO-GO`. |
 
 ## Local command
 
