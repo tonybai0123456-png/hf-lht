@@ -47,6 +47,121 @@ AUTHORITY_FLAGS = (
     "backup_restore_tested",
     "real_incident_capability",
 )
+AUTHORIZED_PREPARE_ACTIONS = [
+    "classify_synthetic_signal",
+    "evaluate_resilience_policy",
+    "prepare_recovery_recommendation",
+]
+PROHIBITED_REAL_ACTIONS = [
+    "declare_incident",
+    "perform_failover",
+    "perform_restore",
+    "send_external_communication",
+    "grant_exception",
+    "accept_risk",
+    "approve_release",
+    "page_on_call",
+    "modify_infrastructure",
+]
+REQUIRED_CLAIMS = {
+    "sla_achieved",
+    "slo_achieved",
+    "backup_tested",
+    "restore_tested",
+    "real_incident_capability",
+}
+INCIDENT_RECORD_FIELDS = [
+    "scenario_id",
+    "policy_version",
+    "synthetic",
+    "company",
+    "brand",
+    "service_id",
+    "dependency_ids",
+    "signal_type",
+    "severity",
+    "impact",
+    "decision",
+    "reason_codes",
+    "human_gates",
+    "evidence_refs",
+]
+EXPECTED_INCIDENT_RECORD_CONTRACT = {
+    "required_fields": INCIDENT_RECORD_FIELDS,
+    "synthetic_only": True,
+    "persistent_store_provisioned": False,
+    "real_incident_id_allowed": False,
+    "raw_alert_payload_allowed": False,
+    "owner_state": UNASSIGNED,
+}
+EXPECTED_INCIDENT_LIFECYCLE = {
+    "states": [
+        "signal_received",
+        "classified",
+        "policy_evaluated",
+        "human_decision_required",
+        "synthetic_evidence_ready",
+    ],
+    "terminal_state": "human_decision_required",
+    "incident_declaration_automatic": False,
+    "containment_automatic": False,
+    "recovery_automatic": False,
+    "closure_automatic": False,
+    "owner_state": UNASSIGNED,
+}
+EXPECTED_RUNBOOK_CONTRACT = {
+    "required_sections": [
+        "scope",
+        "prerequisites",
+        "stop_conditions",
+        "decision_gates",
+        "evidence",
+        "validation",
+        "escalation",
+    ],
+    "execution_mode": "prepare_only",
+    "real_commands_allowed": False,
+    "owner_state": UNASSIGNED,
+}
+EXPECTED_ESCALATION_CONTRACT = {
+    "severity_to_abstract_role": {
+        "SEV-1": "Incident Authority",
+        "SEV-2": "Incident Authority",
+        "SEV-3": "Governance Authority",
+        "SEV-4": "Governance Authority",
+    },
+    "paging_enabled": False,
+    "external_communication_enabled": False,
+    "owner_state": UNASSIGNED,
+}
+EXPECTED_OBSERVABILITY_CONTRACT = {
+    "design_signals": [
+        "synthetic_availability",
+        "synthetic_dependency_health",
+        "synthetic_data_integrity",
+    ],
+    "alert_delivery_enabled": False,
+    "monitoring_connector_enabled": False,
+    "durable_telemetry_claimed": False,
+    "owner_state": UNASSIGNED,
+}
+EXPECTED_AUDIT_CONTRACT = {
+    "required_fields": [
+        "scenario_id",
+        "policy_version",
+        "service_id",
+        "severity",
+        "impact",
+        "decision",
+        "reason_codes",
+        "evidence_refs",
+    ],
+    "append_only_design": True,
+    "persistent_store_provisioned": False,
+    "raw_personal_content_allowed": False,
+    "credentials_allowed": False,
+    "owner_state": UNASSIGNED,
+}
 
 
 def _yaml(path: Path, errors: list[str]) -> dict[str, Any]:
@@ -88,6 +203,19 @@ def _items_by_id(items: Any) -> dict[str, dict[str, Any]]:
 def _append_once(values: list[str], value: str) -> None:
     if value not in values:
         values.append(value)
+
+
+def _has_unique_non_empty_ids(items: Any) -> bool:
+    if not isinstance(items, list) or not items:
+        return False
+    ids = [
+        item.get("id") if isinstance(item, dict) else None
+        for item in items
+    ]
+    return (
+        all(isinstance(item_id, str) and item_id.strip() for item_id in ids)
+        and len(ids) == len(set(ids))
+    )
 
 
 def validate_model(model: dict[str, Any]) -> list[str]:
@@ -140,6 +268,8 @@ def validate_model(model: dict[str, Any]) -> list[str]:
         if not isinstance(items, list) or not items:
             errors.append(f"{section} must be a non-empty list")
             continue
+        if not _has_unique_non_empty_ids(items):
+            errors.append(f"{section} must contain unique non-empty ids")
         for index, item in enumerate(items):
             if not isinstance(item, dict):
                 errors.append(f"{section}[{index}] must be a mapping")
@@ -192,6 +322,10 @@ def validate_model(model: dict[str, Any]) -> list[str]:
     evidence = model.get("recovery_evidence_requirements", [])
     if not isinstance(evidence, list) or len(evidence) < 3:
         errors.append("recovery_evidence_requirements must contain at least three items")
+    if not _has_unique_non_empty_ids(evidence):
+        errors.append(
+            "recovery_evidence_requirements must contain unique non-empty ids"
+        )
     for index, requirement in enumerate(evidence):
         if requirement.get("claim_state") != "design_requirement_only":
             errors.append(
@@ -209,46 +343,35 @@ def validate_model(model: dict[str, Any]) -> list[str]:
         if gate.get("required") is not True or gate.get("owner_state") != UNASSIGNED:
             errors.append(f"human_gates[{index}] must be required and unassigned")
 
-    incident_record = model.get("incident_record_contract", {})
-    incident_fields = {
-        "scenario_id",
-        "synthetic",
-        "company",
-        "brand",
-        "service_id",
-        "dependency_ids",
-        "signal_type",
-        "severity",
-        "impact",
-        "decision",
-        "reason_codes",
-        "human_gates",
-        "evidence_refs",
-    }
-    if (
-        set(incident_record.get("required_fields", [])) != incident_fields
-        or incident_record.get("synthetic_only") is not True
-        or incident_record.get("persistent_store_provisioned") is not False
-        or incident_record.get("real_incident_id_allowed") is not False
-        or incident_record.get("raw_alert_payload_allowed") is not False
-        or incident_record.get("owner_state") != UNASSIGNED
-    ):
+    if model.get("incident_record_contract") != EXPECTED_INCIDENT_RECORD_CONTRACT:
         errors.append(
             "incident_record_contract must require synthetic fields and prohibit persistence"
         )
 
-    if model.get("incident_lifecycle", {}).get("terminal_state") != "human_decision_required":
-        errors.append("incident_lifecycle must stop at human_decision_required")
-    if model.get("runbook_contract", {}).get("execution_mode") != "prepare_only":
-        errors.append("runbook_contract.execution_mode must be prepare_only")
-    if model.get("runbook_contract", {}).get("real_commands_allowed") is not False:
-        errors.append("runbook_contract.real_commands_allowed must be false")
-    if model.get("observability_contract", {}).get("monitoring_connector_enabled") is not False:
-        errors.append("observability_contract must not enable a monitoring connector")
+    if model.get("incident_lifecycle") != EXPECTED_INCIDENT_LIFECYCLE:
+        errors.append("incident_lifecycle must be exact, manual, and unassigned")
+    if model.get("runbook_contract") != EXPECTED_RUNBOOK_CONTRACT:
+        errors.append("runbook_contract must be exact, prepare-only, and unassigned")
+    if model.get("escalation_contract") != EXPECTED_ESCALATION_CONTRACT:
+        errors.append("escalation_contract must be exact, non-operational, and unassigned")
+    if model.get("observability_contract") != EXPECTED_OBSERVABILITY_CONTRACT:
+        errors.append("observability_contract must be exact, disconnected, and unassigned")
+    if model.get("audit_contract") != EXPECTED_AUDIT_CONTRACT:
+        errors.append("audit_contract must be exact, non-persistent, and unassigned")
+    if model.get("allowed_prepare_actions") != AUTHORIZED_PREPARE_ACTIONS:
+        errors.append(
+            "allowed_prepare_actions must equal the authorized prepare-only actions"
+        )
+    if model.get("prohibited_real_actions") != PROHIBITED_REAL_ACTIONS:
+        errors.append(
+            "prohibited_real_actions must equal the authorized real-action denials"
+        )
 
     decision = model.get("decision", {})
     if decision.get("result") != "resilience_review_candidate":
         errors.append("decision.result must be resilience_review_candidate")
+    if set(decision) != {"result", *AUTHORITY_FLAGS}:
+        errors.append("decision must contain only the authorized result and denial flags")
     for flag in AUTHORITY_FLAGS:
         if decision.get(flag) is not False:
             errors.append(f"decision.{flag} must be false")
@@ -268,6 +391,13 @@ def evaluate_scenario(model: dict[str, Any], scenario: dict[str, Any]) -> dict[s
     tiers = _items_by_id(model.get("continuity_tiers"))
     requirements = _items_by_id(model.get("recovery_evidence_requirements"))
 
+    scenario_id_value = scenario.get("scenario_id")
+    scenario_id = (
+        scenario_id_value.strip() if isinstance(scenario_id_value, str) else ""
+    )
+    if not scenario_id:
+        _append_once(reasons, "missing_scenario_id")
+
     if scenario.get("synthetic") is not True:
         _append_once(reasons, "real_or_unmarked_signal")
     if (
@@ -280,14 +410,33 @@ def evaluate_scenario(model: dict[str, Any], scenario: dict[str, Any]) -> dict[s
     if not service:
         _append_once(reasons, "unknown_service")
 
-    dependency_ids = scenario.get("dependency_ids")
-    if (
-        not isinstance(dependency_ids, list)
-        or not dependency_ids
-        or any(str(item) not in dependencies for item in dependency_ids)
-        or (service and set(dependency_ids) != set(service.get("dependency_ids", [])))
-    ):
+    supplied_dependency_ids = scenario.get("dependency_ids")
+    dependency_ids = (
+        supplied_dependency_ids.copy()
+        if isinstance(supplied_dependency_ids, list)
+        else []
+    )
+    dependency_ids_are_strings = all(
+        isinstance(item, str) for item in dependency_ids
+    )
+    duplicate_dependencies = (
+        dependency_ids_are_strings
+        and len(dependency_ids) != len(set(dependency_ids))
+    )
+    dependencies_known = bool(dependency_ids) and dependency_ids_are_strings and all(
+        item in dependencies for item in dependency_ids
+    )
+    if not dependencies_known:
         _append_once(reasons, "unknown_dependency")
+    if duplicate_dependencies:
+        _append_once(reasons, "duplicate_dependency")
+    if (
+        service
+        and dependencies_known
+        and not duplicate_dependencies
+        and dependency_ids != service.get("dependency_ids", [])
+    ):
+        _append_once(reasons, "dependency_contract_mismatch")
 
     if str(scenario.get("severity")) not in severities:
         _append_once(reasons, "invalid_severity")
@@ -311,8 +460,18 @@ def evaluate_scenario(model: dict[str, Any], scenario: dict[str, Any]) -> dict[s
 
     supplied_evidence = scenario.get("recovery_evidence")
     supplied_by_id = _items_by_id(supplied_evidence)
+    supplied_evidence_ids = [
+        str(item.get("id"))
+        for item in supplied_evidence
+        if isinstance(item, dict) and item.get("id")
+    ] if isinstance(supplied_evidence, list) else []
+    required_evidence_ids = list(requirements)
+    if len(supplied_evidence_ids) != len(set(supplied_evidence_ids)):
+        _append_once(reasons, "duplicate_recovery_evidence")
     if not supplied_by_id or set(supplied_by_id) != set(requirements):
         _append_once(reasons, "missing_recovery_evidence")
+    elif supplied_evidence_ids != required_evidence_ids:
+        _append_once(reasons, "recovery_evidence_contract_mismatch")
     for evidence_id, supplied in supplied_by_id.items():
         if evidence_id not in requirements:
             _append_once(reasons, "missing_recovery_evidence")
@@ -321,18 +480,31 @@ def evaluate_scenario(model: dict[str, Any], scenario: dict[str, Any]) -> dict[s
             _append_once(reasons, "achievement_claim")
 
     supplied_gates = scenario.get("human_gates")
-    if not isinstance(supplied_gates, list) or set(supplied_gates) != set(REQUIRED_GATES):
+    if not isinstance(supplied_gates, list) or not supplied_gates:
         _append_once(reasons, "missing_human_gate")
+    else:
+        gates_are_strings = all(isinstance(gate, str) for gate in supplied_gates)
+        if gates_are_strings and len(supplied_gates) != len(set(supplied_gates)):
+            _append_once(reasons, "duplicate_human_gate")
+        if not gates_are_strings or supplied_gates != REQUIRED_GATES:
+            _append_once(reasons, "human_gate_contract_mismatch")
 
     if (
-        scenario.get("requested_action") not in model.get("allowed_prepare_actions", [])
-        or scenario.get("requested_action") in model.get("prohibited_real_actions", [])
+        scenario.get("requested_action") not in AUTHORIZED_PREPARE_ACTIONS
+        or scenario.get("requested_action") in PROHIBITED_REAL_ACTIONS
         or scenario.get("external_actions_performed") is not False
     ):
         _append_once(reasons, "unsafe_continuity_action")
 
     claims = scenario.get("claims")
-    if not isinstance(claims, dict) or any(value is not False for value in claims.values()):
+    claims_are_exact_false = (
+        isinstance(claims, dict)
+        and set(claims) == REQUIRED_CLAIMS
+        and all(value is False for value in claims.values())
+    )
+    if not claims_are_exact_false:
+        _append_once(reasons, "invalid_claim_contract")
+    if isinstance(claims, dict) and any(value is True for value in claims.values()):
         _append_once(reasons, "achievement_claim")
 
     evidence_refs = [
@@ -340,12 +512,30 @@ def evaluate_scenario(model: dict[str, Any], scenario: dict[str, Any]) -> dict[s
         for requirement in requirements.values()
         if requirement.get("evidence_path")
     ]
+    result = "denied" if reasons else "needs_human_approval"
+    incident_record = {
+        "scenario_id": scenario_id,
+        "policy_version": str(model.get("metadata", {}).get("governance_version", "")),
+        "synthetic": scenario.get("synthetic") is True,
+        "company": scenario.get("company"),
+        "brand": scenario.get("brand"),
+        "service_id": scenario.get("service_id"),
+        "dependency_ids": dependency_ids,
+        "signal_type": scenario.get("signal_type"),
+        "severity": scenario.get("severity"),
+        "impact": scenario.get("impact"),
+        "decision": result,
+        "reason_codes": reasons.copy(),
+        "human_gates": REQUIRED_GATES.copy(),
+        "evidence_refs": evidence_refs.copy(),
+    }
     return {
-        "result": "denied" if reasons else "needs_human_approval",
+        "result": result,
         "reason_codes": reasons,
         "required_human_gates": REQUIRED_GATES.copy(),
         "evidence_refs": evidence_refs,
         "external_actions_performed": False,
+        "incident_record": incident_record,
     }
 
 
@@ -375,6 +565,14 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     result = evaluate_scenario(model, fixture)
     if result.get("result") != "needs_human_approval" or result.get("reason_codes"):
         errors.append("positive fixture must stop at needs_human_approval")
+    incident_record = result.get("incident_record", {})
+    if (
+        not isinstance(incident_record, dict)
+        or list(incident_record) != INCIDENT_RECORD_FIELDS
+        or incident_record.get("scenario_id") != fixture.get("scenario_id")
+        or incident_record.get("decision") != "needs_human_approval"
+    ):
+        errors.append("positive fixture must emit the complete synthetic incident record")
 
     mapping = _yaml(root / MAPPING, errors)
     entries = mapping.get("mappings", [])
