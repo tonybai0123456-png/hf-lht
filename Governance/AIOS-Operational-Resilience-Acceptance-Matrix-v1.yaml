@@ -1,0 +1,85 @@
+metadata:
+  stage: 13
+  stage_id: OR-01
+  decision: design_validation_only
+  owner_state: unassigned / governance decision required
+
+criteria:
+  - id: OR-AC-01
+    criterion: Six system questions and the synthetic business loop are explicit.
+    expected: pass
+    design_only: true
+    evidence_paths: [Governance/AIOS-Operational-Resilience-v1.md, Governance/AIOS-Operational-Resilience-Model-v1.yaml]
+  - id: OR-AC-02
+    criterion: 汇沣电商 BUW is explicit and PC 六合通 or ambiguous scope fails closed.
+    expected: pass
+    design_only: true
+    evidence_paths: [Governance/AIOS-Operational-Resilience-Model-v1.yaml, Tests/test_operational_resilience.py]
+  - id: OR-AC-03
+    criterion: Scenario ID is non-empty and service dependencies severity and impact are known exact and unique.
+    expected: pass
+    design_only: true
+    evidence_paths: [Tests/validate_aios_operational_resilience.py, Tests/test_operational_resilience.py]
+  - id: OR-AC-04
+    criterion: RTO and RPO are bounded design targets and unsupported combinations deny.
+    expected: pass
+    design_only: true
+    evidence_paths: [Governance/AIOS-Operational-Resilience-Model-v1.yaml, Tests/test_operational_resilience.py]
+  - id: OR-AC-05
+    criterion: Recovery evidence IDs are exact unique and design-only; any mismatch fails closed without backup or restore execution.
+    expected: pass
+    design_only: true
+    evidence_paths: [Tests/Fixtures/operational-resilience/synthetic-service-degradation.yaml, Tests/test_operational_resilience.py]
+  - id: OR-AC-06
+    criterion: Incident failover restoration communication exception risk and release gates are exact unique ordered and always human.
+    expected: pass
+    design_only: true
+    evidence_paths: [Governance/AIOS-Operational-Resilience-v1.md, Governance/AIOS-Operational-Resilience-Model-v1.yaml]
+  - id: OR-AC-07
+    criterion: Lifecycle runbook escalation observability audit and action sets are exact; any operational mutation or reported external action denies.
+    expected: pass
+    design_only: true
+    evidence_paths: [Tests/validate_aios_operational_resilience.py, Tests/test_operational_resilience.py]
+  - id: OR-AC-08
+    criterion: Claim keys are exact and boolean false; SLA SLO backup restore and real incident capability claims are rejected.
+    expected: pass
+    design_only: true
+    evidence_paths: [Governance/AIOS-Operational-Resilience-Model-v1.yaml, Tests/test_operational_resilience.py]
+  - id: OR-AC-09
+    criterion: All Stage 10 risks map through Stage 11 and Stage 12 without acceptance or closure.
+    expected: pass
+    design_only: true
+    evidence_paths: [Governance/AIOS-Operational-Resilience-Stage10-12-Mapping-v1.yaml, Tests/test_operational_resilience.py]
+  - id: OR-AC-10
+    criterion: Positive fixture stops at needs_human_approval with no external action and emits a complete synthetic incident record.
+    expected: pass
+    design_only: true
+    evidence_paths: [Tests/Fixtures/operational-resilience/synthetic-service-degradation.yaml, Tests/validate_aios_operational_resilience.py]
+  - id: OR-AC-11
+    criterion: Pull-request-only read-only CI runs targeted full Schema and compilation checks.
+    expected: pass
+    design_only: true
+    evidence_paths: [.github/workflows/validate-aios-operational-resilience.yml, Tests/AIOS-Operational-Resilience-Validation.md]
+  - id: OR-AC-12
+    criterion: Stage 13 stops at Reported and Stage 14 remains Planned and unassigned.
+    expected: pass
+    design_only: true
+    evidence_paths: [Governance/AIOS-Stage-Registry.md, Governance/AIOS-Project-Registry.md]
+
+authority_boundary:
+  production_or_staging_access_authorized: false
+  infrastructure_change_authorized: false
+  monitoring_or_alerting_authorized: false
+  backup_or_restore_authorized: false
+  failover_or_chaos_authorized: false
+  real_incident_operation_authorized: false
+  external_communication_authorized: false
+  real_owner_assigned: false
+  legal_conclusion_granted: false
+  exception_authorized: false
+  risk_acceptance_granted: false
+  pilot_authorized: false
+  release_authorized: false
+  merge_authorized: false
+  archive_authorized: false
+  stage14_authorized: false

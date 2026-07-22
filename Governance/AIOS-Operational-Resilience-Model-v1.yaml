@@ -1,0 +1,196 @@
+metadata:
+  stage: 13
+  stage_id: OR-01
+  issue: 32
+  governance_version: "2.2"
+  main_baseline: c5dde2171c65e75b595c411854cba0016f3623f7
+  execution_thread: 019f8a35-6d4e-7c60-b35a-79de8626d4e3
+  branch: feat/aios-operational-resilience-v1
+  mode: synthetic_tabletop_validation
+  stage_status: Reported
+  owner_state: unassigned / governance decision required
+
+six_system_questions:
+  business_loop: synthetic failure signal -> classify impact and severity -> check dependency continuity and recovery policy -> stop at human gates -> emit synthetic evidence
+  core_objects: service dependency synthetic scenario impact severity continuity tier RTO RPO recovery evidence incident runbook escalation recovery validation audit
+  data_flow: repository synthetic fixture -> safe parse -> deterministic in-memory validation -> synthetic decision only
+  operators: abstract governance incident continuity security privacy communications audit and release roles only; real owners remain unassigned
+  ai_human_boundary: validator checks declared synthetic facts; humans alone declare incidents approve failover restoration communications exceptions risk and release
+  proof: deterministic positive and negative tests repository regression Workflow Schema compilation and PR-only read-only CI
+
+business_boundaries:
+  allowed_company: 汇沣电商
+  allowed_brand: BUW
+  excluded_brand: PC
+  excluded_company: 六合通
+  cross_boundary_default: deny
+
+services:
+  - id: aios_runtime_design
+    description: conceptual BUW AIOS runtime service boundary for synthetic tabletop validation only
+    company: 汇沣电商
+    brand: BUW
+    dependency_ids: [synthetic_policy_registry, synthetic_audit_store]
+    continuity_tier_id: CT-2
+    trust_zone: proposed_application_zone
+    synthetic_only: true
+    deployed: false
+    owner_state: unassigned / governance decision required
+
+dependencies:
+  - id: synthetic_policy_registry
+    description: repository policy object used only during in-memory validation
+    trust_zone: repository_fixture_zone
+    external_connection: false
+    synthetic_only: true
+    owner_state: unassigned / governance decision required
+  - id: synthetic_audit_store
+    description: in-memory audit evidence object; no persistent store is provisioned
+    trust_zone: in_memory_validation_zone
+    external_connection: false
+    synthetic_only: true
+    owner_state: unassigned / governance decision required
+
+failure_modes:
+  - id: synthetic_dependency_degradation
+    description: declared synthetic loss of dependency quality or availability
+    real_signal_source: false
+    automatic_incident_declaration: false
+  - id: synthetic_data_integrity_warning
+    description: declared synthetic integrity mismatch requiring human review
+    real_signal_source: false
+    automatic_incident_declaration: false
+
+severity_levels:
+  - {id: SEV-1, meaning: synthetic critical impact candidate requiring immediate human review}
+  - {id: SEV-2, meaning: synthetic high impact candidate requiring prompt human review}
+  - {id: SEV-3, meaning: synthetic moderate impact candidate requiring scheduled human review}
+  - {id: SEV-4, meaning: synthetic low impact candidate requiring recorded human triage}
+
+impact_classes:
+  - {id: critical, meaning: declared synthetic widespread or irreversible-impact hypothesis}
+  - {id: high, meaning: declared synthetic material service or data-integrity hypothesis}
+  - {id: moderate, meaning: declared synthetic bounded degradation hypothesis}
+  - {id: low, meaning: declared synthetic limited inconvenience hypothesis}
+
+continuity_tiers:
+  - id: CT-1
+    rto_minutes: 60
+    rpo_minutes: 15
+    claim_state: design_target_only
+    human_approval_required: true
+  - id: CT-2
+    rto_minutes: 240
+    rpo_minutes: 60
+    claim_state: design_target_only
+    human_approval_required: true
+  - id: CT-3
+    rto_minutes: 1440
+    rpo_minutes: 1440
+    claim_state: design_target_only
+    human_approval_required: true
+
+recovery_evidence_requirements:
+  - id: EVID-SYN-BACKUP-POLICY
+    requirement: human-reviewed backup scope and retention design
+    claim_state: design_requirement_only
+    evidence_path: Governance/AIOS-Operational-Resilience-v1.md
+    owner_state: unassigned / governance decision required
+  - id: EVID-SYN-RESTORE-PLAN
+    requirement: human-reviewed synthetic restoration verification plan
+    claim_state: design_requirement_only
+    evidence_path: Tests/AIOS-Operational-Resilience-Validation.md
+    owner_state: unassigned / governance decision required
+  - id: EVID-SYN-INTEGRITY-PLAN
+    requirement: declared recovery integrity and reconciliation checks
+    claim_state: design_requirement_only
+    evidence_path: Governance/AIOS-Operational-Resilience-Acceptance-Matrix-v1.yaml
+    owner_state: unassigned / governance decision required
+
+allowed_prepare_actions:
+  - classify_synthetic_signal
+  - evaluate_resilience_policy
+  - prepare_recovery_recommendation
+
+prohibited_real_actions:
+  - declare_incident
+  - perform_failover
+  - perform_restore
+  - send_external_communication
+  - grant_exception
+  - accept_risk
+  - approve_release
+  - page_on_call
+  - modify_infrastructure
+
+human_gates:
+  - {id: incident_declaration, abstract_role: Incident Authority, required: true, owner_state: unassigned / governance decision required}
+  - {id: failover, abstract_role: Continuity Authority, required: true, owner_state: unassigned / governance decision required}
+  - {id: restoration, abstract_role: Recovery Authority, required: true, owner_state: unassigned / governance decision required}
+  - {id: external_communication, abstract_role: Communications Authority, required: true, owner_state: unassigned / governance decision required}
+  - {id: exception, abstract_role: Governance Authority, required: true, owner_state: unassigned / governance decision required}
+  - {id: risk_acceptance, abstract_role: Risk Authority, required: true, owner_state: unassigned / governance decision required}
+  - {id: release, abstract_role: Release Authority, required: true, owner_state: unassigned / governance decision required}
+
+incident_record_contract:
+  required_fields: [scenario_id, policy_version, synthetic, company, brand, service_id, dependency_ids, signal_type, severity, impact, decision, reason_codes, human_gates, evidence_refs]
+  synthetic_only: true
+  persistent_store_provisioned: false
+  real_incident_id_allowed: false
+  raw_alert_payload_allowed: false
+  owner_state: unassigned / governance decision required
+
+incident_lifecycle:
+  states: [signal_received, classified, policy_evaluated, human_decision_required, synthetic_evidence_ready]
+  terminal_state: human_decision_required
+  incident_declaration_automatic: false
+  containment_automatic: false
+  recovery_automatic: false
+  closure_automatic: false
+  owner_state: unassigned / governance decision required
+
+runbook_contract:
+  required_sections: [scope, prerequisites, stop_conditions, decision_gates, evidence, validation, escalation]
+  execution_mode: prepare_only
+  real_commands_allowed: false
+  owner_state: unassigned / governance decision required
+
+escalation_contract:
+  severity_to_abstract_role:
+    SEV-1: Incident Authority
+    SEV-2: Incident Authority
+    SEV-3: Governance Authority
+    SEV-4: Governance Authority
+  paging_enabled: false
+  external_communication_enabled: false
+  owner_state: unassigned / governance decision required
+
+observability_contract:
+  design_signals: [synthetic_availability, synthetic_dependency_health, synthetic_data_integrity]
+  alert_delivery_enabled: false
+  monitoring_connector_enabled: false
+  durable_telemetry_claimed: false
+  owner_state: unassigned / governance decision required
+
+audit_contract:
+  required_fields: [scenario_id, policy_version, service_id, severity, impact, decision, reason_codes, evidence_refs]
+  append_only_design: true
+  persistent_store_provisioned: false
+  raw_personal_content_allowed: false
+  credentials_allowed: false
+  owner_state: unassigned / governance decision required
+
+decision:
+  result: resilience_review_candidate
+  incident_authority_granted: false
+  failover_authorized: false
+  restoration_authorized: false
+  external_communication_authorized: false
+  exception_authorized: false
+  risk_acceptance_granted: false
+  pilot_authorized: false
+  release_authorized: false
+  production_ready: false
+  sla_slo_achieved: false
+  backup_restore_tested: false
+  real_incident_capability: false
