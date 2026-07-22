@@ -73,14 +73,17 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stage_9_is_reviewed_and_stage_10_stays_planned(self):
+    def test_stage_9_is_archived_and_stage_10_is_executing(self):
         stage9 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 9 |"))
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
-        self.assertIn("| Reviewed |", stage9)
+        self.assertIn("| Archived |", stage9)
         self.assertIn("PR #20", stage9)
         self.assertIn("019f7da6-da0c-7310-ad7c-2b4bc15a9906", stage9)
         self.assertIn("feat/aios-project-governance-baseline-v1", stage9)
-        self.assertIn("| Planned |", stage10)
+        self.assertIn("Issue #21", stage10)
+        self.assertIn("019f8937-ac22-71a2-bb35-d8f6d2e0f55f", stage10)
+        self.assertIn("feat/aios-production-readiness-v1", stage10)
+        self.assertIn("| Executing |", stage10)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
