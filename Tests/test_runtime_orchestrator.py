@@ -261,6 +261,7 @@ class RuntimeOrchestratorTests(unittest.TestCase):
         self.assertIn("pull_request:", text)
         self.assertNotIn("\n  push:", text)
         self.assertIn("permissions:\n  contents: read", text)
+        self.assertIn('"Governance/AIOS-Stage-Registry.md"', text)
         self.assertNotIn("contents: write", text)
         self.assertNotIn("pull-requests: write", text)
 

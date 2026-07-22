@@ -6,6 +6,7 @@ on:
       - "Runtime/**"
       - "Schemas/**"
       - "Tests/**"
+      - "Governance/AIOS-Stage-Registry.md"
       - "requirements-dev.txt"
       - ".github/workflows/validate-runtime-orchestrator.yml"
 
