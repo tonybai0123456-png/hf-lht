@@ -133,7 +133,7 @@ human_gates:
   - {id: release, abstract_role: Release Authority, required: true, owner_state: unassigned / governance decision required}
 
 incident_record_contract:
-  required_fields: [scenario_id, synthetic, company, brand, service_id, dependency_ids, signal_type, severity, impact, decision, reason_codes, human_gates, evidence_refs]
+  required_fields: [scenario_id, policy_version, synthetic, company, brand, service_id, dependency_ids, signal_type, severity, impact, decision, reason_codes, human_gates, evidence_refs]
   synthetic_only: true
   persistent_store_provisioned: false
   real_incident_id_allowed: false
