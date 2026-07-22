@@ -73,7 +73,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stage_10_is_archived_and_stage_11_is_reported(self):
+    def test_stage_10_is_archived_and_stage_11_is_reviewed(self):
         stage9 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 9 |"))
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
         self.assertIn("| Archived |", stage9)
@@ -90,7 +90,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("019f89ac-e3b7-7b90-ad27-286708c407e0", stage11)
         self.assertIn("feat/aios-architecture-security-foundations-v1", stage11)
         self.assertIn("Draft PR #26", stage11)
-        self.assertIn("| Reported |", stage11)
+        self.assertIn("| Reviewed |", stage11)
         for stage_number in (12, 13, 14):
             stage = next(line for line in self.stage_registry.splitlines() if line.startswith(f"| {stage_number} |"))
             self.assertIn("| Planned |", stage)
