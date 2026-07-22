@@ -10,7 +10,7 @@
 | Historical policy | `Governance/AIOS-Thread-Governance-v2.md` (frozen v2.0) and `Governance/AIOS-Thread-Governance-v1.md` (frozen v1.1); preserved unchanged |
 | Lifecycle | Planned → Executing → Reported → Reviewed → Archived |
 | Roadmap | Stage 1 → Stage 10 |
-| Publication status | Governance v2.1 published through PR #TBD on 2026-07-22 |
+| Publication status | Governance v2.1 published through PR #18 on 2026-07-22 |
 | Last updated | 2026-07-22 |
 
 This registry is the Single Source of Truth for current BUW AIOS Stage assignment and lifecycle status. Evidence links document execution; they do not replace the registry or grant archival authority.
@@ -103,4 +103,4 @@ The dashboard is a governance summary. It does not replace this registry or GitH
 
 | 2026-07-22 | 2.0 | Published Stage 8 / RO-01 through authorized squash merge of PR #17 at `431825c`; post-merge Schema validation, 31/31 tests, Python compilation and diff cleanliness passed. | BUW AIOS Official Governance Thread authorization / RO-01 publication |
 | 2026-07-22 | 2.0 | Archived Stage 8 / RO-01 after verified publication and the separately authorized archival decision; Issue #16 remains open unless separately closed. | BUW AIOS Official Governance Thread |
-| 2026-07-22 | 2.1 | Published governance v2.1 through PR #TBD; re-adjudicated Issue #13 as Stage 9 / PG-01 and moved PR-01 / Production Readiness to Stage 10 without authorizing Production Readiness. | BUW AIOS Official Governance Thread |
+| 2026-07-22 | 2.1 | Published governance v2.1 through PR #18; re-adjudicated Issue #13 as Stage 9 / PG-01 and moved PR-01 / Production Readiness to Stage 10 without authorizing Production Readiness. | BUW AIOS Official Governance Thread |
