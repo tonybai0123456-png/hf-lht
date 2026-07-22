@@ -19,6 +19,9 @@ This is deterministic, synthetic and read-only validation of the DG-01 policy pa
 | Field outside the purpose allowlist | `excessive_fields` |
 | Unlisted role, purpose, category or action | `unauthorized_access` |
 | Missing required preference reference | `missing_consent_or_preference` |
+| Unknown, unsafe or purpose-incompatible preference reference | `invalid_consent_or_preference` |
+| Missing request ID, categories or fields | `missing_request_id`, `missing_categories` or `missing_fields` |
+| Asset, category, field or action conflicts with the selected purpose | `asset_not_allowed_for_purpose`, `category_not_allowed_for_purpose`, `field_not_allowed_for_asset` or `action_not_allowed_for_purpose` |
 | Delete, correct, export or fulfillment action | `human_approval_required` |
 | Unknown, unbounded or auto-delete retention | `invalid_retention` |
 | Missing or disallowed lineage | `missing_lineage` or `invalid_lineage` |
