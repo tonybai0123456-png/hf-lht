@@ -1,0 +1,144 @@
+metadata:
+  stage: 12
+  stage_id: DG-01
+  issue: 28
+  governance_version: "2.2"
+  main_baseline: e4ad42068b72ea107bf0c57aba11c6dd86e3cf0c
+  execution_thread: 019f8762-4b8c-7452-addb-ba9510988798
+  branch: feat/aios-privacy-data-governance-v1
+  mode: synthetic_policy_validation
+  stage_status: Reported
+  owner_state: unassigned / governance decision required
+
+six_system_questions:
+  business_loop: A declared synthetic request is scope checked, purpose and basis referenced, minimized, access and retention evaluated, then allowed or denied in memory with audit reasons.
+  core_objects: Data asset, subject type, category, purpose, basis decision, consent or preference reference, role, access policy, retention rule, subject request, lineage and audit event.
+  data_flow: Repository-owned synthetic fixtures are evaluated in memory against versioned YAML policy and no source, destination or external system is connected.
+  operators: Abstract governance, privacy, legal, data steward, security, auditor and runtime roles only; no real person is assigned.
+  ai_human_boundary: Deterministic checks validate declared facts and fail closed; humans alone decide legal basis, exceptions, real-data access, fulfillment, risk and release.
+  proof: Positive and negative synthetic tests plus pull-request-only read-only CI prove package consistency and denial behavior only.
+
+business_boundaries:
+  allowed_company: 汇沣电商
+  allowed_brand: BUW
+  excluded_brand: PC
+  excluded_company: 六合通
+  cross_boundary_default: deny
+
+data_assets:
+  - id: synthetic_customer_contact
+    subject_type: synthetic_customer
+    categories: [contact]
+    fields: [synthetic_email]
+    classification: synthetic_personal_like
+    synthetic_only: true
+    owner_state: unassigned / governance decision required
+  - id: synthetic_customer_preference
+    subject_type: synthetic_customer
+    categories: [preference]
+    fields: [synthetic_preference]
+    classification: synthetic_personal_like
+    synthetic_only: true
+    owner_state: unassigned / governance decision required
+
+purposes:
+  - id: service_response
+    allowed_assets: [synthetic_customer_contact]
+    allowed_categories: [contact]
+    allowed_fields: [synthetic_email]
+    allowed_actions: [read]
+    basis_decision_ids: [BASIS-SYN-001]
+    consent_or_preference_required: false
+    owner_state: unassigned / governance decision required
+  - id: preference_management
+    allowed_assets: [synthetic_customer_preference]
+    allowed_categories: [preference]
+    allowed_fields: [synthetic_preference]
+    allowed_actions: [read]
+    basis_decision_ids: [BASIS-SYN-002]
+    consent_or_preference_required: true
+    owner_state: unassigned / governance decision required
+
+basis_decisions:
+  - id: BASIS-SYN-001
+    status: human_review_recorded_for_synthetic_design
+    legal_conclusion: false
+    real_data_authorized: false
+    owner_state: unassigned / governance decision required
+  - id: BASIS-SYN-002
+    status: human_review_recorded_for_synthetic_design
+    legal_conclusion: false
+    real_data_authorized: false
+    owner_state: unassigned / governance decision required
+
+consent_or_preference_records:
+  - id: PREF-SYN-001
+    purpose_ids: [preference_management]
+    synthetic_only: true
+    human_review_state: human_review_recorded_for_synthetic_design
+    owner_state: unassigned / governance decision required
+
+access_policies:
+  - role: Data Steward
+    purpose_ids: [service_response, preference_management]
+    categories: [contact, preference]
+    actions: [read]
+    owner_state: unassigned / governance decision required
+
+retention_rules:
+  - id: RET-SYN-030D
+    duration_days: 30
+    start_event: synthetic_request_created
+    review_required: true
+    automatic_real_deletion: false
+    disposition: human_review_required
+    owner_state: unassigned / governance decision required
+
+subject_request_flow:
+  supported_types: [access, correction, deletion, opt_out]
+  states:
+    - intake
+    - identity_verification_required
+    - scope_review
+    - human_approval_required
+    - synthetic_evidence_ready
+    - closed
+  automatic_fulfillment: false
+  real_action_allowed: false
+  owner_state: unassigned / governance decision required
+
+lineage_policy:
+  allowed_sources: [synthetic_fixture]
+  allowed_destinations: [in_memory_validation]
+  cross_boundary_allowed: false
+  raw_personal_content_allowed: false
+  evidence_required: true
+  owner_state: unassigned / governance decision required
+
+sample_requests:
+  - request_id: SYN-DG-001
+    synthetic: true
+    company: 汇沣电商
+    brand: BUW
+    asset_id: synthetic_customer_contact
+    subject_type: synthetic_customer
+    categories: [contact]
+    fields: [synthetic_email]
+    purpose_id: service_response
+    basis_decision_id: BASIS-SYN-001
+    actor_role: Data Steward
+    action: read
+    retention_rule_id: RET-SYN-030D
+    lineage:
+      source: synthetic_fixture
+      destination: in_memory_validation
+
+decision:
+  result: policy_review_candidate
+  legal_approval_granted: false
+  real_data_authorized: false
+  production_ready: false
+  deployment_authorized: false
+  pilot_authorized: false
+  release_authorized: false
+  risk_acceptance_granted: false

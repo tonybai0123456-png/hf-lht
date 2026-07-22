@@ -1,0 +1,23 @@
+metadata:
+  stage: 12
+  stage_id: DG-01
+  acceptance_scope: synthetic_policy_validation_only
+
+overall_decision:
+  result: policy_review_candidate
+  legal_approval_granted: false
+  real_data_authorized: false
+  production_ready: false
+  deployment_authorized: false
+  pilot_authorized: false
+  release_authorized: false
+
+criteria:
+  - {id: DG-ACC-01, criterion: Six system questions and synthetic business loop are explicit, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Privacy-Data-Governance-v1.md, Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml]}
+  - {id: DG-ACC-02, criterion: BUW PC 汇沣电商 and 六合通 remain explicitly separated with default deny, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Privacy-Data-Governance-v1.md, Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml]}
+  - {id: DG-ACC-03, criterion: Catalog purpose and basis references are machine-readable without legal conclusion, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml, docs/superpowers/specs/2026-07-22-privacy-data-governance-v1-design.md]}
+  - {id: DG-ACC-04, criterion: Classification minimization and exact access fail closed, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml, Tests/validate_aios_privacy_data_governance.py]}
+  - {id: DG-ACC-05, criterion: Retention disposition subject request and preference flows require human gates, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Privacy-Data-Governance-v1.md, Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml]}
+  - {id: DG-ACC-06, criterion: Lineage and audit contract stores no raw personal content and permits no external write, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Privacy-Data-Governance-v1.md, Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml]}
+  - {id: DG-ACC-07, criterion: All ten Stage 10 risks remain open or blocked unaccepted and unassigned, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Governance/AIOS-Privacy-Data-Governance-Stage10-Mapping-v1.yaml, Governance/AIOS-Production-Readiness-Risk-Register-v1.yaml]}
+  - {id: DG-ACC-08, criterion: Deterministic positive and negative validation runs in pull-request-only read-only CI, status: pass, owner_state: unassigned / governance decision required, production_action_allowed: false, evidence_paths: [Tests/validate_aios_privacy_data_governance.py, Tests/test_privacy_data_governance.py, .github/workflows/validate-aios-privacy-data-governance.yml]}
