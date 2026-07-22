@@ -71,6 +71,13 @@ basis_decisions:
     real_data_authorized: false
     owner_state: unassigned / governance decision required
 
+consent_or_preference_records:
+  - id: PREF-SYN-001
+    purpose_ids: [preference_management]
+    synthetic_only: true
+    human_review_state: human_review_recorded_for_synthetic_design
+    owner_state: unassigned / governance decision required
+
 access_policies:
   - role: Data Steward
     purpose_ids: [service_response, preference_management]
