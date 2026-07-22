@@ -1,0 +1,97 @@
+metadata:
+  stage: 11
+  stage_id: AF-01
+  issue: 24
+  governance_version: "2.2"
+  main_baseline: 45944a50ea33e61ad2683082441d2dac75812906
+  execution_thread: 019f89ac-e3b7-7b90-ad27-286708c407e0
+  branch: feat/aios-architecture-security-foundations-v1
+  mode: design_only
+  stage_status: Executing
+
+six_system_questions:
+  business_loop: A future bounded BUW request is admitted, policy checked, dry-run planned, explicitly approved where required, adapter-executed, audited and reconciled; this Stage performs design only.
+  core_objects: Governed request, company/brand scope, workflow version, policy decision, approval, run, idempotency key, audit event, connector command and reconciliation result.
+  data_flow: Synthetic input crosses admission and policy into a stateless orchestrator; future durable control and audit stores retain evidence; connector egress remains disabled.
+  operators: Abstract Governance Approver, Security Reviewer, Platform Operator, Runtime Service Identity, Read-only Auditor and Connector Service Identity; no person is assigned.
+  ai_human_boundary: Deterministic controls validate and fail closed; humans alone approve architecture, identities, secrets, connectors, risk, pilot and release.
+  proof: Read-only validation and negative tests prove design completeness and denial boundaries; implementation requires separately authorized non-production evidence.
+
+business_boundaries:
+  BUW: Independent US brand and the sole possible future project brand scope.
+  PC: Independent US brand excluded from BUW project requests and results.
+  汇沣电商: Company boundary containing separate BUW and PC brand scopes; not identical to BUW.
+  六合通: Separate international freight-forwarding company excluded from BUW AIOS.
+  cross_boundary_default: deny
+
+trust_zones:
+  - {id: governance_control, purpose: Versioned policy and approvals, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: human_access, purpose: Future authenticated human review surface, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: ingress_policy, purpose: Envelope validation and policy decision, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: orchestration_runtime, purpose: Stateless workflow planning and coordination, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: durable_control_state, purpose: Future run and idempotency ledger, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: audit_observability, purpose: Future append-only evidence and telemetry, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: connector_boundary, purpose: Future isolated and allowlisted adapters, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: external_business_systems, purpose: Out-of-scope systems with no Stage 11 access, provisioned: false, owner_state: unassigned / governance decision required}
+
+target_components:
+  - {id: admission_gateway, zone: ingress_policy, design_status: proposed, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: policy_decision_point, zone: ingress_policy, design_status: proposed, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: workflow_registry, zone: orchestration_runtime, design_status: proposed, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: orchestration_worker, zone: orchestration_runtime, design_status: proposed, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: run_idempotency_ledger, zone: durable_control_state, design_status: proposed, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: append_only_audit_sink, zone: audit_observability, design_status: proposed, provisioned: false, owner_state: unassigned / governance decision required}
+  - {id: isolated_connector_adapter, zone: connector_boundary, design_status: proposed, provisioned: false, owner_state: unassigned / governance decision required}
+
+identity_and_access:
+  least_privilege_default: deny
+  identities_created: false
+  authentication_design: Future approved identity provider for humans and workload identity for services.
+  authorization_dimensions: [environment, company, brand, workflow, action, resource]
+  abstract_roles:
+    - Governance Approver
+    - Security Reviewer
+    - Platform Operator
+    - Runtime Service Identity
+    - Read-only Auditor
+    - Connector Service Identity
+  separation_of_duties: No runtime or connector role may approve its own identity, risk or release.
+
+secrets_lifecycle:
+  design_only: true
+  secrets_created: false
+  phases: [request, explicit_approval, issue, workload_retrieval, adapter_local_use, rotate, revoke, audit]
+  fail_closed_conditions: [retrieval_failure, rotation_failure, revocation_uncertain, audit_failure]
+  prohibited_locations: [source_control, workflow_payload, logs, human_messages]
+
+persistence_and_audit:
+  implementation_status: proposed_only
+  durable_run_ledger: Records state transitions and immutable workflow versions.
+  idempotency_store: Reserves a company-brand-workflow-action scoped key before any future action.
+  audit_store: Append-only ordered events with identity, policy and approval references and no secret material.
+  unknown_state_behavior: stop_and_require_human_review
+
+connector_boundary:
+  default: deny
+  enabled_connectors: []
+  external_writes_allowed: false
+  adapter_isolation_required: true
+  allowlist_dimensions: [company, brand, system, action, resource]
+  uncertain_outcome_behavior: stop_and_reconcile_before_retry
+
+capacity_and_failure_assumptions:
+  measured_capacity: false
+  throughput_claim: none
+  availability_claim: none
+  rto_claim: none
+  rpo_claim: none
+  fail_closed_dependencies: [identity_provider, policy_store, run_ledger, audit_store, connector]
+  stop_conditions: [duplicate, timeout, partial_result, stale_policy, cross_boundary, unknown_state]
+
+decision:
+  result: design_review_candidate
+  production_ready: false
+  deployment_authorized: false
+  pilot_authorized: false
+  release_authorized: false
+  risk_acceptance_granted: false
