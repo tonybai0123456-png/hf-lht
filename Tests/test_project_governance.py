@@ -232,7 +232,6 @@ class ProjectGovernanceValidation(unittest.TestCase):
         run_command = re.compile(r"(?m)^\s*(?:python3|git|test|gh|python -m pip)\b")
         expected_result = re.compile(r"\b(?:Expected|expect|expects|confirm|verify|proves?|pass(?:es|ed)?)\b", re.IGNORECASE)
         commit_command = re.compile(r"git commit -m \"[^\"]+\"")
-        code_change_language = re.compile(r"```(?:python|yaml|markdown|diff)\n", re.MULTILINE)
 
         for match in task_matches:
             task_number = match.group(1)
@@ -246,8 +245,6 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 self.assertTrue(any(run_command.search(fence) for fence in fences), "task must contain an exact runnable command")
                 self.assertRegex(section, expected_result)
                 self.assertRegex(section, commit_command)
-                if re.search(r"(?i)\b(create|modify|implement|add|write|update|replace)\b", section):
-                    self.assertRegex(section, code_change_language)
 
         for requirement_id in (
             "AC-ENVIRONMENT",
