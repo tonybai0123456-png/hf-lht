@@ -665,54 +665,52 @@ def validate_current_registry_lifecycle(
     stage_registry: str,
     project_registry: str,
 ) -> list[str]:
-    """Validate only current registry facts and the Stage 14 authority ceiling."""
+    """Validate Stage 13 archive evidence and the Stage 14 Reported ceiling."""
     errors: list[str] = []
     stage13 = next((line for line in stage_registry.splitlines() if line.startswith("| 13 |")), "")
     stage14 = next((line for line in stage_registry.splitlines() if line.startswith("| 14 |")), "")
     project = next((line for line in project_registry.splitlines() if line.startswith("| BUW-AIOS |")), "")
-    if not all(token in stage13 for token in ("Issue #32", "Issue #34", "019f8a35-6d4e-7c60-b35a-79de8626d4e3", "feat/aios-operational-resilience-v1", "7b16a5c", "19/19", "80/80", "| Archived |")):
-        errors.append("Stage 13 registry row must record the reviewed, published archive evidence")
-    if not all(token in stage14 for token in (
-        "Issue #36",
-        "019f8c92-e709-7a83-b06c-fa014cf0b216",
-        "feat/aios-support-controlled-pilot-design-v1",
-        "| Executing |",
-        "c312db694afc40b5ec268f577c6c05a664b98eef",
-        "e376726d51863e22324d164ddf8c8a33f84937cd",
-        "corrected implementation plan awaiting independent human approval",
-        "no pilot authority",
-    )):
-        errors.append("Stage 14 must record the separately authorized design-only execution boundary")
+
+    stage13_required = (
+        "Issue #32", "Issue #34", "019f8a35-6d4e-7c60-b35a-79de8626d4e3",
+        "feat/aios-operational-resilience-v1", "327d9e9", "7b16a5c",
+        "19/19", "80/80", "| Archived |",
+    )
+    if not all(token in stage13 for token in stage13_required):
+        errors.append("Stage 13 registry row must preserve exact reviewed published archive evidence")
+
+    stage14_required = (
+        "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
+        "feat/aios-support-controlled-pilot-design-v1", "PR #37",
+        "| Reported |", "Implementation evidence head", "Mandatory Return",
+        "needs_human_governance", "independently approved plan", "no pilot authority",
+    )
+    if not all(token in stage14 for token in stage14_required):
+        errors.append("Stage 14 must record evidence-backed Reported status under independently approved plan")
+
     for forbidden in (
-        "| Reported |",
-        "| Reviewed |",
-        "| Archived |",
-        "pilot authority granted",
-        "pilot authorized",
-        "pilot_authorized: true",
+        "| Reviewed |", "| Archived |", "pilot authority granted", "pilot authorized",
+        "pilot_authorized: true", "release authorized", "released", "ready for pilot",
+        "self-approved plan", "named owner", "real data connected", "connector enabled",
     ):
         if forbidden in stage14:
-            errors.append(f"Stage 14 design tranche exceeds its lifecycle or pilot authority: {forbidden}")
-    if not all(token in project for token in (
-        "Stage 13 Archived / Stage 14 Executing",
-        "Issue #36",
-        "019f8c92-e709-7a83-b06c-fa014cf0b216",
-        "feat/aios-support-controlled-pilot-design-v1",
-        "c312db694afc40b5ec268f577c6c05a664b98eef",
-        "e376726d51863e22324d164ddf8c8a33f84937cd",
-        "Corrected implementation plan awaiting independent human approval",
-    )):
-        errors.append("Project Registry must record the approved Stage 14 specification and plan approval gate")
+            errors.append(f"Stage 14 exceeds Reported authority: {forbidden}")
+
+    project_required = (
+        "Stage 13 Archived / Stage 14 Reported", "Issue #36",
+        "implementation evidence head", "Draft PR #37", "Mandatory Return",
+        "needs_human_governance", "Awaiting independent human review", "no pilot authority",
+    )
+    if not all(token in project for token in project_required):
+        errors.append("Project Registry must record Stage 14 Reported awaiting independent human review")
+
     for forbidden in (
-        "Stage 14 Reported",
-        "Stage 14 Reviewed",
-        "Stage 14 Archived",
-        "pilot authority granted",
-        "pilot authorized",
-        "pilot_authorized: true",
+        "Stage 14 Reviewed", "Stage 14 Archived", "pilot authority granted",
+        "pilot authorized", "pilot_authorized: true", "release authorized",
+        "self-approved", "ready for pilot",
     ):
         if forbidden in project:
-            errors.append(f"Project Registry exceeds the Stage 14 design authority: {forbidden}")
+            errors.append(f"Project Registry exceeds Reported authority: {forbidden}")
     return errors
 
 

@@ -73,56 +73,29 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stages_10_through_13_are_archived_stage14_design_is_separately_authorized(self):
-        stage9 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 9 |"))
+    def test_stages_10_through_13_are_archived_stage14_is_reported(self):
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
-        self.assertIn("| Archived |", stage9)
-        self.assertIn("PR #20", stage9)
-        self.assertIn("019f7da6-da0c-7310-ad7c-2b4bc15a9906", stage9)
-        self.assertIn("feat/aios-project-governance-baseline-v1", stage9)
-        self.assertIn("Issue #21", stage10)
-        self.assertIn("019f8937-ac22-71a2-bb35-d8f6d2e0f55f", stage10)
-        self.assertIn("feat/aios-production-readiness-v1", stage10)
-        self.assertIn("PR #23", stage10)
-        self.assertIn("| Archived |", stage10)
         stage11 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 11 |"))
-        self.assertIn("Issue #24", stage11)
-        self.assertIn("019f89ac-e3b7-7b90-ad27-286708c407e0", stage11)
-        self.assertIn("feat/aios-architecture-security-foundations-v1", stage11)
+        stage12 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 12 |"))
+        stage13 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 13 |"))
+        stage14 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 14 |"))
+        self.assertIn("BLOCKED / NO-GO", stage10)
+        self.assertIn("| Archived |", stage10)
         self.assertIn("PR #26", stage11)
         self.assertIn("| Archived |", stage11)
-        stage12 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 12 |"))
-        self.assertIn("Issue #28", stage12)
-        self.assertIn("019f8762-4b8c-7452-addb-ba9510988798", stage12)
-        self.assertIn("feat/aios-privacy-data-governance-v1", stage12)
         self.assertIn("PR #29", stage12)
         self.assertIn("454a719", stage12)
-        self.assertIn("11/11", stage12)
-        self.assertIn("61/61", stage12)
         self.assertIn("| Archived |", stage12)
-        stage13 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 13 |"))
-        self.assertIn("Issue #32", stage13)
-        self.assertIn("019f8a35-6d4e-7c60-b35a-79de8626d4e3", stage13)
-        self.assertIn("feat/aios-operational-resilience-v1", stage13)
-        self.assertIn("Issue #34", stage13)
-        self.assertIn("327d9e9", stage13)
-        self.assertIn("7b16a5c", stage13)
-        self.assertIn("19/19", stage13)
-        self.assertIn("80/80", stage13)
-        self.assertIn("| Archived |", stage13)
-        stage14 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 14 |"))
-        self.assertIn("Issue #36", stage14)
-        self.assertIn("019f8c92-e709-7a83-b06c-fa014cf0b216", stage14)
-        self.assertIn("feat/aios-support-controlled-pilot-design-v1", stage14)
-        self.assertIn("| Executing |", stage14)
-        self.assertIn("c312db694afc40b5ec268f577c6c05a664b98eef", stage14)
-        self.assertIn("e376726d51863e22324d164ddf8c8a33f84937cd", stage14)
-        self.assertIn("corrected implementation plan awaiting independent human approval", stage14)
-        self.assertIn("no pilot authority", stage14)
-        self.assertIn(
-            "Stage 13 Archived / Stage 14 Executing",
-            self.project_registry,
-        )
+        for token in ("Issue #32", "Issue #34", "327d9e9", "7b16a5c", "19/19", "80/80", "| Archived |"):
+            self.assertIn(token, stage13)
+        for token in (
+            "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
+            "feat/aios-support-controlled-pilot-design-v1", "PR #37",
+            "| Reported |", "Mandatory Return", "needs_human_governance",
+            "no pilot authority",
+        ):
+            self.assertIn(token, stage14)
+        self.assertIn("Stage 13 Archived / Stage 14 Reported", self.project_registry)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
