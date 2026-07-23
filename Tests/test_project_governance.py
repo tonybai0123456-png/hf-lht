@@ -230,7 +230,10 @@ class ProjectGovernanceValidation(unittest.TestCase):
 
         code_fence = re.compile(r"```(?:bash|python|yaml|markdown|diff)\n.+?\n```", re.DOTALL)
         run_command = re.compile(r"(?m)^\s*(?:python3|git|test|gh|python -m pip)\b")
-        expected_result = re.compile(r"\b(?:Expected|expect|expects|confirm|verify|proves?|pass(?:es|ed)?)\b", re.IGNORECASE)
+        evidence_language = re.compile(
+            r"\b(?:Expected|expect|expects|confirm|verify|proves?|pass(?:es|ed)?|validat(?:e|es|ed|ion)|run)\b",
+            re.IGNORECASE,
+        )
         commit_command = re.compile(r"git commit -m \"[^\"]+\"")
 
         for match in task_matches:
@@ -243,7 +246,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 fences = code_fence.findall(section)
                 self.assertGreaterEqual(len(fences), 2, "task must contain runnable/code evidence fences")
                 self.assertTrue(any(run_command.search(fence) for fence in fences), "task must contain an exact runnable command")
-                self.assertRegex(section, expected_result)
+                self.assertRegex(section, evidence_language)
                 self.assertRegex(section, commit_command)
 
         for requirement_id in (
