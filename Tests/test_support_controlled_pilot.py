@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import importlib.util
 import unittest
 from pathlib import Path
@@ -21,6 +22,45 @@ def load_validator():
 
 
 class SupportControlledPilotTests(unittest.TestCase):
+    def test_valid_fixture_needs_human_governance_without_side_effects(self):
+        validator = load_validator()
+        model = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)
+        fixture = validator.load_repository_yaml(ROOT, validator.FIXTURE_PATH)
+        before = copy.deepcopy((model, fixture))
+        first = validator.evaluate_eligibility(
+            model, fixture["request"], fixture["evidence_bundle"]
+        )
+        second = validator.evaluate_eligibility(
+            model, fixture["request"], fixture["evidence_bundle"]
+        )
+        self.assertEqual(first, second)
+        self.assertEqual(before, (model, fixture))
+        self.assertEqual("needs_human_governance", first["result"])
+        self.assertEqual([], first["reason_codes"])
+        self.assertEqual(
+            [g["gate_id"] for g in model["human_gates"]],
+            first["required_human_gates"],
+        )
+        self.assertEqual([], first["external_actions_performed"])
+        self.assertEqual(
+            {
+                "result",
+                "model_version",
+                "support_request_id",
+                "support_case_id",
+                "pilot_candidate_id",
+                "scope_id",
+                "reason_codes",
+                "required_human_gates",
+                "evidence_refs",
+                "upstream_risk_states",
+                "audit_record",
+                "decision_record",
+                "external_actions_performed",
+            },
+            set(first),
+        )
+
     def test_loader_accepts_only_allowlisted_repository_yaml(self):
         validator = load_validator()
         loaded = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)

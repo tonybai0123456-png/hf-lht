@@ -368,3 +368,52 @@ def validate_model(model: dict[str, Any]) -> list[str]:
     }:
         _append_once(errors, "decision_contract_invalid")
     return errors
+
+
+def evaluate_eligibility(
+    model: dict[str, Any],
+    request: dict[str, Any],
+    evidence_bundle: dict[str, Any],
+) -> dict[str, Any]:
+    reasons: list[str] = []
+    for error in validate_model(model):
+        _append_once(reasons, f"MODEL_{error.upper()}")
+    if (
+        request.get("model_version") != MODEL_VERSION
+        or evidence_bundle.get("model_version") != MODEL_VERSION
+    ):
+        _append_once(reasons, "VERSION_MISMATCH")
+    if (request.get("company"), request.get("brand")) != ("汇沣电商", "BUW"):
+        _append_once(reasons, "BUSINESS_BOUNDARY_INVALID")
+    if request.get("owner_state") != OWNER_STATE:
+        _append_once(reasons, "REAL_OWNER_FORBIDDEN")
+    if (
+        request.get("external_actions_performed") != []
+        or evidence_bundle.get("external_actions_performed") != []
+    ):
+        _append_once(reasons, "EXTERNAL_ACTION_FORBIDDEN")
+    result = "denied" if reasons else "needs_human_governance"
+    gates = [] if reasons else [gate["gate_id"] for gate in model["human_gates"]]
+    core = {
+        "result": result,
+        "model_version": MODEL_VERSION,
+        "support_request_id": request.get("support_request_id"),
+        "support_case_id": request.get("support_case_id"),
+        "pilot_candidate_id": request.get("pilot_candidate_id"),
+        "scope_id": request.get("scope_id"),
+        "reason_codes": reasons,
+        "required_human_gates": gates,
+        "evidence_refs": list(evidence_bundle.get("evidence_refs", [])),
+        "upstream_risk_states": dict(
+            evidence_bundle.get("upstream_risk_states", {})
+        ),
+        "external_actions_performed": [],
+    }
+    audit = {**core, "record_id": "AUD-SYN-001", "synthetic": True}
+    decision = {
+        **core,
+        "record_id": "DEC-SYN-001",
+        "synthetic": True,
+        "human_decision": None,
+    }
+    return {**core, "audit_record": audit, "decision_record": decision}

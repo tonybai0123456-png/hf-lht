@@ -1,0 +1,46 @@
+fixture_version: support_controlled_pilot_fixture/v1
+synthetic: true
+repository_controlled: true
+request:
+  model_version: support_controlled_pilot_eligibility/v1
+  support_request_id: SR-SYN-001
+  support_case_id: SC-SYN-001
+  pilot_candidate_id: PCAN-SYN-001
+  scope_id: SCOPE-SYN-001
+  company: 汇沣电商
+  brand: BUW
+  synthetic_workload_class: SYNTHETIC-SUPPORT-EVALUATION
+  owner_state: unassigned / governance decision required
+  external_actions_performed: []
+evidence_bundle:
+  model_version: support_controlled_pilot_eligibility/v1
+  evidence_bundle_id: EVB-SYN-001
+  evidence_bundle_version: 1.0.0
+  synthetic: true
+  repository_controlled: true
+  evidence_refs:
+    - EVID-SYN-STAGE10-RISK-REGISTER
+    - EVID-SYN-STAGE11-ARCHITECTURE-SECURITY
+    - EVID-SYN-STAGE12-PRIVACY-DATA
+    - EVID-SYN-STAGE13-OPERATIONAL-RESILIENCE
+    - EVID-SYN-SUPPORT-STOP-WITHDRAWAL
+    - EVID-SYN-METRICS-AUDIT
+  evidence_items:
+    - {evidence_id: EVID-SYN-STAGE10-RISK-REGISTER, synthetic_content: EVID-SYN-STAGE10-RISK-REGISTER, hash_basis: synthetic_content_utf8, repository_path: Governance/AIOS-Production-Readiness-Risk-Register-v1.yaml, content_sha256: 3d7f83dce1b454e06bf6c5c66637abc88e990fd73ad715fdfbfa3685cf22ede4, human_accepted: false}
+    - {evidence_id: EVID-SYN-STAGE11-ARCHITECTURE-SECURITY, synthetic_content: EVID-SYN-STAGE11-ARCHITECTURE-SECURITY, hash_basis: synthetic_content_utf8, repository_path: Governance/AIOS-Architecture-Security-Model-v1.yaml, content_sha256: 3484042600c1186c2ef2901a34a15f530d75e5e79a5fda34ecf86c1a2d10aea9, human_accepted: false}
+    - {evidence_id: EVID-SYN-STAGE12-PRIVACY-DATA, synthetic_content: EVID-SYN-STAGE12-PRIVACY-DATA, hash_basis: synthetic_content_utf8, repository_path: Governance/AIOS-Privacy-Data-Governance-Model-v1.yaml, content_sha256: a82f13e3fa739b020bd2ee7d46c3519093bcdf23aae2edf5cc30813a8da50899, human_accepted: false}
+    - {evidence_id: EVID-SYN-STAGE13-OPERATIONAL-RESILIENCE, synthetic_content: EVID-SYN-STAGE13-OPERATIONAL-RESILIENCE, hash_basis: synthetic_content_utf8, repository_path: Governance/AIOS-Operational-Resilience-Model-v1.yaml, content_sha256: 7e25b112c97b0c1b932308c44f56f363a0c0ae61158f3818bb878c7413759cbc, human_accepted: false}
+    - {evidence_id: EVID-SYN-SUPPORT-STOP-WITHDRAWAL, synthetic_content: EVID-SYN-SUPPORT-STOP-WITHDRAWAL, hash_basis: synthetic_content_utf8, repository_path: Governance/AIOS-Support-Controlled-Pilot-Model-v1.yaml, content_sha256: 9890de682c5b9a8ab0a8b93907e291ab25d9f568f8a4f74ee57a1771c8127a76, human_accepted: false}
+    - {evidence_id: EVID-SYN-METRICS-AUDIT, synthetic_content: EVID-SYN-METRICS-AUDIT, hash_basis: synthetic_content_utf8, repository_path: Tests/Fixtures/support-controlled-pilot/synthetic-support-pilot-candidate.yaml, content_sha256: 0058fa48f1a5c7d87a8867b7c966fc2255200d4074b120563f912ae497fc4fd6, human_accepted: false}
+  upstream_risk_states:
+    PR-RISK-001: blocked
+    PR-RISK-002: blocked
+    PR-RISK-003: blocked
+    PR-RISK-004: blocked
+    PR-RISK-005: blocked
+    PR-RISK-006: blocked
+    PR-RISK-007: blocked
+    PR-RISK-008: blocked
+    PR-RISK-009: open
+    PR-RISK-010: open
+  external_actions_performed: []
