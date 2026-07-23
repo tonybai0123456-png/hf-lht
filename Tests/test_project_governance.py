@@ -116,7 +116,8 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("feat/aios-support-controlled-pilot-design-v1", stage14)
         self.assertIn("| Executing |", stage14)
         self.assertIn("c312db694afc40b5ec268f577c6c05a664b98eef", stage14)
-        self.assertIn("implementation plan awaiting independent human approval", stage14)
+        self.assertIn("e376726d51863e22324d164ddf8c8a33f84937cd", stage14)
+        self.assertIn("corrected implementation plan awaiting independent human approval", stage14)
         self.assertIn("no pilot authority", stage14)
         self.assertIn(
             "Stage 13 Archived / Stage 14 Executing",

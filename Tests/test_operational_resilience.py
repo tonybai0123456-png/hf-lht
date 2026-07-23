@@ -560,7 +560,8 @@ class OperationalResilienceTests(unittest.TestCase):
         self.assertIn("feat/aios-support-controlled-pilot-design-v1", stage14)
         self.assertIn("| Executing |", stage14)
         self.assertIn("c312db694afc40b5ec268f577c6c05a664b98eef", stage14)
-        self.assertIn("implementation plan awaiting independent human approval", stage14)
+        self.assertIn("e376726d51863e22324d164ddf8c8a33f84937cd", stage14)
+        self.assertIn("corrected implementation plan awaiting independent human approval", stage14)
         self.assertIn("no pilot authority", stage14)
         self.assertIn("Stage 13 Archived / Stage 14 Executing", project_registry)
 
@@ -595,8 +596,8 @@ class OperationalResilienceTests(unittest.TestCase):
         self.assertTrue(any("pilot authority" in error for error in errors), errors)
 
         mutated_stage = stage_registry.replace(
-            "implementation plan awaiting independent human approval",
-            "implementation plan approved",
+            "corrected implementation plan awaiting independent human approval",
+            "corrected implementation plan approved",
         )
         errors = validate_current_registry_lifecycle(mutated_stage, project_registry)
         self.assertTrue(any("design-only execution boundary" in error for error in errors), errors)
@@ -617,8 +618,8 @@ class OperationalResilienceTests(unittest.TestCase):
                 )
 
         mutated_project = project_registry.replace(
-            "Implementation plan awaiting independent human approval",
-            "Implementation plan approved",
+            "Corrected implementation plan awaiting independent human approval",
+            "Corrected implementation plan approved",
         )
         errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
         self.assertTrue(any("plan approval gate" in error for error in errors), errors)

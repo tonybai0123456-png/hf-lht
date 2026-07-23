@@ -678,7 +678,8 @@ def validate_current_registry_lifecycle(
         "feat/aios-support-controlled-pilot-design-v1",
         "| Executing |",
         "c312db694afc40b5ec268f577c6c05a664b98eef",
-        "implementation plan awaiting independent human approval",
+        "e376726d51863e22324d164ddf8c8a33f84937cd",
+        "corrected implementation plan awaiting independent human approval",
         "no pilot authority",
     )):
         errors.append("Stage 14 must record the separately authorized design-only execution boundary")
@@ -698,7 +699,8 @@ def validate_current_registry_lifecycle(
         "019f8c92-e709-7a83-b06c-fa014cf0b216",
         "feat/aios-support-controlled-pilot-design-v1",
         "c312db694afc40b5ec268f577c6c05a664b98eef",
-        "Implementation plan awaiting independent human approval",
+        "e376726d51863e22324d164ddf8c8a33f84937cd",
+        "Corrected implementation plan awaiting independent human approval",
     )):
         errors.append("Project Registry must record the approved Stage 14 specification and plan approval gate")
     for forbidden in (
