@@ -656,12 +656,59 @@ def validate_repository(root: Path = ROOT) -> list[str]:
             errors.append(f"workflow contains prohibited token: {prohibited}")
 
     stage_registry = _text(root / STAGE_REGISTRY, errors)
+    project_registry = _text(root / PROJECT_REGISTRY, errors)
+    errors.extend(validate_current_registry_lifecycle(stage_registry, project_registry))
+    return errors
+
+
+def validate_current_registry_lifecycle(
+    stage_registry: str,
+    project_registry: str,
+) -> list[str]:
+    """Validate only current registry facts and the Stage 14 authority ceiling."""
+    errors: list[str] = []
     stage13 = next((line for line in stage_registry.splitlines() if line.startswith("| 13 |")), "")
     stage14 = next((line for line in stage_registry.splitlines() if line.startswith("| 14 |")), "")
+    project = next((line for line in project_registry.splitlines() if line.startswith("| BUW-AIOS |")), "")
     if not all(token in stage13 for token in ("Issue #32", "Issue #34", "019f8a35-6d4e-7c60-b35a-79de8626d4e3", "feat/aios-operational-resilience-v1", "7b16a5c", "19/19", "80/80", "| Archived |")):
         errors.append("Stage 13 registry row must record the reviewed, published archive evidence")
-    if "No Execution Thread assigned" not in stage14 or "| Planned |" not in stage14:
-        errors.append("Stage 14 must remain Planned and unassigned")
+    if not all(token in stage14 for token in (
+        "Issue #36",
+        "019f8c92-e709-7a83-b06c-fa014cf0b216",
+        "feat/aios-support-controlled-pilot-design-v1",
+        "| Executing |",
+        "written specification awaiting independent Governance Thread approval",
+        "no pilot authority",
+    )):
+        errors.append("Stage 14 must record the separately authorized design-only execution boundary")
+    for forbidden in (
+        "| Reported |",
+        "| Reviewed |",
+        "| Archived |",
+        "pilot authority granted",
+        "pilot authorized",
+        "pilot_authorized: true",
+    ):
+        if forbidden in stage14:
+            errors.append(f"Stage 14 design tranche exceeds its lifecycle or pilot authority: {forbidden}")
+    if not all(token in project for token in (
+        "Stage 13 Archived / Stage 14 Executing",
+        "Issue #36",
+        "019f8c92-e709-7a83-b06c-fa014cf0b216",
+        "feat/aios-support-controlled-pilot-design-v1",
+        "Awaiting independent written-spec governance approval",
+    )):
+        errors.append("Project Registry must record the Stage 14 written-spec approval gate")
+    for forbidden in (
+        "Stage 14 Reported",
+        "Stage 14 Reviewed",
+        "Stage 14 Archived",
+        "pilot authority granted",
+        "pilot authorized",
+        "pilot_authorized: true",
+    ):
+        if forbidden in project:
+            errors.append(f"Project Registry exceeds the Stage 14 design authority: {forbidden}")
     return errors
 
 

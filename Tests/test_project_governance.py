@@ -73,7 +73,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stages_10_through_13_are_archived_stage14_planned(self):
+    def test_stages_10_through_13_are_archived_stage14_design_is_separately_authorized(self):
         stage9 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 9 |"))
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
         self.assertIn("| Archived |", stage9)
@@ -111,10 +111,14 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("80/80", stage13)
         self.assertIn("| Archived |", stage13)
         stage14 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 14 |"))
-        self.assertIn("No Execution Thread assigned", stage14)
-        self.assertIn("| Planned |", stage14)
+        self.assertIn("Issue #36", stage14)
+        self.assertIn("019f8c92-e709-7a83-b06c-fa014cf0b216", stage14)
+        self.assertIn("feat/aios-support-controlled-pilot-design-v1", stage14)
+        self.assertIn("| Executing |", stage14)
+        self.assertIn("written specification awaiting independent Governance Thread approval", stage14)
+        self.assertIn("no pilot authority", stage14)
         self.assertIn(
-            "Stage 13 Archived / Stage 14 Planned",
+            "Stage 13 Archived / Stage 14 Executing",
             self.project_registry,
         )
 

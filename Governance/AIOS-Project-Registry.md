@@ -9,7 +9,7 @@
 | Published Project policy | `Governance/AIOS-Project-Governance-Baseline-v1.md` (v1.0) |
 | Canonical repository | `tonybai0123456-png/hf-lht` |
 | Initial scope | Exactly one governed project: `BUW-AIOS` |
-| Last updated | 2026-07-22 |
+| Last updated | 2026-07-23 |
 
 This registry is the controlled source for project identity and project status.
 It does not replace `Governance/AIOS-Stage-Registry.md`, which controls Stage
@@ -20,7 +20,7 @@ controlled project source chain.
 
 | Project ID | Project name | Company boundary | Brand boundary | Project owner | Governance Thread | Canonical repository | Policy / Stage Registry | Project status | Active Stage | Review date / evidence | Next gate |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 13 Archived / Stage 14 Planned | 2026-07-22 / Issue #32 / reviewed head `327d9e9` / PR #33 / published `7b16a5c` / archive Issue #34 / 19 targeted and 80 repository tests / 7 final-head workflows | No active Execution Stage; Stage 14 requires a separate Governance Thread decision and remains Planned and unassigned |
+| BUW-AIOS | BUW AIOS | 汇沣电商; the company is not collapsed into this project; 六合通 is a separate company and excluded | BUW only; PC is an independent brand and excluded | Tony | BUW AIOS Official Governance Thread | `tonybai0123456-png/hf-lht` | `Governance/AIOS-Project-Governance-Baseline-v1.md` / `Governance/AIOS-Stage-Registry.md` | Active | Stage 13 Archived / Stage 14 Executing | 2026-07-23 / Issue #36 / Execution Thread `019f8c92-e709-7a83-b06c-fa014cf0b216` / branch `feat/aios-support-controlled-pilot-design-v1` / exact base `43832ded751e069b363305fb359cc997b73cdb63` / written specification | Awaiting independent written-spec governance approval; no implementation plan, functional implementation, Mandatory Return, Reported transition, pilot, merge, publication or archive authority |
 
 ## Registry rules
 
@@ -54,3 +54,4 @@ controlled project source chain.
 | 2026-07-22 | Activated Stage 13 / OR-01 through Issue #32, one Execution Thread and the authorized feature branch; execution is synthetic, prepare-only and read-only, while Stage 14 remains Planned and unassigned. | BUW AIOS Official Governance Thread / Issue #32 |
 | 2026-07-22 | Recorded Stage 13 as Reported after preparing the synthetic operational-resilience policy, model, risk/control mapping, fixture and deterministic validation; retained all production, operational action, owner, risk, merge, archive and Stage 14 gates. | OR-01 Mandatory Return / Issue #32 / Draft PR #33; exact final-head CI is recorded in the Issue return |
 | 2026-07-22 | Human Governance final re-review passed Stage 13 at corrected head `327d9e9`; published the reviewed package through PR #33 at `7b16a5c`, passed post-merge validation and archived OR-01 through Issue #34; Stage 14 remains Planned and unassigned. | BUW AIOS Official Governance Thread / PR #33 / Issues #32 and #34 |
+| 2026-07-23 | Activated the Stage 14 / PS-01 first design gate under 方案 A through Issue #36, one Execution Thread and the authorized branch; current work is limited to the written specification and awaits independent Governance Thread approval before any implementation plan. | BUW AIOS Official Governance Thread / Issue #36 |
