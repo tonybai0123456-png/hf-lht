@@ -559,7 +559,8 @@ class OperationalResilienceTests(unittest.TestCase):
         self.assertIn("019f8c92-e709-7a83-b06c-fa014cf0b216", stage14)
         self.assertIn("feat/aios-support-controlled-pilot-design-v1", stage14)
         self.assertIn("| Executing |", stage14)
-        self.assertIn("written specification awaiting independent Governance Thread approval", stage14)
+        self.assertIn("c312db694afc40b5ec268f577c6c05a664b98eef", stage14)
+        self.assertIn("implementation plan awaiting independent human approval", stage14)
         self.assertIn("no pilot authority", stage14)
         self.assertIn("Stage 13 Archived / Stage 14 Executing", project_registry)
 
@@ -593,6 +594,13 @@ class OperationalResilienceTests(unittest.TestCase):
         errors = validate_current_registry_lifecycle(mutated_stage, project_registry)
         self.assertTrue(any("pilot authority" in error for error in errors), errors)
 
+        mutated_stage = stage_registry.replace(
+            "implementation plan awaiting independent human approval",
+            "implementation plan approved",
+        )
+        errors = validate_current_registry_lifecycle(mutated_stage, project_registry)
+        self.assertTrue(any("design-only execution boundary" in error for error in errors), errors)
+
         for status in ("Reported", "Reviewed", "Archived"):
             with self.subTest(project_status=status):
                 mutated_project = project_registry.replace(
@@ -607,6 +615,13 @@ class OperationalResilienceTests(unittest.TestCase):
                     any("Project Registry" in error for error in errors),
                     errors,
                 )
+
+        mutated_project = project_registry.replace(
+            "Implementation plan awaiting independent human approval",
+            "Implementation plan approved",
+        )
+        errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
+        self.assertTrue(any("plan approval gate" in error for error in errors), errors)
 
 
 if __name__ == "__main__":
