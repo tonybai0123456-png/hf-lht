@@ -571,10 +571,13 @@ class OperationalResilienceTests(unittest.TestCase):
             "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
             "feat/aios-support-controlled-pilot-design-v1", "PR #37",
             "| Reviewed |", "7184d917", "Mandatory Return", "needs_human_governance",
-            "Human Governance Thread review passed", "no pilot authority",
+            "Human Governance Thread review passed", "142804f",
+            "Published through PR #37", "post-merge", "no pilot authority",
         ):
             self.assertIn(token, stage14)
         self.assertIn("Stage 13 Archived / Stage 14 Reviewed", project_registry)
+        self.assertIn("142804f", project_registry)
+        self.assertIn("published through PR #37", project_registry)
 
     def test_stage14_reviewed_lifecycle_and_authority_escalation_fail_closed(self):
         stage_registry = STAGE_REGISTRY.read_text(encoding="utf-8")
@@ -610,11 +613,18 @@ class OperationalResilienceTests(unittest.TestCase):
                 self.assertTrue(any("must preserve Stage 14 Reviewed" in error for error in errors), errors)
 
         mutated_project = project_registry.replace(
-            "Human Governance Thread review passed",
-            "self-approved review passed and ready for pilot",
+            "Human Governance Thread review and publication passed",
+            "self-approved review and publication passed and ready for pilot",
         )
         errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
         self.assertTrue(any("Project Registry exceeds Reviewed authority" in error for error in errors), errors)
+
+        stale_stage = stage_registry.replace(
+            "Published through PR #37",
+            "PR #37 remains Draft, open and unmerged",
+        )
+        errors = validate_current_registry_lifecycle(stale_stage, project_registry)
+        self.assertTrue(any("must preserve evidence-backed published Reviewed status" in error for error in errors), errors)
 
 
 if __name__ == "__main__":
