@@ -217,6 +217,73 @@ class ProjectGovernanceValidation(unittest.TestCase):
         for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
             self.assertNotIn(unresolved, plan)
 
+    def test_stage15_plan_tasks_are_machine_checkable(self):
+        """Reject task-level plans that are prose-only or lack runnable evidence."""
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        task_matches = list(
+            re.finditer(
+                r"(?ms)^## Task (\d+):.*?(?=^## Task \d+:|^## Plan self-review checklist|\Z)",
+                plan,
+            )
+        )
+        self.assertEqual([str(number) for number in range(1, 13)], [match.group(1) for match in task_matches])
+
+        code_fence = re.compile(r"```(?:bash|python|yaml|markdown|diff)\n.+?\n```", re.DOTALL)
+        run_command = re.compile(r"(?m)^\s*(?:python3|git|test|gh|python -m pip)\b")
+        expected_result = re.compile(r"\b(?:Expected|expect|expects|confirm|verify|proves?|pass(?:es|ed)?)\b", re.IGNORECASE)
+        commit_command = re.compile(r"git commit -m \"[^\"]+\"")
+        code_change_language = re.compile(r"```(?:python|yaml|markdown|diff)\n", re.MULTILINE)
+
+        for match in task_matches:
+            task_number = match.group(1)
+            section = match.group(0)
+            with self.subTest(task=task_number):
+                self.assertIn("**Files**", section)
+                self.assertIn("**Interfaces**", section)
+                self.assertRegex(section, r"(?m)^- \[ \] ")
+                fences = code_fence.findall(section)
+                self.assertGreaterEqual(len(fences), 2, "task must contain runnable/code evidence fences")
+                self.assertTrue(any(run_command.search(fence) for fence in fences), "task must contain an exact runnable command")
+                self.assertRegex(section, expected_result)
+                self.assertRegex(section, commit_command)
+                if re.search(r"(?i)\b(create|modify|implement|add|write|update|replace)\b", section):
+                    self.assertRegex(section, code_change_language)
+
+        for requirement_id in (
+            "AC-ENVIRONMENT",
+            "AC-IDENTITY",
+            "AC-DATA",
+            "AC-EVIDENCE",
+            "AC-OBSERVATION",
+            "AC-RECOVERY",
+            "AC-INCIDENT",
+            "AC-SUPPORT",
+            "AC-RISK-MAPPING",
+            "AC-AUTHORITY",
+        ):
+            self.assertIn(requirement_id, plan)
+        for policy_section in (
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "AI and human judgment boundary",
+            "Proof of operation",
+            "Authority ceiling",
+            "Component contracts",
+            "Risk mapping",
+            "Stop and withdrawal",
+            "Lifecycle",
+        ):
+            self.assertIn(policy_section, plan)
+        for return_field in (
+            "exact remote head and tree",
+            "changed-file allowlist",
+            "final-head CI links",
+            "maximum result `needs_human_governance`",
+        ):
+            self.assertIn(return_field, plan)
+
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
         self.assertNotIn("push:", self.workflow)
