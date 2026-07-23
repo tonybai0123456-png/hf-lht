@@ -683,28 +683,39 @@ def validate_current_registry_lifecycle(
         "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
         "feat/aios-support-controlled-pilot-design-v1", "PR #37",
         "| Reviewed |", "7184d91797128788decc734ef80f9d07114fcc84",
+        "142804f22396dc6f094327a0dffefb7da7593168",
+        "Published through PR #37", "post-merge",
         "Human Governance Thread review passed", "Mandatory Return",
         "needs_human_governance", "no pilot authority",
     )
     if not all(token in stage14 for token in stage14_required):
-        errors.append("Stage 14 must preserve evidence-backed Reviewed status")
+        errors.append(
+            "Stage 14 must preserve evidence-backed Reviewed status; "
+            "must preserve evidence-backed published Reviewed status"
+        )
 
     for forbidden in (
         "| Reported |", "| Archived |", "pilot authority granted", "pilot authorized",
         "pilot_authorized: true", "release authorized", "released", "ready for pilot",
         "self-approved", "named owner", "real data connected", "connector enabled",
+        "remains Draft, open and unmerged",
     ):
         if forbidden in stage14:
             errors.append(f"Stage 14 exceeds Reviewed authority: {forbidden}")
 
     project_required = (
         "Stage 13 Archived / Stage 14 Reviewed", "Issue #36",
-        "7184d91797128788decc734ef80f9d07114fcc84", "Draft PR #37",
+        "7184d91797128788decc734ef80f9d07114fcc84", "PR #37",
+        "142804f22396dc6f094327a0dffefb7da7593168",
+        "published through PR #37", "post-merge",
         "Mandatory Return accepted", "needs_human_governance",
-        "Human Governance Thread review passed", "no pilot authority",
+        "Human Governance Thread review", "no pilot authority",
     )
     if not all(token in project for token in project_required):
-        errors.append("Project Registry must preserve Stage 14 Reviewed evidence")
+        errors.append(
+            "Project Registry must preserve Stage 14 Reviewed; "
+            "Project Registry must preserve Stage 14 published Reviewed evidence"
+        )
 
     for forbidden in (
         "Stage 14 Reported", "Stage 14 Archived", "pilot authority granted",

@@ -93,10 +93,13 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "feat/aios-support-controlled-pilot-design-v1", "PR #37",
             "| Reviewed |", "7184d917", "Mandatory Return", "needs_human_governance",
             "Human Governance Thread review passed",
+            "142804f", "Published through PR #37", "post-merge",
             "no pilot authority",
         ):
             self.assertIn(token, stage14)
         self.assertIn("Stage 13 Archived / Stage 14 Reviewed", self.project_registry)
+        self.assertIn("142804f", self.project_registry)
+        self.assertIn("published through PR #37", self.project_registry)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
