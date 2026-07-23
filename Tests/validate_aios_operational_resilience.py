@@ -665,7 +665,7 @@ def validate_current_registry_lifecycle(
     stage_registry: str,
     project_registry: str,
 ) -> list[str]:
-    """Validate Stage 13 archive evidence and the Stage 14 Reported ceiling."""
+    """Validate Stage 13 archive evidence and the Stage 14 Reviewed ceiling."""
     errors: list[str] = []
     stage13 = next((line for line in stage_registry.splitlines() if line.startswith("| 13 |")), "")
     stage14 = next((line for line in stage_registry.splitlines() if line.startswith("| 14 |")), "")
@@ -682,35 +682,37 @@ def validate_current_registry_lifecycle(
     stage14_required = (
         "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
         "feat/aios-support-controlled-pilot-design-v1", "PR #37",
-        "| Reported |", "Implementation evidence head", "Mandatory Return",
-        "needs_human_governance", "independently approved plan", "no pilot authority",
+        "| Reviewed |", "7184d91797128788decc734ef80f9d07114fcc84",
+        "Human Governance Thread review passed", "Mandatory Return",
+        "needs_human_governance", "no pilot authority",
     )
     if not all(token in stage14 for token in stage14_required):
-        errors.append("Stage 14 must record evidence-backed Reported status under independently approved plan")
+        errors.append("Stage 14 must preserve evidence-backed Reviewed status")
 
     for forbidden in (
-        "| Reviewed |", "| Archived |", "pilot authority granted", "pilot authorized",
+        "| Reported |", "| Archived |", "pilot authority granted", "pilot authorized",
         "pilot_authorized: true", "release authorized", "released", "ready for pilot",
-        "self-approved plan", "named owner", "real data connected", "connector enabled",
+        "self-approved", "named owner", "real data connected", "connector enabled",
     ):
         if forbidden in stage14:
-            errors.append(f"Stage 14 exceeds Reported authority: {forbidden}")
+            errors.append(f"Stage 14 exceeds Reviewed authority: {forbidden}")
 
     project_required = (
-        "Stage 13 Archived / Stage 14 Reported", "Issue #36",
-        "implementation evidence head", "Draft PR #37", "Mandatory Return",
-        "needs_human_governance", "Awaiting independent human review", "no pilot authority",
+        "Stage 13 Archived / Stage 14 Reviewed", "Issue #36",
+        "7184d91797128788decc734ef80f9d07114fcc84", "Draft PR #37",
+        "Mandatory Return accepted", "needs_human_governance",
+        "Human Governance Thread review passed", "no pilot authority",
     )
     if not all(token in project for token in project_required):
-        errors.append("Project Registry must record Stage 14 Reported awaiting independent human review")
+        errors.append("Project Registry must preserve Stage 14 Reviewed evidence")
 
     for forbidden in (
-        "Stage 14 Reviewed", "Stage 14 Archived", "pilot authority granted",
+        "Stage 14 Reported", "Stage 14 Archived", "pilot authority granted",
         "pilot authorized", "pilot_authorized: true", "release authorized",
         "self-approved", "ready for pilot",
     ):
         if forbidden in project:
-            errors.append(f"Project Registry exceeds Reported authority: {forbidden}")
+            errors.append(f"Project Registry exceeds Reviewed authority: {forbidden}")
     return errors
 
 

@@ -542,7 +542,7 @@ class OperationalResilienceTests(unittest.TestCase):
         ):
             self.assertNotIn(prohibited, workflow)
 
-    def test_registry_records_archived_stage13_and_reported_stage14(self):
+    def test_registry_records_archived_stage13_and_reviewed_stage14(self):
         stage_registry = STAGE_REGISTRY.read_text(encoding="utf-8")
         project_registry = PROJECT_REGISTRY.read_text(encoding="utf-8")
         stage13 = next(line for line in stage_registry.splitlines() if line.startswith("| 13 |"))
@@ -570,48 +570,51 @@ class OperationalResilienceTests(unittest.TestCase):
         for token in (
             "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
             "feat/aios-support-controlled-pilot-design-v1", "PR #37",
-            "| Reported |", "Mandatory Return", "needs_human_governance",
-            "independently approved plan", "no pilot authority",
+            "| Reviewed |", "7184d917", "Mandatory Return", "needs_human_governance",
+            "Human Governance Thread review passed", "no pilot authority",
         ):
             self.assertIn(token, stage14)
-        self.assertIn("Stage 13 Archived / Stage 14 Reported", project_registry)
+        self.assertIn("Stage 13 Archived / Stage 14 Reviewed", project_registry)
 
-    def test_stage14_reported_lifecycle_and_authority_escalation_fail_closed(self):
+    def test_stage14_reviewed_lifecycle_and_authority_escalation_fail_closed(self):
         stage_registry = STAGE_REGISTRY.read_text(encoding="utf-8")
         project_registry = PROJECT_REGISTRY.read_text(encoding="utf-8")
         self.assertEqual([], validate_current_registry_lifecycle(stage_registry, project_registry))
 
-        for status in ("Reviewed", "Archived"):
+        for status in ("Reported", "Archived"):
             with self.subTest(stage_status=status):
-                mutated = stage_registry.replace("| Reported |", f"| {status} |")
+                mutated = stage_registry.replace("| Reviewed |", f"| {status} |")
                 errors = validate_current_registry_lifecycle(mutated, project_registry)
-                self.assertTrue(any("exceeds Reported authority" in error for error in errors), errors)
+                self.assertTrue(any("must preserve evidence-backed Reviewed status" in error for error in errors), errors)
 
         mutations = {
             "pilot": stage_registry.replace("no pilot authority", "pilot authority granted"),
-            "self_approval": stage_registry.replace("independently approved plan", "self-approved plan"),
+            "self_approval": stage_registry.replace(
+                "Human Governance Thread review passed",
+                "self-approved review passed",
+            ),
             "released": stage_registry.replace("no pilot authority", "release authorized"),
         }
         for name, mutated in mutations.items():
             with self.subTest(stage_mutation=name):
                 errors = validate_current_registry_lifecycle(mutated, project_registry)
-                self.assertTrue(any("exceeds Reported authority" in error for error in errors), errors)
+                self.assertTrue(any("exceeds Reviewed authority" in error for error in errors), errors)
 
-        for status in ("Reviewed", "Archived"):
+        for status in ("Reported", "Archived"):
             with self.subTest(project_status=status):
                 mutated_project = project_registry.replace(
-                    "Stage 13 Archived / Stage 14 Reported",
+                    "Stage 13 Archived / Stage 14 Reviewed",
                     f"Stage 13 Archived / Stage 14 {status}",
                 )
                 errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
-                self.assertTrue(any("Project Registry exceeds Reported authority" in error for error in errors), errors)
+                self.assertTrue(any("must preserve Stage 14 Reviewed" in error for error in errors), errors)
 
         mutated_project = project_registry.replace(
-            "Awaiting independent human review",
-            "self-approved and ready for pilot",
+            "Human Governance Thread review passed",
+            "self-approved review passed and ready for pilot",
         )
         errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
-        self.assertTrue(any("Project Registry exceeds Reported authority" in error for error in errors), errors)
+        self.assertTrue(any("Project Registry exceeds Reviewed authority" in error for error in errors), errors)
 
 
 if __name__ == "__main__":

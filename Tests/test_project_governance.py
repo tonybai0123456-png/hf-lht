@@ -73,7 +73,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stages_10_through_13_are_archived_stage14_is_reported(self):
+    def test_stages_10_through_13_are_archived_stage14_is_reviewed(self):
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
         stage11 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 11 |"))
         stage12 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 12 |"))
@@ -91,11 +91,12 @@ class ProjectGovernanceValidation(unittest.TestCase):
         for token in (
             "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
             "feat/aios-support-controlled-pilot-design-v1", "PR #37",
-            "| Reported |", "Mandatory Return", "needs_human_governance",
+            "| Reviewed |", "7184d917", "Mandatory Return", "needs_human_governance",
+            "Human Governance Thread review passed",
             "no pilot authority",
         ):
             self.assertIn(token, stage14)
-        self.assertIn("Stage 13 Archived / Stage 14 Reported", self.project_registry)
+        self.assertIn("Stage 13 Archived / Stage 14 Reviewed", self.project_registry)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)

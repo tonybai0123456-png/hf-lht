@@ -865,12 +865,13 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     ):
         if token not in stage14:
             errors.append(f"registry:stage14_missing:{token}")
-    if not any(status in stage14 for status in ("| Executing |", "| Reported |")):
+    if "| Reviewed |" not in stage14:
         errors.append("registry:stage14_lifecycle_invalid")
     if any(
         token in stage14
         for token in (
-            "| Reviewed |",
+            "| Executing |",
+            "| Reported |",
             "| Archived |",
             "pilot authority granted",
             "pilot_authorized: true",
