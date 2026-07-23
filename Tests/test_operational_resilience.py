@@ -542,7 +542,7 @@ class OperationalResilienceTests(unittest.TestCase):
         ):
             self.assertNotIn(prohibited, workflow)
 
-    def test_registry_records_archived_stage13_and_reviewed_stage14(self):
+    def test_registry_records_archived_stages13_and14(self):
         stage_registry = STAGE_REGISTRY.read_text(encoding="utf-8")
         project_registry = PROJECT_REGISTRY.read_text(encoding="utf-8")
         stage13 = next(line for line in stage_registry.splitlines() if line.startswith("| 13 |"))
@@ -570,25 +570,32 @@ class OperationalResilienceTests(unittest.TestCase):
         for token in (
             "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
             "feat/aios-support-controlled-pilot-design-v1", "PR #37",
-            "| Reviewed |", "7184d917", "Mandatory Return", "needs_human_governance",
+            "| Archived |", "7184d917", "Mandatory Return", "needs_human_governance",
             "Human Governance Thread review passed", "142804f",
-            "Published through PR #37", "post-merge", "no pilot authority",
+            "Published through PR #37", "post-merge", "8d6e2af",
+            "Archived by the Governance Thread", "no pilot authority",
         ):
             self.assertIn(token, stage14)
-        self.assertIn("Stage 13 Archived / Stage 14 Reviewed", project_registry)
+        self.assertIn("Stage 13 Archived / Stage 14 Archived", project_registry)
+        self.assertIn("no active execution Stage", project_registry)
         self.assertIn("142804f", project_registry)
         self.assertIn("published through PR #37", project_registry)
 
-    def test_stage14_reviewed_lifecycle_and_authority_escalation_fail_closed(self):
+    def test_stage14_archived_lifecycle_and_authority_escalation_fail_closed(self):
         stage_registry = STAGE_REGISTRY.read_text(encoding="utf-8")
         project_registry = PROJECT_REGISTRY.read_text(encoding="utf-8")
+        stage14 = next(line for line in stage_registry.splitlines() if line.startswith("| 14 |"))
+        project = next(line for line in project_registry.splitlines() if line.startswith("| BUW-AIOS |"))
         self.assertEqual([], validate_current_registry_lifecycle(stage_registry, project_registry))
 
-        for status in ("Reported", "Archived"):
+        for status in ("Reported", "Reviewed"):
             with self.subTest(stage_status=status):
-                mutated = stage_registry.replace("| Reviewed |", f"| {status} |")
+                mutated = stage_registry.replace(
+                    stage14,
+                    stage14.replace("| Archived |", f"| {status} |"),
+                )
                 errors = validate_current_registry_lifecycle(mutated, project_registry)
-                self.assertTrue(any("must preserve evidence-backed Reviewed status" in error for error in errors), errors)
+                self.assertTrue(any("must preserve evidence-backed Archived status" in error for error in errors), errors)
 
         mutations = {
             "pilot": stage_registry.replace("no pilot authority", "pilot authority granted"),
@@ -601,30 +608,31 @@ class OperationalResilienceTests(unittest.TestCase):
         for name, mutated in mutations.items():
             with self.subTest(stage_mutation=name):
                 errors = validate_current_registry_lifecycle(mutated, project_registry)
-                self.assertTrue(any("exceeds Reviewed authority" in error for error in errors), errors)
+                self.assertTrue(any("exceeds Archived authority" in error for error in errors), errors)
 
-        for status in ("Reported", "Archived"):
+        for status in ("Reported", "Reviewed"):
             with self.subTest(project_status=status):
-                mutated_project = project_registry.replace(
-                    "Stage 13 Archived / Stage 14 Reviewed",
+                mutated_project_row = project.replace(
+                    "Stage 13 Archived / Stage 14 Archived",
                     f"Stage 13 Archived / Stage 14 {status}",
                 )
+                mutated_project = project_registry.replace(project, mutated_project_row)
                 errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
-                self.assertTrue(any("must preserve Stage 14 Reviewed" in error for error in errors), errors)
+                self.assertTrue(any("must preserve Stage 14 Archived" in error for error in errors), errors)
 
         mutated_project = project_registry.replace(
-            "Human Governance Thread review and publication passed",
-            "self-approved review and publication passed and ready for pilot",
+            "Human Governance Thread archive decision passed",
+            "self-approved archive decision passed and ready for pilot",
         )
         errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
-        self.assertTrue(any("Project Registry exceeds Reviewed authority" in error for error in errors), errors)
+        self.assertTrue(any("Project Registry exceeds Archived authority" in error for error in errors), errors)
 
         stale_stage = stage_registry.replace(
             "Published through PR #37",
             "PR #37 remains Draft, open and unmerged",
         )
         errors = validate_current_registry_lifecycle(stale_stage, project_registry)
-        self.assertTrue(any("must preserve evidence-backed published Reviewed status" in error for error in errors), errors)
+        self.assertTrue(any("must preserve archived publication evidence" in error for error in errors), errors)
 
 
 if __name__ == "__main__":
