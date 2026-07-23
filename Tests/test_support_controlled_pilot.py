@@ -11,6 +11,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 MODEL = ROOT / "Governance/AIOS-Support-Controlled-Pilot-Model-v1.yaml"
 VALIDATOR = ROOT / "Tests/validate_aios_support_controlled_pilot.py"
+POLICY = ROOT / "Governance/AIOS-Support-Controlled-Pilot-v1.md"
 
 
 def load_validator():
@@ -22,6 +23,44 @@ def load_validator():
 
 
 class SupportControlledPilotTests(unittest.TestCase):
+    def test_policy_covers_business_loop_objects_authority_and_lifecycle(self):
+        policy = POLICY.read_text(encoding="utf-8")
+        required = [
+            "Purpose and authority",
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "System and human judgment boundary",
+            "Proof of operation",
+            "Support request",
+            "Support case",
+            "Pilot candidate",
+            "Entry",
+            "Exit",
+            "Stop",
+            "Withdrawal",
+            "Escalation",
+            "Success metrics",
+            "Guardrail metrics",
+            "Evidence bundle",
+            "Audit record",
+            "Decision record",
+            "Human gates",
+            "needs_human_governance",
+            "Stage 10 BLOCKED / NO-GO",
+            "Stage 11–13",
+            "汇沣电商",
+            "BUW",
+            "PC",
+            "六合通",
+            "unassigned / governance decision required",
+            "设计先行、真实试点另行授权",
+        ]
+        for text in required:
+            with self.subTest(text=text):
+                self.assertIn(text, policy)
+
     def test_business_authority_and_control_attacks_deny(self):
         validator = load_validator()
         model = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)
