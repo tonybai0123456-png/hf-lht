@@ -18,6 +18,7 @@ MAPPING = (
 MATRIX = (
     ROOT / "Governance/AIOS-Support-Controlled-Pilot-Acceptance-Matrix-v1.yaml"
 )
+VALIDATION_GUIDE = ROOT / "Tests/AIOS-Support-Controlled-Pilot-Validation.md"
 
 
 def load_validator():
@@ -29,6 +30,21 @@ def load_validator():
 
 
 class SupportControlledPilotTests(unittest.TestCase):
+    def test_repository_validator_and_guide_cover_all_deliverables(self):
+        validator = load_validator()
+        self.assertEqual([], validator.validate_repository(ROOT))
+        guide = VALIDATION_GUIDE.read_text(encoding="utf-8")
+        for command in (
+            "python3 -m unittest discover -s Tests -p 'test_*.py' -v",
+            "python3 -m unittest Tests.test_project_governance -v",
+            "python3 Tests/validate_aios_operational_resilience.py",
+            "python3 Tests/validate_aios_support_controlled_pilot.py",
+            "python3 Tests/validate_aios_workflow_schema.py",
+            "python3 -m compileall Tests",
+        ):
+            self.assertIn(command, guide)
+        self.assertIn("needs_human_governance proves no pilot authority", guide)
+
     def test_upstream_mapping_freezes_risks_and_design_boundaries(self):
         mapping = yaml.safe_load(MAPPING.read_text(encoding="utf-8"))
         self.assertEqual(
