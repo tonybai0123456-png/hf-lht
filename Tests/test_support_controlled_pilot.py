@@ -1,18 +1,3 @@
-
-.github/
-.gitignore
-AIOS/
-Agents/
-Governance/
-Prompts/
-README.md
-Runtime/
-Schemas/
-Templates/
-Tests/
-Workflows/
-docs/
-requirements-dev.txt
 from __future__ import annotations
 
 import importlib.util
@@ -36,6 +21,20 @@ def load_validator():
 
 
 class SupportControlledPilotTests(unittest.TestCase):
+    def test_loader_accepts_only_allowlisted_repository_yaml(self):
+        validator = load_validator()
+        loaded = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)
+        self.assertEqual(
+            "support_controlled_pilot_eligibility/v1", loaded["model_version"]
+        )
+        for unsafe in (
+            Path("../outside.yaml"),
+            Path("Governance/AIOS-Stage-Registry.md"),
+            Path("/tmp/input.yaml"),
+        ):
+            with self.subTest(unsafe=unsafe), self.assertRaises(ValueError):
+                validator.load_repository_yaml(ROOT, unsafe)
+
     def test_model_has_exact_identity_boundary_outcomes_and_gate_order(self):
         validator = load_validator()
         model = yaml.safe_load(MODEL.read_text(encoding="utf-8"))
