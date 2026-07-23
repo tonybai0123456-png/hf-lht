@@ -8,6 +8,7 @@
 | Status | Planned; governance-design gate only |
 | Governance decision | 方案 B |
 | Issue | [Issue #40](https://github.com/tonybai0123456-png/hf-lht/issues/40) |
+| Draft PR | [PR #41](https://github.com/tonybai0123456-png/hf-lht/pull/41) |
 | Governance-design branch | `gov/aios-stage15-nonproduction-readiness-design` |
 | Main baseline | `403f97ea56678185398ee52fff2b35eeff7a700f` |
 | Implementation assignment | dedicated Execution Task and implementation branch unassigned |

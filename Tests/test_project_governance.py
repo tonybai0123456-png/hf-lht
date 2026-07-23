@@ -122,6 +122,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Non-production Readiness Remediation and Integration Validation",
             "Issue #40",
             "gov/aios-stage15-nonproduction-readiness-design",
+            "PR #41",
             "| Planned |",
             "implementation unassigned",
             "方案 B",
@@ -133,6 +134,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Stage 14 Archived / Stage 15 Planned",
             "no active execution Stage",
             "Issue #40",
+            "PR #41",
             "implementation unassigned",
             "needs_human_governance",
         ):
@@ -159,6 +161,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Stage 10",
             "BLOCKED / NO-GO",
             "dedicated Execution Task",
+            "PR #41",
         ):
             self.assertIn(token, spec)
         for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
