@@ -8,6 +8,20 @@ BASELINE = ROOT / "Governance" / "AIOS-Project-Governance-Baseline-v1.md"
 PROJECT_REGISTRY = ROOT / "Governance" / "AIOS-Project-Registry.md"
 STAGE_REGISTRY = ROOT / "Governance" / "AIOS-Stage-Registry.md"
 WORKFLOW = ROOT / ".github" / "workflows" / "validate-aios-project-governance.yml"
+STAGE15_SPEC = (
+    ROOT
+    / "docs"
+    / "superpowers"
+    / "specs"
+    / "2026-07-23-nonproduction-readiness-remediation-integration-design.md"
+)
+STAGE15_PLAN = (
+    ROOT
+    / "docs"
+    / "superpowers"
+    / "plans"
+    / "2026-07-23-nonproduction-readiness-remediation-integration.md"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -102,6 +116,173 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("no active execution Stage", self.project_registry)
         self.assertIn("142804f", self.project_registry)
         self.assertIn("published through PR #37", self.project_registry)
+
+    def test_stage15_governance_design_is_planned_and_unassigned(self):
+        stage15_rows = [
+            line for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        ]
+        self.assertEqual(1, len(stage15_rows))
+        stage15 = stage15_rows[0]
+        for token in (
+            "NR-01",
+            "Non-production Readiness Remediation and Integration Validation",
+            "Issue #40",
+            "gov/aios-stage15-nonproduction-readiness-design",
+            "PR #41",
+            "| Planned |",
+            "implementation unassigned",
+            "方案 B",
+            "written specification approved",
+            "implementation plan reviewed at `8984a1720cf716ab832590b2dd6748d628677edc`",
+            "correction required",
+            "corrected implementation plan awaits independent human review",
+            "no real pilot",
+        ):
+            self.assertIn(token, stage15)
+
+        for token in (
+            "Stage 14 Archived / Stage 15 Planned",
+            "no active execution Stage",
+            "Issue #40",
+            "PR #41",
+            "implementation unassigned",
+            "written specification approved",
+            "implementation plan reviewed at `8984a1720cf716ab832590b2dd6748d628677edc`",
+            "correction required",
+            "corrected implementation plan awaits independent human review",
+            "needs_human_governance",
+        ):
+            self.assertIn(token, self.project_registry)
+
+        spec = STAGE15_SPEC.read_text(encoding="utf-8")
+        for token in (
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "AI and human judgment boundary",
+            "Proof of operation",
+            "PR-RISK-001",
+            "PR-RISK-010",
+            "needs_human_governance",
+            "汇沣电商",
+            "BUW",
+            "PC",
+            "六合通",
+            "synthetic",
+            "local",
+            "fail closed",
+            "Stage 10",
+            "BLOCKED / NO-GO",
+            "dedicated Execution Task",
+            "PR #41",
+        ):
+            self.assertIn(token, spec)
+        for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
+            self.assertNotIn(unresolved, spec)
+
+    def test_stage15_implementation_plan_is_present_but_requires_correction(self):
+        if not STAGE15_PLAN.is_file():
+            self.fail(f"missing Stage 15 implementation plan: {STAGE15_PLAN}")
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        for token in (
+            "# Non-production Readiness Remediation and Integration Implementation Plan",
+            "**Goal:**",
+            "**Architecture:**",
+            "**Tech Stack:**",
+            "## Global Constraints",
+            "Governance/AIOS-Nonproduction-Readiness-Integration-v1.md",
+            "Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml",
+            "Governance/AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml",
+            "Governance/AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml",
+            "Tests/Fixtures/nonproduction-readiness/synthetic-local-integration.yaml",
+            "Tests/validate_aios_nonproduction_readiness.py",
+            "Tests/test_nonproduction_readiness.py",
+            "Tests/AIOS-Nonproduction-Readiness-Validation.md",
+            ".github/workflows/validate-aios-nonproduction-readiness.yml",
+            "load_repository_yaml(root: Path, relative_path: Path) -> dict[str, Any]",
+            "validate_model(model: dict[str, Any]) -> list[str]",
+            "validate_fixture(fixture: dict[str, Any]) -> list[str]",
+            "evaluate_nonproduction_readiness(",
+            "validate_repository(root: Path) -> list[str]",
+            "needs_human_governance",
+            "dedicated Execution Task",
+            "implementation branch",
+            "Stage 15 `Reported`",
+        ):
+            self.assertIn(token, plan)
+        for task_number in range(1, 13):
+            self.assertIn(f"## Task {task_number}:", plan)
+        for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
+            self.assertNotIn(unresolved, plan)
+
+    def test_stage15_plan_tasks_are_machine_checkable(self):
+        """Reject task-level plans that are prose-only or lack runnable evidence."""
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        task_matches = list(
+            re.finditer(
+                r"(?ms)^## Task (\d+):.*?(?=^## Task \d+:|^## Plan self-review checklist|\Z)",
+                plan,
+            )
+        )
+        self.assertEqual([str(number) for number in range(1, 13)], [match.group(1) for match in task_matches])
+
+        code_fence = re.compile(r"```(?:bash|python|yaml|markdown|diff)\n.+?\n```", re.DOTALL)
+        run_command = re.compile(r"(?m)^\s*(?:python3|git|test|gh|python -m pip)\b")
+        evidence_language = re.compile(
+            r"\b(?:Expected|expect|expects|confirm|verify|proves?|pass(?:es|ed)?|validat(?:e|es|ed|ion)|run)\b",
+            re.IGNORECASE,
+        )
+        commit_command = re.compile(r"git commit -m \"[^\"]+\"")
+
+        for match in task_matches:
+            task_number = match.group(1)
+            section = match.group(0)
+            with self.subTest(task=task_number):
+                self.assertIn("**Files**", section)
+                self.assertIn("**Interfaces**", section)
+                self.assertRegex(section, r"(?m)^- \[ \] ")
+                fences = code_fence.findall(section)
+                self.assertGreaterEqual(len(fences), 2, "task must contain runnable/code evidence fences")
+                self.assertTrue(any(run_command.search(fence) for fence in fences), "task must contain an exact runnable command")
+                self.assertRegex(section, evidence_language)
+                self.assertRegex(section, commit_command)
+
+        for requirement_id in (
+            "AC-ENVIRONMENT",
+            "AC-IDENTITY",
+            "AC-DATA",
+            "AC-EVIDENCE",
+            "AC-OBSERVATION",
+            "AC-RECOVERY",
+            "AC-INCIDENT",
+            "AC-SUPPORT",
+            "AC-RISK-MAPPING",
+            "AC-AUTHORITY",
+        ):
+            self.assertIn(requirement_id, plan)
+        for policy_section in (
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "AI and human judgment boundary",
+            "Proof of operation",
+            "Authority ceiling",
+            "Component contracts",
+            "Risk mapping",
+            "Stop and withdrawal",
+            "Lifecycle",
+        ):
+            self.assertIn(policy_section, plan)
+        for return_field in (
+            "exact remote head and tree",
+            "changed-file allowlist",
+            "final-head CI links",
+            "maximum result `needs_human_governance`",
+        ):
+            self.assertIn(return_field, plan)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
