@@ -73,7 +73,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(denied, self.baseline)
 
-    def test_stages_10_through_13_are_archived_stage14_is_reviewed(self):
+    def test_stages_10_through_14_are_archived(self):
         stage10 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 10 |"))
         stage11 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 11 |"))
         stage12 = next(line for line in self.stage_registry.splitlines() if line.startswith("| 12 |"))
@@ -91,13 +91,15 @@ class ProjectGovernanceValidation(unittest.TestCase):
         for token in (
             "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
             "feat/aios-support-controlled-pilot-design-v1", "PR #37",
-            "| Reviewed |", "7184d917", "Mandatory Return", "needs_human_governance",
+            "| Archived |", "7184d917", "Mandatory Return", "needs_human_governance",
             "Human Governance Thread review passed",
             "142804f", "Published through PR #37", "post-merge",
+            "8d6e2af", "Archived by the Governance Thread",
             "no pilot authority",
         ):
             self.assertIn(token, stage14)
-        self.assertIn("Stage 13 Archived / Stage 14 Reviewed", self.project_registry)
+        self.assertIn("Stage 13 Archived / Stage 14 Archived", self.project_registry)
+        self.assertIn("no active execution Stage", self.project_registry)
         self.assertIn("142804f", self.project_registry)
         self.assertIn("published through PR #37", self.project_registry)
 
