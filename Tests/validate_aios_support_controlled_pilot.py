@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import re
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +17,24 @@ ALLOWED_YAML_PATHS = frozenset({MODEL_PATH, FIXTURE_PATH})
 MODEL_VERSION = "support_controlled_pilot_eligibility/v1"
 OWNER_STATE = "unassigned / governance decision required"
 ALLOWED_RESULTS = ["denied", "needs_human_governance"]
+REQUEST_KEYS = {
+    "model_version",
+    "support_request_id",
+    "support_case_id",
+    "pilot_candidate_id",
+    "scope_id",
+    "company",
+    "brand",
+    "synthetic_workload_class",
+    "owner_state",
+    "external_actions_performed",
+}
+ID_RULES = {
+    "support_request_id": re.compile(r"^SR-SYN-[A-Z0-9-]+$"),
+    "support_case_id": re.compile(r"^SC-SYN-[A-Z0-9-]+$"),
+    "pilot_candidate_id": re.compile(r"^PCAN-SYN-[A-Z0-9-]+$"),
+    "scope_id": re.compile(r"^SCOPE-SYN-[A-Z0-9-]+$"),
+}
 
 TOP_LEVEL_KEYS = (
     "model_version",
@@ -392,6 +412,40 @@ def evaluate_eligibility(
         or evidence_bundle.get("external_actions_performed") != []
     ):
         _append_once(reasons, "EXTERNAL_ACTION_FORBIDDEN")
+    if set(request) != REQUEST_KEYS:
+        _append_once(reasons, "REQUEST_SCHEMA_INVALID")
+    for field, rule in ID_RULES.items():
+        if not isinstance(request.get(field), str) or not rule.fullmatch(
+            request[field]
+        ):
+            _append_once(reasons, f"{field.upper()}_INVALID")
+    if (
+        evidence_bundle.get("evidence_refs")
+        != model["evidence_contract"]["required_evidence_refs"]
+    ):
+        _append_once(reasons, "EVIDENCE_ORDER_OR_CONTENT_INVALID")
+    items = evidence_bundle.get("evidence_items")
+    if (
+        not isinstance(items, list)
+        or [item.get("evidence_id") for item in items]
+        != evidence_bundle.get("evidence_refs")
+    ):
+        _append_once(reasons, "EVIDENCE_ITEM_ORDER_INVALID")
+    else:
+        for item in items:
+            content = item.get("synthetic_content")
+            digest = (
+                hashlib.sha256(content.encode("utf-8")).hexdigest()
+                if isinstance(content, str)
+                else None
+            )
+            if (
+                item.get("hash_basis") != "synthetic_content_utf8"
+                or item.get("content_sha256") != digest
+            ):
+                _append_once(reasons, "EVIDENCE_HASH_INVALID")
+            if item.get("human_accepted") is not False:
+                _append_once(reasons, "HUMAN_ACCEPTANCE_INFERENCE_FORBIDDEN")
     result = "denied" if reasons else "needs_human_governance"
     gates = [] if reasons else [gate["gate_id"] for gate in model["human_gates"]]
     core = {

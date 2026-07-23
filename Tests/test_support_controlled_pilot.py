@@ -22,6 +22,36 @@ def load_validator():
 
 
 class SupportControlledPilotTests(unittest.TestCase):
+    def test_identity_version_order_and_schema_attacks_deny(self):
+        validator = load_validator()
+        model = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)
+        fixture = validator.load_repository_yaml(ROOT, validator.FIXTURE_PATH)
+        cases = {
+            "missing_id": lambda r, e: r.pop("support_request_id"),
+            "wildcard_id": lambda r, e: r.__setitem__("scope_id", "SCOPE-SYN-*"),
+            "wrong_prefix": lambda r, e: r.__setitem__(
+                "pilot_candidate_id", "SR-SYN-001"
+            ),
+            "mixed_version": lambda r, e: e.__setitem__(
+                "model_version", "support_controlled_pilot_eligibility/v2"
+            ),
+            "duplicate_evidence": lambda r, e: e["evidence_refs"].append(
+                e["evidence_refs"][0]
+            ),
+            "reordered_evidence": lambda r, e: e["evidence_refs"].reverse(),
+            "unknown_field": lambda r, e: r.__setitem__("extension", True),
+        }
+        for name, mutate in cases.items():
+            with self.subTest(name=name):
+                request = copy.deepcopy(fixture["request"])
+                evidence = copy.deepcopy(fixture["evidence_bundle"])
+                mutate(request, evidence)
+                decision = validator.evaluate_eligibility(model, request, evidence)
+                self.assertEqual("denied", decision["result"])
+                self.assertTrue(decision["reason_codes"])
+                self.assertEqual([], decision["required_human_gates"])
+                self.assertEqual([], decision["external_actions_performed"])
+
     def test_valid_fixture_needs_human_governance_without_side_effects(self):
         validator = load_validator()
         model = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)
