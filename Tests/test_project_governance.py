@@ -8,6 +8,13 @@ BASELINE = ROOT / "Governance" / "AIOS-Project-Governance-Baseline-v1.md"
 PROJECT_REGISTRY = ROOT / "Governance" / "AIOS-Project-Registry.md"
 STAGE_REGISTRY = ROOT / "Governance" / "AIOS-Stage-Registry.md"
 WORKFLOW = ROOT / ".github" / "workflows" / "validate-aios-project-governance.yml"
+STAGE15_SPEC = (
+    ROOT
+    / "docs"
+    / "superpowers"
+    / "specs"
+    / "2026-07-23-nonproduction-readiness-remediation-integration-design.md"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -102,6 +109,60 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("no active execution Stage", self.project_registry)
         self.assertIn("142804f", self.project_registry)
         self.assertIn("published through PR #37", self.project_registry)
+
+    def test_stage15_governance_design_is_planned_and_unassigned(self):
+        stage15_rows = [
+            line for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        ]
+        self.assertEqual(1, len(stage15_rows))
+        stage15 = stage15_rows[0]
+        for token in (
+            "NR-01",
+            "Non-production Readiness Remediation and Integration Validation",
+            "Issue #40",
+            "gov/aios-stage15-nonproduction-readiness-design",
+            "| Planned |",
+            "implementation unassigned",
+            "方案 B",
+            "no real pilot",
+        ):
+            self.assertIn(token, stage15)
+
+        for token in (
+            "Stage 14 Archived / Stage 15 Planned",
+            "no active execution Stage",
+            "Issue #40",
+            "implementation unassigned",
+            "needs_human_governance",
+        ):
+            self.assertIn(token, self.project_registry)
+
+        spec = STAGE15_SPEC.read_text(encoding="utf-8")
+        for token in (
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "AI and human judgment boundary",
+            "Proof of operation",
+            "PR-RISK-001",
+            "PR-RISK-010",
+            "needs_human_governance",
+            "汇沣电商",
+            "BUW",
+            "PC",
+            "六合通",
+            "synthetic",
+            "local",
+            "fail closed",
+            "Stage 10",
+            "BLOCKED / NO-GO",
+            "dedicated Execution Task",
+        ):
+            self.assertIn(token, spec)
+        for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
+            self.assertNotIn(unresolved, spec)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
