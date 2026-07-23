@@ -1,0 +1,67 @@
+mapping_version: support_controlled_pilot_stage10_13_mapping/v1
+stage10_conclusion: BLOCKED / NO-GO
+stage10_risks:
+  - risk_id: PR-RISK-001
+    state: blocked
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: architecture evidence required; no deployable capability inferred
+  - risk_id: PR-RISK-002
+    state: blocked
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: Stage 11 identity authorization and secret evidence required; no security control is provisioned or accepted
+  - risk_id: PR-RISK-003
+    state: blocked
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: Stage 12 privacy purpose and data evidence required before any real data; Stage 14 remains synthetic only
+  - risk_id: PR-RISK-004
+    state: blocked
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: exact source lineage quality and reconciliation evidence required; no source is connected
+  - risk_id: PR-RISK-005
+    state: blocked
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: metric and evidence contracts are defined; no telemetry alert durable log or measured SLO exists
+  - risk_id: PR-RISK-006
+    state: blocked
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: Stage 13 stop and recovery evidence plus withdrawal disposition proof required; no rollback is performed
+  - risk_id: PR-RISK-007
+    state: blocked
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: Stage 13 escalation and human decision evidence required; no incident path is operated
+  - risk_id: PR-RISK-008
+    state: blocked
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: support model and synthetic handoff contract defined; no owner coverage or live support exists
+  - risk_id: PR-RISK-009
+    state: open
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: exact 汇沣电商 and BUW boundary required; PC 六合通 and ambiguity fail closed
+  - risk_id: PR-RISK-010
+    state: open
+    accepted: false
+    overridden_by_stage14: false
+    owner_state: unassigned / governance decision required
+    stage14_relationship: otherwise-valid evaluation stops at needs_human_governance; pilot and release authority remain false
+upstream_evidence:
+  - {stage: 11, lifecycle: Archived, evidence_class: architecture_and_security_design, design_only: true, accepted_for_real_pilot: false}
+  - {stage: 12, lifecycle: Archived, evidence_class: privacy_and_data_governance_design, design_only: true, accepted_for_real_pilot: false}
+  - {stage: 13, lifecycle: Archived, evidence_class: operational_resilience_design, design_only: true, accepted_for_real_pilot: false}

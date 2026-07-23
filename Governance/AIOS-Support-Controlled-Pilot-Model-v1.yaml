@@ -1,0 +1,134 @@
+model_version: support_controlled_pilot_eligibility/v1
+stage: 14
+stage_id: PS-01
+issue: 36
+execution_thread: 019f8c92-e709-7a83-b06c-fa014cf0b216
+synthetic_only: true
+repository_controlled_fixtures_only: true
+allowed_scope: {company: 汇沣电商, brand: BUW}
+excluded_entities: [PC, 六合通]
+owner_state: unassigned / governance decision required
+allowed_results: [denied, needs_human_governance]
+authority:
+  pilot_authorized: false
+  release_authorized: false
+  production_action_allowed: false
+  staging_action_allowed: false
+  external_action_allowed: false
+id_prefixes:
+  support_request: SR-SYN-
+  support_case: SC-SYN-
+  pilot_candidate: PCAN-SYN-
+  scope: SCOPE-SYN-
+  success_metric: SM-SYN-
+  guardrail_metric: GM-SYN-
+  evidence_bundle: EVB-SYN-
+  audit_record: AUD-SYN-
+  decision_record: DEC-SYN-
+  human_gate: HG-
+human_gates:
+  - {gate_id: HG-WRITTEN-SPEC-APPROVAL}
+  - {gate_id: HG-IMPLEMENTATION-EVIDENCE-ACCEPTANCE}
+  - {gate_id: HG-NAMED-OWNER-APPOINTMENT}
+  - {gate_id: HG-REAL-SCOPE-AND-DATA-AUTHORIZATION}
+  - {gate_id: HG-STAGE10-RISK-DISPOSITION}
+  - {gate_id: HG-STAGE11-13-EVIDENCE-ACCEPTANCE}
+  - {gate_id: HG-SUPPORT-STOP-WITHDRAWAL-ACCEPTANCE}
+  - {gate_id: HG-METRIC-AND-EVIDENCE-ACCEPTANCE}
+  - {gate_id: HG-BOUNDED-AUTHORITY-DEFINITION}
+  - {gate_id: HG-REAL-PILOT-ENTRY-DECISION}
+support_requests:
+  - support_request_id: SR-SYN-001
+    model_version: support_controlled_pilot_eligibility/v1
+    synthetic: true
+    pilot_candidate_id: PCAN-SYN-001
+    scope_id: SCOPE-SYN-001
+support_cases:
+  - support_case_id: SC-SYN-001
+    model_version: support_controlled_pilot_eligibility/v1
+    synthetic: true
+    support_request_id: SR-SYN-001
+    support_model_id: SUP-SYN-001
+    escalation_path_id: ESC-SYN-001
+pilot_candidates:
+  - pilot_candidate_id: PCAN-SYN-001
+    model_version: support_controlled_pilot_eligibility/v1
+    synthetic: true
+    scope_id: SCOPE-SYN-001
+    entry_criteria_ids: [ENTRY-SYN-001]
+    exit_criteria_ids: [EXIT-SYN-001]
+    stop_condition_ids: [STOP-SYN-001]
+    withdrawal_condition_ids: [WITHDRAW-SYN-001]
+scopes:
+  - scope_id: SCOPE-SYN-001
+    model_version: support_controlled_pilot_eligibility/v1
+    synthetic: true
+    company: 汇沣电商
+    brand: BUW
+    workload_class: SYNTHETIC-SUPPORT-EVALUATION
+    duration_design_bound: one synthetic evaluation
+    volume_design_bound: one synthetic candidate
+    permitted_actions: [in_memory_evaluation]
+    excluded_actions: [external_read, external_write, real_pilot]
+entry_criteria:
+  - criterion_id: ENTRY-SYN-001
+    required_gate_ids: [HG-WRITTEN-SPEC-APPROVAL, HG-IMPLEMENTATION-EVIDENCE-ACCEPTANCE, HG-NAMED-OWNER-APPOINTMENT, HG-REAL-SCOPE-AND-DATA-AUTHORIZATION, HG-STAGE10-RISK-DISPOSITION, HG-STAGE11-13-EVIDENCE-ACCEPTANCE, HG-SUPPORT-STOP-WITHDRAWAL-ACCEPTANCE, HG-METRIC-AND-EVIDENCE-ACCEPTANCE, HG-BOUNDED-AUTHORITY-DEFINITION, HG-REAL-PILOT-ENTRY-DECISION]
+    real_world_satisfied: false
+exit_criteria:
+  - criterion_id: EXIT-SYN-001
+    required_evidence: [scope_reconciliation, metric_reconciliation, case_disposition, data_access_disposition, human_closure]
+    evaluator_may_close_real_pilot: false
+stop_conditions:
+  - condition_id: STOP-SYN-001
+    triggers: [unknown_state, identity_mismatch, suspected_real_data, cross_boundary, unresolved_stage10_risk, missing_stage11_13_evidence, support_gap, escalation_gap, guardrail_breach, metric_source_failure, audit_gap, authority_loss, external_action]
+    default_action: no_further_action_pending_human_decision
+withdrawal_conditions:
+  - condition_id: WITHDRAW-SYN-001
+    required_capabilities: [intake, acknowledgement, stop_further_activity, preserve_evidence, dispose_scope_data_access, human_closure]
+    real_roles_assigned: false
+support_models:
+  - support_model_id: SUP-SYN-001
+    owner_state: unassigned / governance decision required
+    required_elements: [intake, taxonomy, severity, coverage_design, acknowledgement_target, investigation_handoff, closure, training, runbook, evidence_retention, service_target_review]
+escalation_paths:
+  - escalation_path_id: ESC-SYN-001
+    owner_state: unassigned / governance decision required
+    ordered_functions: [support_triage, technical_review, security_privacy_review_when_triggered, operational_resilience_review_when_triggered, governance_thread_decision]
+success_metrics:
+  - metric_id: SM-SYN-001
+    definition: synthetic support intake completeness
+    unit: ratio
+    direction: higher_is_better
+    source: repository_synthetic_fixture
+    observation_window: one synthetic evaluation
+    threshold_type: exact
+    threshold: 1.0
+    missing_data_behavior: deny
+    evidence_ref: EVID-SYN-METRICS-AUDIT
+    owner_state: unassigned / governance decision required
+  - {metric_id: SM-SYN-002, definition: bounded synthetic task quality, unit: ratio, direction: higher_is_better, source: repository_synthetic_fixture, observation_window: one synthetic evaluation, threshold_type: minimum, threshold: 1.0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+guardrail_metrics:
+  - {metric_id: GM-SYN-001, definition: acknowledgement evidence completeness, unit: ratio, direction: higher_is_better, source: repository_synthetic_fixture, observation_window: one synthetic evaluation, threshold_type: exact, threshold: 1.0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+  - {metric_id: GM-SYN-002, definition: unresolved synthetic support cases, unit: count, direction: lower_is_better, source: repository_synthetic_fixture, observation_window: one synthetic evaluation, threshold_type: maximum, threshold: 0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+  - {metric_id: GM-SYN-003, definition: escalation timeliness evidence completeness, unit: ratio, direction: higher_is_better, source: repository_synthetic_fixture, observation_window: one synthetic evaluation, threshold_type: exact, threshold: 1.0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+  - {metric_id: GM-SYN-004, definition: synthetic errors and exceptions, unit: count, direction: lower_is_better, source: evaluator_decision, observation_window: one synthetic evaluation, threshold_type: maximum, threshold: 0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+  - {metric_id: GM-SYN-005, definition: cross-boundary events, unit: count, direction: lower_is_better, source: evaluator_decision, observation_window: one synthetic evaluation, threshold_type: maximum, threshold: 0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+  - {metric_id: GM-SYN-006, definition: external write attempts, unit: count, direction: lower_is_better, source: evaluator_decision, observation_window: one synthetic evaluation, threshold_type: maximum, threshold: 0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+  - {metric_id: GM-SYN-007, definition: stop responsiveness evidence completeness, unit: ratio, direction: higher_is_better, source: repository_synthetic_fixture, observation_window: one synthetic evaluation, threshold_type: exact, threshold: 1.0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+  - {metric_id: GM-SYN-008, definition: withdrawal completion evidence, unit: ratio, direction: higher_is_better, source: repository_synthetic_fixture, observation_window: one synthetic evaluation, threshold_type: exact, threshold: 1.0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+  - {metric_id: GM-SYN-009, definition: evidence bundle completeness, unit: ratio, direction: higher_is_better, source: repository_synthetic_fixture, observation_window: one synthetic evaluation, threshold_type: exact, threshold: 1.0, missing_data_behavior: deny, evidence_ref: EVID-SYN-METRICS-AUDIT, owner_state: unassigned / governance decision required}
+evidence_contract:
+  evidence_bundle_id_prefix: EVB-SYN-
+  version_format: semantic_version
+  required_evidence_refs: [EVID-SYN-STAGE10-RISK-REGISTER, EVID-SYN-STAGE11-ARCHITECTURE-SECURITY, EVID-SYN-STAGE12-PRIVACY-DATA, EVID-SYN-STAGE13-OPERATIONAL-RESILIENCE, EVID-SYN-SUPPORT-STOP-WITHDRAWAL, EVID-SYN-METRICS-AUDIT]
+  content_hash_required: true
+  human_acceptance_inferred: false
+audit_contract:
+  record_id: AUD-SYN-001
+  synthetic: true
+  persistent_store: false
+decision_contract:
+  record_id: DEC-SYN-001
+  synthetic: true
+  human_decision: null
+  pilot_authorized: false

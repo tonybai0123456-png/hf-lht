@@ -656,12 +656,63 @@ def validate_repository(root: Path = ROOT) -> list[str]:
             errors.append(f"workflow contains prohibited token: {prohibited}")
 
     stage_registry = _text(root / STAGE_REGISTRY, errors)
+    project_registry = _text(root / PROJECT_REGISTRY, errors)
+    errors.extend(validate_current_registry_lifecycle(stage_registry, project_registry))
+    return errors
+
+
+def validate_current_registry_lifecycle(
+    stage_registry: str,
+    project_registry: str,
+) -> list[str]:
+    """Validate Stage 13 archive evidence and the Stage 14 Reviewed ceiling."""
+    errors: list[str] = []
     stage13 = next((line for line in stage_registry.splitlines() if line.startswith("| 13 |")), "")
     stage14 = next((line for line in stage_registry.splitlines() if line.startswith("| 14 |")), "")
-    if not all(token in stage13 for token in ("Issue #32", "Issue #34", "019f8a35-6d4e-7c60-b35a-79de8626d4e3", "feat/aios-operational-resilience-v1", "7b16a5c", "19/19", "80/80", "| Archived |")):
-        errors.append("Stage 13 registry row must record the reviewed, published archive evidence")
-    if "No Execution Thread assigned" not in stage14 or "| Planned |" not in stage14:
-        errors.append("Stage 14 must remain Planned and unassigned")
+    project = next((line for line in project_registry.splitlines() if line.startswith("| BUW-AIOS |")), "")
+
+    stage13_required = (
+        "Issue #32", "Issue #34", "019f8a35-6d4e-7c60-b35a-79de8626d4e3",
+        "feat/aios-operational-resilience-v1", "327d9e9", "7b16a5c",
+        "19/19", "80/80", "| Archived |",
+    )
+    if not all(token in stage13 for token in stage13_required):
+        errors.append("Stage 13 registry row must preserve exact reviewed published archive evidence")
+
+    stage14_required = (
+        "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
+        "feat/aios-support-controlled-pilot-design-v1", "PR #37",
+        "| Reviewed |", "7184d91797128788decc734ef80f9d07114fcc84",
+        "Human Governance Thread review passed", "Mandatory Return",
+        "needs_human_governance", "no pilot authority",
+    )
+    if not all(token in stage14 for token in stage14_required):
+        errors.append("Stage 14 must preserve evidence-backed Reviewed status")
+
+    for forbidden in (
+        "| Reported |", "| Archived |", "pilot authority granted", "pilot authorized",
+        "pilot_authorized: true", "release authorized", "released", "ready for pilot",
+        "self-approved", "named owner", "real data connected", "connector enabled",
+    ):
+        if forbidden in stage14:
+            errors.append(f"Stage 14 exceeds Reviewed authority: {forbidden}")
+
+    project_required = (
+        "Stage 13 Archived / Stage 14 Reviewed", "Issue #36",
+        "7184d91797128788decc734ef80f9d07114fcc84", "Draft PR #37",
+        "Mandatory Return accepted", "needs_human_governance",
+        "Human Governance Thread review passed", "no pilot authority",
+    )
+    if not all(token in project for token in project_required):
+        errors.append("Project Registry must preserve Stage 14 Reviewed evidence")
+
+    for forbidden in (
+        "Stage 14 Reported", "Stage 14 Archived", "pilot authority granted",
+        "pilot authorized", "pilot_authorized: true", "release authorized",
+        "self-approved", "ready for pilot",
+    ):
+        if forbidden in project:
+            errors.append(f"Project Registry exceeds Reviewed authority: {forbidden}")
     return errors
 
 

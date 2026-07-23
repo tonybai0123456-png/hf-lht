@@ -1,4 +1,5 @@
 from copy import deepcopy
+import hashlib
 from pathlib import Path
 import unittest
 
@@ -6,6 +7,7 @@ import yaml
 
 from Tests.validate_aios_operational_resilience import (
     evaluate_scenario,
+    validate_current_registry_lifecycle,
     validate_model,
     validate_repository,
 )
@@ -540,23 +542,79 @@ class OperationalResilienceTests(unittest.TestCase):
         ):
             self.assertNotIn(prohibited, workflow)
 
-    def test_registry_records_archived_stage13_and_planned_stage14(self):
+    def test_registry_records_archived_stage13_and_reviewed_stage14(self):
         stage_registry = STAGE_REGISTRY.read_text(encoding="utf-8")
         project_registry = PROJECT_REGISTRY.read_text(encoding="utf-8")
         stage13 = next(line for line in stage_registry.splitlines() if line.startswith("| 13 |"))
         stage14 = next(line for line in stage_registry.splitlines() if line.startswith("| 14 |"))
-        self.assertIn("Issue #32", stage13)
-        self.assertIn("019f8a35-6d4e-7c60-b35a-79de8626d4e3", stage13)
-        self.assertIn("feat/aios-operational-resilience-v1", stage13)
-        self.assertIn("Issue #34", stage13)
-        self.assertIn("327d9e9", stage13)
-        self.assertIn("7b16a5c", stage13)
-        self.assertIn("19/19", stage13)
-        self.assertIn("80/80", stage13)
-        self.assertIn("| Archived |", stage13)
-        self.assertIn("No Execution Thread assigned", stage14)
-        self.assertIn("| Planned |", stage14)
-        self.assertIn("Stage 13 Archived / Stage 14 Planned", project_registry)
+        for token in (
+            "Issue #32", "Issue #34", "019f8a35-6d4e-7c60-b35a-79de8626d4e3",
+            "feat/aios-operational-resilience-v1", "327d9e9", "7b16a5c",
+            "19/19", "80/80", "| Archived |", "no production/staging",
+            "risk acceptance", "pilot", "release",
+        ):
+            self.assertIn(token, stage13)
+        frozen_stage13 = {
+            ROOT / "Governance/AIOS-Operational-Resilience-v1.md": "e453f6b13a1ce0f12c2867208fcc45163580dd20fe24853789bbf00ede4f8d96",
+            ROOT / "Governance/AIOS-Operational-Resilience-Model-v1.yaml": "fc3c42dab820a1a38b05dfa5e81829b779e9c0802dd72527cb9fc1053c51e35e",
+            ROOT / "Governance/AIOS-Operational-Resilience-Acceptance-Matrix-v1.yaml": "ff961770e395629f4ea14bd6099c10e107160e1b49241cf1dd57248d55b16406",
+            ROOT / "Governance/AIOS-Operational-Resilience-Stage10-12-Mapping-v1.yaml": "8a8b62fafac828ef560766c07da427695f1758d6bc65f714d2e4db1f822da7bb",
+        }
+        for path, expected_sha256 in frozen_stage13.items():
+            self.assertEqual(expected_sha256, hashlib.sha256(path.read_bytes()).hexdigest())
+        stage13_model = yaml.safe_load(
+            (ROOT / "Governance/AIOS-Operational-Resilience-Model-v1.yaml").read_text(encoding="utf-8")
+        )
+        self.assertFalse(stage13_model["decision"]["risk_acceptance_granted"])
+        self.assertFalse(stage13_model["decision"]["production_ready"])
+        for token in (
+            "Issue #36", "019f8c92-e709-7a83-b06c-fa014cf0b216",
+            "feat/aios-support-controlled-pilot-design-v1", "PR #37",
+            "| Reviewed |", "7184d917", "Mandatory Return", "needs_human_governance",
+            "Human Governance Thread review passed", "no pilot authority",
+        ):
+            self.assertIn(token, stage14)
+        self.assertIn("Stage 13 Archived / Stage 14 Reviewed", project_registry)
+
+    def test_stage14_reviewed_lifecycle_and_authority_escalation_fail_closed(self):
+        stage_registry = STAGE_REGISTRY.read_text(encoding="utf-8")
+        project_registry = PROJECT_REGISTRY.read_text(encoding="utf-8")
+        self.assertEqual([], validate_current_registry_lifecycle(stage_registry, project_registry))
+
+        for status in ("Reported", "Archived"):
+            with self.subTest(stage_status=status):
+                mutated = stage_registry.replace("| Reviewed |", f"| {status} |")
+                errors = validate_current_registry_lifecycle(mutated, project_registry)
+                self.assertTrue(any("must preserve evidence-backed Reviewed status" in error for error in errors), errors)
+
+        mutations = {
+            "pilot": stage_registry.replace("no pilot authority", "pilot authority granted"),
+            "self_approval": stage_registry.replace(
+                "Human Governance Thread review passed",
+                "self-approved review passed",
+            ),
+            "released": stage_registry.replace("no pilot authority", "release authorized"),
+        }
+        for name, mutated in mutations.items():
+            with self.subTest(stage_mutation=name):
+                errors = validate_current_registry_lifecycle(mutated, project_registry)
+                self.assertTrue(any("exceeds Reviewed authority" in error for error in errors), errors)
+
+        for status in ("Reported", "Archived"):
+            with self.subTest(project_status=status):
+                mutated_project = project_registry.replace(
+                    "Stage 13 Archived / Stage 14 Reviewed",
+                    f"Stage 13 Archived / Stage 14 {status}",
+                )
+                errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
+                self.assertTrue(any("must preserve Stage 14 Reviewed" in error for error in errors), errors)
+
+        mutated_project = project_registry.replace(
+            "Human Governance Thread review passed",
+            "self-approved review passed and ready for pilot",
+        )
+        errors = validate_current_registry_lifecycle(stage_registry, mutated_project)
+        self.assertTrue(any("Project Registry exceeds Reviewed authority" in error for error in errors), errors)
 
 
 if __name__ == "__main__":
