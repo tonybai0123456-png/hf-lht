@@ -13,7 +13,15 @@ MODEL_PATH = Path("Governance/AIOS-Support-Controlled-Pilot-Model-v1.yaml")
 FIXTURE_PATH = Path(
     "Tests/Fixtures/support-controlled-pilot/synthetic-support-pilot-candidate.yaml"
 )
-ALLOWED_YAML_PATHS = frozenset({MODEL_PATH, FIXTURE_PATH})
+MAPPING_PATH = Path(
+    "Governance/AIOS-Support-Controlled-Pilot-Stage10-13-Mapping-v1.yaml"
+)
+MATRIX_PATH = Path(
+    "Governance/AIOS-Support-Controlled-Pilot-Acceptance-Matrix-v1.yaml"
+)
+ALLOWED_YAML_PATHS = frozenset(
+    {MODEL_PATH, FIXTURE_PATH, MAPPING_PATH, MATRIX_PATH}
+)
 MODEL_VERSION = "support_controlled_pilot_eligibility/v1"
 OWNER_STATE = "unassigned / governance decision required"
 ALLOWED_RESULTS = ["denied", "needs_human_governance"]
@@ -587,3 +595,42 @@ def evaluate_eligibility(
         "human_decision": None,
     }
     return {**core, "audit_record": audit, "decision_record": decision}
+
+
+def validate_repository(root: Path = ROOT) -> list[str]:
+    errors: list[str] = []
+    model = load_repository_yaml(root, MODEL_PATH)
+    for error in validate_model(model):
+        _append_once(errors, error)
+    mapping = load_repository_yaml(root, MAPPING_PATH)
+    matrix = load_repository_yaml(root, MATRIX_PATH)
+    if [item.get("risk_id") for item in mapping.get("stage10_risks", [])] != [
+        f"PR-RISK-{n:03d}" for n in range(1, 11)
+    ]:
+        _append_once(errors, "stage10_risk_order_invalid")
+    expected_states = ["blocked"] * 8 + ["open", "open"]
+    if [item.get("state") for item in mapping.get("stage10_risks", [])] != expected_states:
+        _append_once(errors, "stage10_risk_state_invalid")
+    if any(
+        item.get("accepted") is not False
+        or item.get("overridden_by_stage14") is not False
+        or item.get("owner_state") != OWNER_STATE
+        for item in mapping.get("stage10_risks", [])
+    ):
+        _append_once(errors, "stage10_risk_authority_invalid")
+    if matrix.get("authority_ceiling") != {
+        "pilot_authorized": False,
+        "release_authorized": False,
+        "production_action_allowed": False,
+    }:
+        _append_once(errors, "acceptance_authority_ceiling_invalid")
+    requirements = matrix.get("requirements")
+    if not isinstance(requirements, list) or not requirements:
+        _append_once(errors, "acceptance_requirements_invalid")
+    elif any(
+        row.get("synthetic_evidence_required") is not True
+        or row.get("human_acceptance_required") is not True
+        for row in requirements
+    ):
+        _append_once(errors, "acceptance_requirement_authority_invalid")
+    return errors

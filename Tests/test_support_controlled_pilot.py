@@ -12,6 +12,12 @@ ROOT = Path(__file__).resolve().parents[1]
 MODEL = ROOT / "Governance/AIOS-Support-Controlled-Pilot-Model-v1.yaml"
 VALIDATOR = ROOT / "Tests/validate_aios_support_controlled_pilot.py"
 POLICY = ROOT / "Governance/AIOS-Support-Controlled-Pilot-v1.md"
+MAPPING = (
+    ROOT / "Governance/AIOS-Support-Controlled-Pilot-Stage10-13-Mapping-v1.yaml"
+)
+MATRIX = (
+    ROOT / "Governance/AIOS-Support-Controlled-Pilot-Acceptance-Matrix-v1.yaml"
+)
 
 
 def load_validator():
@@ -23,6 +29,54 @@ def load_validator():
 
 
 class SupportControlledPilotTests(unittest.TestCase):
+    def test_upstream_mapping_freezes_risks_and_design_boundaries(self):
+        mapping = yaml.safe_load(MAPPING.read_text(encoding="utf-8"))
+        self.assertEqual(
+            [f"PR-RISK-{number:03d}" for number in range(1, 11)],
+            [item["risk_id"] for item in mapping["stage10_risks"]],
+        )
+        self.assertEqual(
+            ["blocked"] * 8 + ["open", "open"],
+            [i["state"] for i in mapping["stage10_risks"]],
+        )
+        self.assertTrue(
+            all(i["accepted"] is False for i in mapping["stage10_risks"])
+        )
+        self.assertTrue(
+            all(
+                i["owner_state"]
+                == "unassigned / governance decision required"
+                for i in mapping["stage10_risks"]
+            )
+        )
+        self.assertEqual(
+            [11, 12, 13], [i["stage"] for i in mapping["upstream_evidence"]]
+        )
+        self.assertTrue(
+            all(
+                i["design_only"] is True
+                and i["accepted_for_real_pilot"] is False
+                for i in mapping["upstream_evidence"]
+            )
+        )
+
+    def test_acceptance_matrix_never_grants_authority(self):
+        matrix = yaml.safe_load(MATRIX.read_text(encoding="utf-8"))
+        self.assertTrue(
+            all(row["synthetic_evidence_required"] for row in matrix["requirements"])
+        )
+        self.assertTrue(
+            all(row["human_acceptance_required"] for row in matrix["requirements"])
+        )
+        self.assertEqual(
+            {
+                "pilot_authorized": False,
+                "release_authorized": False,
+                "production_action_allowed": False,
+            },
+            matrix["authority_ceiling"],
+        )
+
     def test_policy_covers_business_loop_objects_authority_and_lifecycle(self):
         policy = POLICY.read_text(encoding="utf-8")
         required = [
