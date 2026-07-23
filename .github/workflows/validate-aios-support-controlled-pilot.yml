@@ -1,0 +1,21 @@
+name: Validate AIOS Support Controlled Pilot
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 -m pip install -r requirements-dev.txt
+      - run: python3 -m unittest Tests.test_support_controlled_pilot -v
+      - run: python3 Tests/validate_aios_support_controlled_pilot.py
+      - run: python3 -m unittest discover -s Tests -p 'test_*.py' -v
+      - run: python3 Tests/validate_aios_workflow_schema.py
+      - run: python3 -m compileall Tests

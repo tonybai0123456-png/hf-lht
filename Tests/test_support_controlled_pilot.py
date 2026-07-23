@@ -19,6 +19,7 @@ MATRIX = (
     ROOT / "Governance/AIOS-Support-Controlled-Pilot-Acceptance-Matrix-v1.yaml"
 )
 VALIDATION_GUIDE = ROOT / "Tests/AIOS-Support-Controlled-Pilot-Validation.md"
+WORKFLOW = ROOT / ".github/workflows/validate-aios-support-controlled-pilot.yml"
 
 
 def load_validator():
@@ -30,6 +31,38 @@ def load_validator():
 
 
 class SupportControlledPilotTests(unittest.TestCase):
+    def test_workflow_is_pull_request_only_and_read_only(self):
+        validator = load_validator()
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("pull_request:", workflow)
+        self.assertNotIn("push:", workflow)
+        self.assertNotIn("workflow_dispatch:", workflow)
+        self.assertIn("permissions:\n  contents: read", workflow)
+        self.assertIn("persist-credentials: false", workflow)
+        expected_commands = (
+            "python3 -m pip install -r requirements-dev.txt",
+            "python3 -m unittest Tests.test_support_controlled_pilot -v",
+            "python3 Tests/validate_aios_support_controlled_pilot.py",
+            "python3 -m unittest discover -s Tests -p 'test_*.py' -v",
+            "python3 Tests/validate_aios_workflow_schema.py",
+            "python3 -m compileall Tests",
+        )
+        for command in expected_commands:
+            self.assertIn(command, workflow)
+        for prohibited in (
+            "contents: write",
+            "pull-requests: write",
+            "issues: write",
+            "git push",
+            "curl ",
+            "wget ",
+            "secrets.",
+            "environment:",
+            "pip install pyyaml",
+        ):
+            self.assertNotIn(prohibited, workflow)
+        self.assertEqual([], validator.validate_repository(ROOT))
+
     def test_repository_validator_and_guide_cover_all_deliverables(self):
         validator = load_validator()
         self.assertEqual([], validator.validate_repository(ROOT))
