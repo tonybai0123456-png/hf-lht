@@ -134,7 +134,9 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "implementation unassigned",
             "方案 B",
             "written specification approved",
-            "implementation plan awaits independent human review",
+            "implementation plan reviewed at `8984a1720cf716ab832590b2dd6748d628677edc`",
+            "correction required",
+            "corrected implementation plan awaits independent human review",
             "no real pilot",
         ):
             self.assertIn(token, stage15)
@@ -146,7 +148,9 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "PR #41",
             "implementation unassigned",
             "written specification approved",
-            "implementation plan awaits independent human review",
+            "implementation plan reviewed at `8984a1720cf716ab832590b2dd6748d628677edc`",
+            "correction required",
+            "corrected implementation plan awaits independent human review",
             "needs_human_governance",
         ):
             self.assertIn(token, self.project_registry)
@@ -178,7 +182,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
             self.assertNotIn(unresolved, spec)
 
-    def test_stage15_implementation_plan_is_complete_but_unapproved(self):
+    def test_stage15_implementation_plan_is_present_but_requires_correction(self):
         if not STAGE15_PLAN.is_file():
             self.fail(f"missing Stage 15 implementation plan: {STAGE15_PLAN}")
         plan = STAGE15_PLAN.read_text(encoding="utf-8")
