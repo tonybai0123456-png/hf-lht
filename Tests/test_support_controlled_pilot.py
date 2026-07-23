@@ -22,6 +22,68 @@ def load_validator():
 
 
 class SupportControlledPilotTests(unittest.TestCase):
+    def test_business_authority_and_control_attacks_deny(self):
+        validator = load_validator()
+        model = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)
+        fixture = validator.load_repository_yaml(ROOT, validator.FIXTURE_PATH)
+        mutations = {
+            "pc": lambda r, e: r.__setitem__("brand", "PC"),
+            "lht": lambda r, e: r.__setitem__("company", "六合通"),
+            "cross_brand": lambda r, e: r.__setitem__("brand", "BUW|PC"),
+            "real_owner": lambda r, e: r.__setitem__(
+                "owner_state", "Named Operator"
+            ),
+            "real_data": lambda r, e: e.__setitem__("synthetic", False),
+            "connector": lambda r, e: e.__setitem__("connector", "ticket-api"),
+            "external_action": lambda r, e: r[
+                "external_actions_performed"
+            ].append("ticket-created"),
+            "stage10_closed": lambda r, e: e["upstream_risk_states"].__setitem__(
+                "PR-RISK-001", "closed"
+            ),
+            "stage11_missing": lambda r, e: e["evidence_refs"].remove(
+                "EVID-SYN-STAGE11-ARCHITECTURE-SECURITY"
+            ),
+            "support_missing": lambda r, e: e["evidence_refs"].remove(
+                "EVID-SYN-SUPPORT-STOP-WITHDRAWAL"
+            ),
+            "metrics_missing": lambda r, e: e["evidence_refs"].remove(
+                "EVID-SYN-METRICS-AUDIT"
+            ),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name):
+                request = copy.deepcopy(fixture["request"])
+                evidence = copy.deepcopy(fixture["evidence_bundle"])
+                mutate(request, evidence)
+                self.assertEqual(
+                    "denied",
+                    validator.evaluate_eligibility(model, request, evidence)[
+                        "result"
+                    ],
+                )
+
+    def test_permission_like_results_and_fields_are_rejected(self):
+        validator = load_validator()
+        model = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)
+        forbidden = [
+            "pilot_authorized",
+            "approved",
+            "ready",
+            "released",
+            "eligible",
+            "go",
+            "accepted",
+            "proceed",
+            "pilot_ready",
+            "production_ready",
+        ]
+        for token in forbidden:
+            with self.subTest(token=token):
+                mutated = copy.deepcopy(model)
+                mutated["allowed_results"] = ["denied", token]
+                self.assertTrue(validator.validate_model(mutated))
+
     def test_identity_version_order_and_schema_attacks_deny(self):
         validator = load_validator()
         model = validator.load_repository_yaml(ROOT, validator.MODEL_PATH)

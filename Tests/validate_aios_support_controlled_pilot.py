@@ -35,6 +35,47 @@ ID_RULES = {
     "pilot_candidate_id": re.compile(r"^PCAN-SYN-[A-Z0-9-]+$"),
     "scope_id": re.compile(r"^SCOPE-SYN-[A-Z0-9-]+$"),
 }
+EXPECTED_RISKS = {
+    **{f"PR-RISK-{number:03d}": "blocked" for number in range(1, 9)},
+    "PR-RISK-009": "open",
+    "PR-RISK-010": "open",
+}
+FORBIDDEN_PERMISSION_TOKENS = frozenset(
+    {
+        "pilot_authorized",
+        "approved",
+        "ready",
+        "released",
+        "eligible",
+        "go",
+        "accepted",
+        "proceed",
+        "pilot_ready",
+        "production_ready",
+    }
+)
+FORBIDDEN_OPERATIONAL_KEYS = frozenset(
+    {
+        "ticket",
+        "ticket_id",
+        "monitor",
+        "customer",
+        "store",
+        "order",
+        "employee",
+        "infrastructure",
+        "database",
+        "api",
+        "connector",
+        "credential",
+        "secret",
+        "pager",
+        "alert",
+        "external_url",
+        "real_owner",
+        "named_owner",
+    }
+)
 
 TOP_LEVEL_KEYS = (
     "model_version",
@@ -236,6 +277,65 @@ def _valid_ids(items: Any, id_key: str, prefix: str) -> bool:
     )
 
 
+def _scan_forbidden(value: Any, path: tuple[str, ...] = ()) -> list[str]:
+    errors: list[str] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            normalized = str(key).strip().lower()
+            if normalized in FORBIDDEN_OPERATIONAL_KEYS:
+                _append_once(
+                    errors,
+                    "FORBIDDEN_OPERATIONAL_FIELD:" + ".".join((*path, str(key))),
+                )
+            if normalized in FORBIDDEN_PERMISSION_TOKENS and child not in (
+                False,
+                None,
+            ):
+                _append_once(
+                    errors,
+                    "FORBIDDEN_PERMISSION_FIELD:" + ".".join((*path, str(key))),
+                )
+            for error in _scan_forbidden(child, (*path, str(key))):
+                _append_once(errors, error)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            for error in _scan_forbidden(child, (*path, str(index))):
+                _append_once(errors, error)
+    elif (
+        isinstance(value, str)
+        and value.strip().lower() in FORBIDDEN_PERMISSION_TOKENS
+    ):
+        _append_once(errors, "FORBIDDEN_PERMISSION_VALUE:" + ".".join(path))
+    return errors
+
+
+def _scan_model_forbidden(model: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    expected_authority = {
+        "pilot_authorized": False,
+        "release_authorized": False,
+        "production_action_allowed": False,
+        "staging_action_allowed": False,
+        "external_action_allowed": False,
+    }
+    if model.get("authority") != expected_authority:
+        _append_once(errors, "MODEL_AUTHORITY_INVALID")
+    decision_contract = model.get("decision_contract")
+    if (
+        not isinstance(decision_contract, dict)
+        or decision_contract.get("pilot_authorized") is not False
+    ):
+        _append_once(errors, "MODEL_DECISION_AUTHORITY_INVALID")
+    scannable = {
+        key: value
+        for key, value in model.items()
+        if key not in {"authority", "decision_contract"}
+    }
+    for error in _scan_forbidden(scannable, ("model",)):
+        _append_once(errors, error)
+    return errors
+
+
 def validate_model(model: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if tuple(model) != TOP_LEVEL_KEYS:
@@ -396,6 +496,12 @@ def evaluate_eligibility(
     evidence_bundle: dict[str, Any],
 ) -> dict[str, Any]:
     reasons: list[str] = []
+    for error in _scan_model_forbidden(model):
+        _append_once(reasons, error)
+    for error in _scan_forbidden(request, ("request",)):
+        _append_once(reasons, error)
+    for error in _scan_forbidden(evidence_bundle, ("evidence_bundle",)):
+        _append_once(reasons, error)
     for error in validate_model(model):
         _append_once(reasons, f"MODEL_{error.upper()}")
     if (
@@ -403,10 +509,20 @@ def evaluate_eligibility(
         or evidence_bundle.get("model_version") != MODEL_VERSION
     ):
         _append_once(reasons, "VERSION_MISMATCH")
-    if (request.get("company"), request.get("brand")) != ("汇沣电商", "BUW"):
+    if (
+        request.get("company") != "汇沣电商"
+        or request.get("brand") != "BUW"
+    ):
         _append_once(reasons, "BUSINESS_BOUNDARY_INVALID")
     if request.get("owner_state") != OWNER_STATE:
         _append_once(reasons, "REAL_OWNER_FORBIDDEN")
+    if (
+        evidence_bundle.get("synthetic") is not True
+        or evidence_bundle.get("repository_controlled") is not True
+    ):
+        _append_once(reasons, "SYNTHETIC_PROVENANCE_INVALID")
+    if evidence_bundle.get("upstream_risk_states") != EXPECTED_RISKS:
+        _append_once(reasons, "UPSTREAM_RISK_STATE_INVALID")
     if (
         request.get("external_actions_performed") != []
         or evidence_bundle.get("external_actions_performed") != []
