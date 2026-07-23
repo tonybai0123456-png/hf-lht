@@ -15,6 +15,13 @@ STAGE15_SPEC = (
     / "specs"
     / "2026-07-23-nonproduction-readiness-remediation-integration-design.md"
 )
+STAGE15_PLAN = (
+    ROOT
+    / "docs"
+    / "superpowers"
+    / "plans"
+    / "2026-07-23-nonproduction-readiness-remediation-integration.md"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -126,6 +133,8 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "| Planned |",
             "implementation unassigned",
             "方案 B",
+            "written specification approved",
+            "implementation plan awaits independent human review",
             "no real pilot",
         ):
             self.assertIn(token, stage15)
@@ -136,6 +145,8 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Issue #40",
             "PR #41",
             "implementation unassigned",
+            "written specification approved",
+            "implementation plan awaits independent human review",
             "needs_human_governance",
         ):
             self.assertIn(token, self.project_registry)
@@ -166,6 +177,41 @@ class ProjectGovernanceValidation(unittest.TestCase):
             self.assertIn(token, spec)
         for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
             self.assertNotIn(unresolved, spec)
+
+    def test_stage15_implementation_plan_is_complete_but_unapproved(self):
+        if not STAGE15_PLAN.is_file():
+            self.fail(f"missing Stage 15 implementation plan: {STAGE15_PLAN}")
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        for token in (
+            "# Non-production Readiness Remediation and Integration Implementation Plan",
+            "**Goal:**",
+            "**Architecture:**",
+            "**Tech Stack:**",
+            "## Global Constraints",
+            "Governance/AIOS-Nonproduction-Readiness-Integration-v1.md",
+            "Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml",
+            "Governance/AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml",
+            "Governance/AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml",
+            "Tests/Fixtures/nonproduction-readiness/synthetic-local-integration.yaml",
+            "Tests/validate_aios_nonproduction_readiness.py",
+            "Tests/test_nonproduction_readiness.py",
+            "Tests/AIOS-Nonproduction-Readiness-Validation.md",
+            ".github/workflows/validate-aios-nonproduction-readiness.yml",
+            "load_repository_yaml(root: Path, relative_path: Path) -> dict[str, Any]",
+            "validate_model(model: dict[str, Any]) -> list[str]",
+            "validate_fixture(fixture: dict[str, Any]) -> list[str]",
+            "evaluate_nonproduction_readiness(",
+            "validate_repository(root: Path) -> list[str]",
+            "needs_human_governance",
+            "dedicated Execution Task",
+            "implementation branch",
+            "Stage 15 `Reported`",
+        ):
+            self.assertIn(token, plan)
+        for task_number in range(1, 13):
+            self.assertIn(f"## Task {task_number}:", plan)
+        for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
+            self.assertNotIn(unresolved, plan)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
