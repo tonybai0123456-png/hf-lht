@@ -284,6 +284,30 @@ class ProjectGovernanceValidation(unittest.TestCase):
         ):
             self.assertIn(return_field, plan)
 
+    def test_stage15_plan_pins_capability_and_malformed_input_regressions(self):
+        """Keep the exact fail-closed correction contract machine-checkable."""
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        for token in (
+            "ALLOWED_EMPTY_CAPABILITY_PATHS",
+            "$.environment.external_endpoints",
+            "$.environment.connectors",
+            "$.environment.credentials",
+            "allowed_empty_capability",
+            "forbidden_capability_value",
+            "test_empty_capability_fields_are_allowed",
+            "test_nonempty_or_misplaced_capability_fields_are_denied",
+            "test_malformed_input_types_are_denied_without_exceptions",
+            "except (AttributeError, KeyError, TypeError, ValueError)",
+            "self.assertEqual(\"needs_human_governance\", result[\"result\"])",
+            "self.assertEqual(\"denied\", result[\"result\"])",
+        ):
+            self.assertIn(token, plan)
+
+        self.assertNotIn(
+            'if normalized in FORBIDDEN_KEYS:\n                errors.append(_error(f"{path}.{key}", "forbidden_key"))',
+            plan,
+        )
+
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
         self.assertNotIn("push:", self.workflow)
