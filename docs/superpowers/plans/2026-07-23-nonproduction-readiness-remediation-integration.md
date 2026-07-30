@@ -621,6 +621,105 @@ git commit -m "docs(stage15): report bounded implementation evidence"
 
 Expected: Stage 15 is `Reported`, the changed-file allowlist is exact, final-head CI links are recorded, and work stops for independent human review.
 
+## As-built executable closure
+
+The direct owner instruction dated 2026-07-30 authorizes completion of all
+pre-deployment repository work while continuing to prohibit deployment, real
+data, real connectors, production credentials, production permissions and
+business-data mutation. The dedicated execution assignment is Codex goal
+`019fb137-f0bc-7e60-b8ad-efe1a8e250b1`; the implementation branch remains
+`gov/aios-stage15-nonproduction-readiness-design`.
+
+This section supersedes abbreviated examples earlier in the plan. The complete
+executable definitions are the following repository-controlled source assets,
+which are compiled, loaded and behavior-tested by
+`test_stage15_as_built_closure_is_executable_not_token_only`:
+
+- `Tests/validate_aios_nonproduction_readiness.py` contains complete definitions
+  for `load_controlled_yaml_text`, `load_repository_yaml`, `_scan_capabilities`,
+  `_fail_closed`, `validate_model`, `validate_fixture`,
+  `evaluate_nonproduction_readiness` and `validate_repository`.
+- `Tests/test_nonproduction_readiness.py` contains the positive, adversarial,
+  malformed-type, cycle, alias, merge-key, purity, determinism, cross-file,
+  CLI and read-only CI tests.
+- `Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml` and
+  `Tests/Fixtures/nonproduction-readiness/synthetic-local-integration.yaml`
+  contain the complete closed model and canonical synthetic fixture.
+- `Governance/AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml` and
+  `Governance/AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml`
+  contain all ten ordered risk mappings and all ten acceptance rows.
+- `Governance/AIOS-Nonproduction-Readiness-Integration-v1.md`,
+  `Tests/AIOS-Nonproduction-Readiness-Validation.md` and
+  `.github/workflows/validate-aios-nonproduction-readiness.yml` contain the
+  complete policy, reproducible validation contract and pull-request-only
+  read-only CI.
+
+The controlled loader rejects YAML anchors, aliases and merge keys before
+construction by iterating `yaml.scan` tokens and denying `AnchorToken`,
+`AliasToken` and a `ScalarToken` equal to `<<`. This prevents cyclic alias
+graphs from entering `yaml.safe_load`.
+
+The capability scanner is path- and value-aware:
+
+```python
+ALLOWED_EMPTY_CAPABILITY_PATHS = frozenset(
+    {
+        "$.environment.external_endpoints",
+        "$.environment.connectors",
+        "$.environment.credentials",
+    }
+)
+
+def _scan_capabilities(
+    value: Any,
+    path: str = "$",
+    active: set[int] | None = None,
+) -> list[str]:
+    """Allow only the three exact empty declarations and deny cycles."""
+```
+
+All public validation entry points place `copy.deepcopy` and the complete
+validator call inside `_fail_closed`. Any malformed input exception, including
+`RecursionError`, becomes a stable `validation_exception:<type>` denial.
+
+```python
+def _fail_closed(
+    validator: Callable[[Any], list[str]],
+    value: Any,
+    path: str,
+) -> list[str]:
+    try:
+        copied = copy.deepcopy(value)
+        return validator(copied)
+    except Exception as exc:
+        return [_error(path, f"validation_exception:{type(exc).__name__}")]
+```
+
+The evaluator is a pure composition boundary. It performs no file, network,
+environment, clock, randomness or process access and always returns false
+authority claims plus an empty external-action list.
+
+Run the exact closure evidence:
+
+```bash
+python3 Tests/validate_aios_nonproduction_readiness.py
+python3 -m unittest Tests.test_nonproduction_readiness -v
+python3 -m unittest Tests.test_project_governance -v
+python3 -m unittest discover -s Tests -p 'test_*.py' -v
+python3 Tests/validate_aios_workflow_schema.py
+python3 Tests/validate_aios_operational_resilience.py
+python3 Tests/validate_aios_support_controlled_pilot.py
+python3 -m compileall -q Runtime Tests
+git diff --check
+git commit -m "feat(stage15): complete predeployment integration proof"
+```
+
+Expected: the canonical package returns `needs_human_governance`; every
+adversarial or malformed case returns `denied`; all repository tests,
+validators and compilation pass; Stage 10 remains `BLOCKED / NO-GO`; Stages
+11–14 remain `Archived`; deployment and all real-world authority remain
+withheld.
+
 ## Plan self-review checklist
 
 - [ ] The written specification and this exact plan head have independent human approval.

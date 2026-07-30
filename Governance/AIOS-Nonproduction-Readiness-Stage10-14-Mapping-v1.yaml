@@ -1,0 +1,18 @@
+mapping_version: nonproduction_readiness_stage10_14_mapping/v1
+stage10_posture: BLOCKED / NO-GO
+risk_mappings:
+  - {risk_id: PR-RISK-001, evidence_ids: [EV-ENVIRONMENT], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-002, evidence_ids: [EV-IDENTITY], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-003, evidence_ids: [EV-DATA], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-004, evidence_ids: [EV-DATA, EV-EVIDENCE], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-005, evidence_ids: [EV-OBSERVATION, EV-EVIDENCE], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-006, evidence_ids: [EV-RECOVERY], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-007, evidence_ids: [EV-INCIDENT], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-008, evidence_ids: [EV-SUPPORT], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-009, evidence_ids: [EV-IDENTITY, EV-DATA], state: open_blocked_unaccepted}
+  - {risk_id: PR-RISK-010, evidence_ids: [EV-ENVIRONMENT, EV-EVIDENCE], state: open_blocked_unaccepted}
+archived_dependencies:
+  - {stage: 11, status: Archived, interpretation: design_evidence_only}
+  - {stage: 12, status: Archived, interpretation: design_evidence_only}
+  - {stage: 13, status: Archived, interpretation: design_evidence_only}
+  - {stage: 14, status: Archived, interpretation: design_evidence_only}

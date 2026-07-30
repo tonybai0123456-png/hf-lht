@@ -1,3 +1,4 @@
+import ast
 from pathlib import Path
 import re
 import unittest
@@ -21,6 +22,37 @@ STAGE15_PLAN = (
     / "superpowers"
     / "plans"
     / "2026-07-23-nonproduction-readiness-remediation-integration.md"
+)
+STAGE15_VALIDATOR = ROOT / "Tests" / "validate_aios_nonproduction_readiness.py"
+STAGE15_TEST = ROOT / "Tests" / "test_nonproduction_readiness.py"
+STAGE15_POLICY = (
+    ROOT / "Governance" / "AIOS-Nonproduction-Readiness-Integration-v1.md"
+)
+STAGE15_MODEL = (
+    ROOT
+    / "Governance"
+    / "AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml"
+)
+STAGE15_FIXTURE = (
+    ROOT
+    / "Tests"
+    / "Fixtures"
+    / "nonproduction-readiness"
+    / "synthetic-local-integration.yaml"
+)
+STAGE15_MAPPING = (
+    ROOT
+    / "Governance"
+    / "AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml"
+)
+STAGE15_MATRIX = (
+    ROOT
+    / "Governance"
+    / "AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml"
+)
+STAGE15_GUIDE = ROOT / "Tests" / "AIOS-Nonproduction-Readiness-Validation.md"
+STAGE15_WORKFLOW = (
+    ROOT / ".github" / "workflows" / "validate-aios-nonproduction-readiness.yml"
 )
 
 
@@ -307,6 +339,80 @@ class ProjectGovernanceValidation(unittest.TestCase):
             'if normalized in FORBIDDEN_KEYS:\n                errors.append(_error(f"{path}.{key}", "forbidden_key"))',
             plan,
         )
+
+    def test_stage15_as_built_closure_is_executable_not_token_only(self):
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        self.assertIn("## As-built executable closure", plan)
+        for token in (
+            "load_controlled_yaml_text",
+            "_scan_capabilities",
+            "ALLOWED_EMPTY_CAPABILITY_PATHS",
+            "_fail_closed",
+            "yaml.scan",
+            "AnchorToken",
+            "AliasToken",
+            "ScalarToken",
+            "validation_exception",
+            "python3 Tests/validate_aios_nonproduction_readiness.py",
+            "python3 -m unittest Tests.test_nonproduction_readiness -v",
+            "python3 -m unittest discover -s Tests -p 'test_*.py' -v",
+        ):
+            self.assertIn(token, plan)
+
+        assets = (
+            STAGE15_VALIDATOR,
+            STAGE15_TEST,
+            STAGE15_POLICY,
+            STAGE15_MODEL,
+            STAGE15_FIXTURE,
+            STAGE15_MAPPING,
+            STAGE15_MATRIX,
+            STAGE15_GUIDE,
+            STAGE15_WORKFLOW,
+        )
+        for asset in assets:
+            self.assertTrue(asset.is_file(), asset)
+            self.assertGreater(asset.stat().st_size, 100, asset)
+
+        validator_source = STAGE15_VALIDATOR.read_text(encoding="utf-8")
+        validator_tree = ast.parse(validator_source)
+        defined = {
+            node.name
+            for node in validator_tree.body
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+        self.assertTrue(
+            {
+                "load_repository_yaml",
+                "load_controlled_yaml_text",
+                "validate_model",
+                "validate_fixture",
+                "evaluate_nonproduction_readiness",
+                "validate_repository",
+            }.issubset(defined)
+        )
+
+        policy = STAGE15_POLICY.read_text(encoding="utf-8")
+        sections = re.split(r"(?m)^## ", policy)[1:]
+        section_bodies = {
+            section.splitlines()[0]: "\n".join(section.splitlines()[1:]).strip()
+            for section in sections
+        }
+        for heading in (
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "AI and human judgment boundary",
+            "Proof of operation",
+            "Authority ceiling",
+            "Component contracts",
+            "Risk mapping",
+            "Stop and withdrawal",
+            "Lifecycle",
+        ):
+            self.assertIn(heading, section_bodies)
+            self.assertGreater(len(section_bodies[heading]), 80, heading)
 
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)

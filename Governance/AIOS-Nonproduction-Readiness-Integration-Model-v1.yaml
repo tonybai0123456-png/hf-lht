@@ -1,0 +1,55 @@
+model_version: nonproduction_readiness_integration/v1
+stage: "15"
+stage_id: NR-01
+allowed_scope:
+  company: 汇沣电商
+  brand: BUW
+excluded_entities:
+  - PC
+  - 六合通
+environment_mode: local_synthetic_disposable
+allowed_results:
+  - denied
+  - needs_human_governance
+authority_ceiling: needs_human_governance
+real_owner: unassigned / governance decision required
+stage10_posture: BLOCKED / NO-GO
+components:
+  - {component_id: CMP-ENVIRONMENT, evidence_id: EV-ENVIRONMENT}
+  - {component_id: CMP-IDENTITY, evidence_id: EV-IDENTITY}
+  - {component_id: CMP-DATA, evidence_id: EV-DATA}
+  - {component_id: CMP-EVIDENCE, evidence_id: EV-EVIDENCE}
+  - {component_id: CMP-OBSERVATION, evidence_id: EV-OBSERVATION}
+  - {component_id: CMP-RECOVERY, evidence_id: EV-RECOVERY}
+  - {component_id: CMP-INCIDENT, evidence_id: EV-INCIDENT}
+  - {component_id: CMP-SUPPORT, evidence_id: EV-SUPPORT}
+risks:
+  - {risk_id: PR-RISK-001, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-002, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-003, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-004, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-005, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-006, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-007, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-008, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-009, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+  - {risk_id: PR-RISK-010, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
+human_gates:
+  - {gate_id: HG-SPEC-APPROVAL, authorized: false}
+  - {gate_id: HG-PLAN-APPROVAL, authorized: false}
+  - {gate_id: HG-EXECUTION-ASSIGNMENT, authorized: false}
+  - {gate_id: HG-IMPLEMENTATION-EVIDENCE, authorized: false}
+  - {gate_id: HG-NAMED-OWNER, authorized: false}
+  - {gate_id: HG-ARCH-SECURITY, authorized: false}
+  - {gate_id: HG-PRIVACY-DATA, authorized: false}
+  - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, authorized: false}
+  - {gate_id: HG-RISK-DISPOSITION, authorized: false}
+  - {gate_id: HG-PILOT-SCOPE, authorized: false}
+  - {gate_id: HG-PILOT-EVIDENCE, authorized: false}
+  - {gate_id: HG-RELEASE, authorized: false}
+claims:
+  risk_accepted: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+external_actions_performed: []

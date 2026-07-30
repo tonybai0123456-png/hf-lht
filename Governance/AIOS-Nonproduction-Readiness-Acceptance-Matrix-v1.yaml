@@ -1,0 +1,17 @@
+matrix_version: nonproduction_readiness_acceptance/v1
+requirements:
+  - {requirement_id: AC-ENVIRONMENT, test_ids: [test_empty_capability_fields_are_allowed_only_at_canonical_paths], evidence_ids: [EV-ENVIRONMENT], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-IDENTITY, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-IDENTITY], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-DATA, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-DATA], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-EVIDENCE, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-EVIDENCE], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-OBSERVATION, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-OBSERVATION], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-RECOVERY, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-RECOVERY], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-INCIDENT, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-INCIDENT], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-SUPPORT, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-SUPPORT], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-RISK-MAPPING, test_ids: [test_repository_mapping_matrix_policy_and_guide_are_complete], evidence_ids: [EV-ENVIRONMENT, EV-IDENTITY, EV-DATA, EV-EVIDENCE, EV-OBSERVATION, EV-RECOVERY, EV-INCIDENT, EV-SUPPORT], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-AUTHORITY, test_ids: [test_valid_package_stops_at_human_governance_without_side_effects, test_malformed_input_types_and_cycles_are_denied_without_exceptions], evidence_ids: [], local_synthetic_proof: true, real_world_authority: false}
+authority_claims:
+  risk_accepted: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
