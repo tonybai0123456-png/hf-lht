@@ -70,7 +70,7 @@ GATE_AUTHORIZATIONS = (
     True,
     True,
     True,
-    False,
+    True,
     False,
     False,
     False,
@@ -80,7 +80,7 @@ GATE_AUTHORIZATIONS = (
     False,
     False,
 )
-PENDING_GATE_IDS = GATE_IDS[3:]
+PENDING_GATE_IDS = GATE_IDS[4:]
 ACCEPTANCE_IDS = (
     "AC-ENVIRONMENT",
     "AC-IDENTITY",
@@ -973,7 +973,9 @@ def validate_repository(root: Path) -> list[str]:
             errors.append(_error("$registry.stage10", "posture_not_frozen"))
         if not stage15:
             errors.append(_error("$registry.stage15", "missing"))
-        if "| Reviewed |" in stage15 or "| Archived |" in stage15:
+        if "| Reviewed |" not in stage15:
+            errors.append(_error("$registry.stage15", "reviewed_status_required"))
+        if "| Reported |" in stage15 or "| Archived |" in stage15:
             errors.append(_error("$registry.stage15", "authority_exceeded"))
     except Exception as exc:
         errors.append(

@@ -29,6 +29,10 @@ Expected behavior:
   closed without escaping exceptions.
 - Acceptance requirements use exact test and evidence links; nonexistent test
   names and cross-requirement evidence substitutions are denied.
+- The exact implementation-evidence gate is recorded as accepted only by the
+  Human Governance Thread decision on reviewed target
+  `b27614ba2ebebb772888c3a4b1ff3d829b47532e`; the remaining eight human gates
+  stay required and unauthorized.
 - Evaluation is deterministic, does not mutate inputs and performs no external
   action.
 - All repository regression tests and validators exit zero.

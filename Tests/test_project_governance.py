@@ -149,7 +149,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("142804f", self.project_registry)
         self.assertIn("published through PR #37", self.project_registry)
 
-    def test_stage15_is_reported_with_exact_predeployment_evidence(self):
+    def test_stage15_is_reviewed_at_the_exact_approved_head(self):
         stage15_rows = [
             line for line in self.stage_registry.splitlines()
             if line.startswith("| 15 |")
@@ -163,35 +163,43 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "gov/aios-stage15-nonproduction-readiness-design",
             "PR #41",
             "019fb137-f0bc-7e60-b8ad-efe1a8e250b1",
-            "| Reported |",
+            "| Reviewed |",
             "written specification approved",
             "implementation head `9812105be0478d6e192db13c596b11a461de1a18`",
             "tree `6c5083ae30c3a398e049f5b665b8147f7c868d3d`",
+            "reviewed target head `b27614ba2ebebb772888c3a4b1ff3d829b47532e`",
+            "reviewed target tree `d3fec0a73e1f5b90d3c5829b387095da1e2ff5e4`",
             "11/11 focused",
             "14/14 Project Governance",
             "108/108 repository",
             "9/9 exact-head CI",
             "Mandatory Return",
             "needs_human_governance",
-            "awaits independent human review",
+            "Human Governance Thread review passed",
+            "implementation-evidence gate accepted",
+            "not merged, published, archived or deployed",
             "no real pilot",
         ):
             self.assertIn(token, stage15)
 
         for token in (
-            "Stage 14 Archived / Stage 15 Reported",
+            "Stage 14 Archived / Stage 15 Reviewed",
             "Issue #40",
             "PR #41",
             "019fb137-f0bc-7e60-b8ad-efe1a8e250b1",
             "written specification approved",
             "implementation head `9812105be0478d6e192db13c596b11a461de1a18`",
             "tree `6c5083ae30c3a398e049f5b665b8147f7c868d3d`",
+            "reviewed target head `b27614ba2ebebb772888c3a4b1ff3d829b47532e`",
+            "reviewed target tree `d3fec0a73e1f5b90d3c5829b387095da1e2ff5e4`",
             "11/11 focused",
             "14/14 Project Governance",
             "108/108 repository",
             "9/9 exact-head CI",
             "Mandatory Return submitted",
-            "awaits independent human review",
+            "Human Governance Thread review passed",
+            "implementation-evidence gate accepted",
+            "Reviewed is not merged, published, archived or deployed",
             "needs_human_governance",
         ):
             self.assertIn(token, self.project_registry)

@@ -38,7 +38,7 @@ human_gates:
   - {gate_id: HG-SPEC-APPROVAL, authorized: true}
   - {gate_id: HG-PLAN-APPROVAL, authorized: true}
   - {gate_id: HG-EXECUTION-ASSIGNMENT, authorized: true}
-  - {gate_id: HG-IMPLEMENTATION-EVIDENCE, authorized: false}
+  - {gate_id: HG-IMPLEMENTATION-EVIDENCE, authorized: true}
   - {gate_id: HG-NAMED-OWNER, authorized: false}
   - {gate_id: HG-ARCH-SECURITY, authorized: false}
   - {gate_id: HG-PRIVACY-DATA, authorized: false}

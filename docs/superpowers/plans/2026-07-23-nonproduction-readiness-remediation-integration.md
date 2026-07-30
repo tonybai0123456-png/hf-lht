@@ -2,7 +2,7 @@
 
 > **Execution record:** This plan was executed task-by-task only after the direct owner instruction dated 2026-07-30 assigned the bounded predeployment work to Codex goal `019fb137-f0bc-7e60-b8ad-efe1a8e250b1` on the existing Stage 15 branch.
 
-> **Governance status:** Stage 15 is `Reported` and awaits independent human review. No real pilot, deployment, production, risk acceptance, owner assignment, permission change, external write, merge, publication, archive, Issue closure, or Stage 16 is authorized by this plan or its implementation evidence.
+> **Governance review record:** The Human Governance Thread accepted the exact reported evidence at `b27614ba2ebebb772888c3a4b1ff3d829b47532e` on 2026-07-30 and moved Stage 15 to `Reviewed`. This does not rewrite the execution plan's original stop-at-Reported instructions and does not authorize real pilot, deployment, production, risk acceptance, owner assignment, permission change, external write, merge, publication, archive, Issue closure, or Stage 16.
 
 **Goal:** Build a repository-contained, local, synthetic, disposable proof for company `汇沣电商`, brand `BUW`, while excluding `PC` and `六合通`; map evidence to `PR-RISK-001` through `PR-RISK-010`; fail closed; and return at most `needs_human_governance`.
 

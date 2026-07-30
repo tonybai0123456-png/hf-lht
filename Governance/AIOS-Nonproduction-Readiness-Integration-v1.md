@@ -69,8 +69,10 @@ remains `BLOCKED / NO-GO`. `PR-RISK-001` through `PR-RISK-010` remain
 `open_blocked_unaccepted`; owners remain
 `unassigned / governance decision required`. The written specification,
 implementation plan and dedicated execution assignment are recorded as
-completed governance decisions. The evaluator cannot grant those decisions and
-still requires implementation-evidence acceptance plus gates 5 through 12.
+completed governance decisions. The Human Governance Thread accepted the exact
+implementation evidence at reviewed target
+`b27614ba2ebebb772888c3a4b1ff3d829b47532e`; the evaluator cannot grant or
+revoke that decision and still requires gates 5 through 12.
 Risk acceptance, pilot authorization, production readiness and release
 authorization remain exactly false.
 
@@ -137,6 +139,8 @@ delete shared, business or production data.
 
 Stage 15 starts `Planned`. After an approved plan and explicit execution
 assignment, implementation may move only through `Executing` to `Reported` with
-a Mandatory Return. `Reported` is not `Reviewed`. Review, merge, publication,
-archive, Issue closure, real pilot, production, deployment, release and Stage 16
-remain separate human Governance Thread decisions.
+a Mandatory Return. The Human Governance Thread accepted the exact reported
+evidence at `b27614ba2ebebb772888c3a4b1ff3d829b47532e` and moved Stage 15 to
+`Reviewed`. Reviewed does not authorize merge, publication, archive, Issue
+closure, real pilot, production, deployment, release or Stage 16; each remains
+a separate human Governance Thread decision.

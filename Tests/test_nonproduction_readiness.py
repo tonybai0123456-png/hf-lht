@@ -92,7 +92,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             [row["gate_id"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            [True, True, True] + [False] * 9,
+            [True, True, True, True] + [False] * 8,
             [row["authorized"] for row in model["human_gates"]],
         )
 
