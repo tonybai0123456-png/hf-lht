@@ -700,6 +700,10 @@ The evaluator is a pure composition boundary. It performs no file, network,
 environment, clock, randomness or process access and always returns false
 authority claims plus an empty external-action list.
 
+The acceptance matrix is also closed against exact test and evidence
+identifiers. Replacing a requirement's test with a nonexistent test, or
+reassigning evidence from another requirement, fails repository validation.
+
 Run the exact closure evidence:
 
 ```bash

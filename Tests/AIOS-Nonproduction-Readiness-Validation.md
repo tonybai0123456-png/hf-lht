@@ -27,6 +27,8 @@ Expected behavior:
   environment paths; non-empty or misplaced declarations are denied.
 - YAML anchors, aliases, merge keys, cyclic structures and malformed types fail
   closed without escaping exceptions.
+- Acceptance requirements use exact test and evidence links; nonexistent test
+  names and cross-requirement evidence substitutions are denied.
 - Evaluation is deterministic, does not mutate inputs and performs no external
   action.
 - All repository regression tests and validators exit zero.

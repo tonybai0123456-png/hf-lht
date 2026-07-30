@@ -283,6 +283,31 @@ class NonproductionReadinessTests(unittest.TestCase):
              "AC-RISK-MAPPING", "AC-AUTHORITY"],
             [row["requirement_id"] for row in matrix["requirements"]],
         )
+        test_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+        implemented_tests = {
+            node.name
+            for node in ast.walk(test_tree)
+            if isinstance(node, ast.FunctionDef)
+            and node.name.startswith("test_")
+        }
+        linked_tests = {
+            test_id
+            for requirement in matrix["requirements"]
+            for test_id in requirement["test_ids"]
+        }
+        self.assertEqual(set(), linked_tests - implemented_tests)
+
+        broken_test_link = copy.deepcopy(matrix)
+        broken_test_link["requirements"][0]["test_ids"] = [
+            "test_does_not_exist"
+        ]
+        self.assertTrue(validator._validate_matrix(broken_test_link))
+
+        broken_evidence_link = copy.deepcopy(matrix)
+        broken_evidence_link["requirements"][0]["evidence_ids"] = [
+            "EV-DATA"
+        ]
+        self.assertTrue(validator._validate_matrix(broken_evidence_link))
         policy = POLICY.read_text(encoding="utf-8")
         for token in (
             "Business loop",

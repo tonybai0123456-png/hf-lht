@@ -93,6 +93,51 @@ ACCEPTANCE_IDS = (
     "AC-RISK-MAPPING",
     "AC-AUTHORITY",
 )
+EXPECTED_ACCEPTANCE_TEST_IDS = {
+    "AC-ENVIRONMENT": (
+        "test_empty_capability_fields_are_allowed_only_at_canonical_paths",
+    ),
+    "AC-IDENTITY": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-DATA": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-EVIDENCE": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-OBSERVATION": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-RECOVERY": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-INCIDENT": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-SUPPORT": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-RISK-MAPPING": (
+        "test_repository_mapping_matrix_policy_and_guide_are_complete",
+    ),
+    "AC-AUTHORITY": (
+        "test_valid_package_stops_at_human_governance_without_side_effects",
+        "test_malformed_input_types_and_cycles_are_denied_without_exceptions",
+    ),
+}
+EXPECTED_ACCEPTANCE_EVIDENCE_IDS = {
+    "AC-ENVIRONMENT": ("EV-ENVIRONMENT",),
+    "AC-IDENTITY": ("EV-IDENTITY",),
+    "AC-DATA": ("EV-DATA",),
+    "AC-EVIDENCE": ("EV-EVIDENCE",),
+    "AC-OBSERVATION": ("EV-OBSERVATION",),
+    "AC-RECOVERY": ("EV-RECOVERY",),
+    "AC-INCIDENT": ("EV-INCIDENT",),
+    "AC-SUPPORT": ("EV-SUPPORT",),
+    "AC-RISK-MAPPING": EVIDENCE_IDS,
+    "AC-AUTHORITY": (),
+}
 FALSE_CLAIMS = {
     "risk_accepted": False,
     "pilot_authorized": False,
@@ -731,6 +776,11 @@ def _validate_matrix(matrix: Any) -> list[str]:
     )
     if isinstance(requirements, list):
         for index, record in enumerate(requirements):
+            requirement_id = (
+                record.get("requirement_id")
+                if isinstance(record, dict)
+                else None
+            )
             if (
                 not isinstance(record, dict)
                 or tuple(record.keys())
@@ -742,14 +792,13 @@ def _validate_matrix(matrix: Any) -> list[str]:
                     "real_world_authority",
                 )
                 or not isinstance(record.get("test_ids"), list)
-                or not record.get("test_ids")
                 or not isinstance(record.get("evidence_ids"), list)
+                or tuple(record.get("test_ids", ()))
+                != EXPECTED_ACCEPTANCE_TEST_IDS.get(requirement_id)
+                or tuple(record.get("evidence_ids", ()))
+                != EXPECTED_ACCEPTANCE_EVIDENCE_IDS.get(requirement_id)
                 or not _is_exact_bool(record.get("local_synthetic_proof"), True)
                 or not _is_exact_bool(record.get("real_world_authority"), False)
-                or any(
-                    evidence_id not in EVIDENCE_IDS
-                    for evidence_id in record.get("evidence_ids", [])
-                )
             ):
                 errors.append(
                     _error(
