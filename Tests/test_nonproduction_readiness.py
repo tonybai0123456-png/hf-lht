@@ -91,6 +91,10 @@ class NonproductionReadinessTests(unittest.TestCase):
             ],
             [row["gate_id"] for row in model["human_gates"]],
         )
+        self.assertEqual(
+            [True, True, True] + [False] * 9,
+            [row["authorized"] for row in model["human_gates"]],
+        )
 
     def test_valid_package_stops_at_human_governance_without_side_effects(self):
         validator, model, fixture = self._assets()
@@ -102,7 +106,10 @@ class NonproductionReadinessTests(unittest.TestCase):
         self.assertEqual("needs_human_governance", first["result"])
         self.assertEqual([], first["reason_codes"])
         self.assertEqual(list(validator.EVIDENCE_IDS), first["evidence_refs"])
-        self.assertEqual(list(validator.GATE_IDS), first["required_human_gates"])
+        self.assertEqual(
+            list(validator.PENDING_GATE_IDS),
+            first["required_human_gates"],
+        )
         self.assertEqual(
             {risk_id: "open_blocked_unaccepted" for risk_id in validator.RISK_IDS},
             first["risk_states"],

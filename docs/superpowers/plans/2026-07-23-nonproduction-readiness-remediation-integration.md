@@ -1,8 +1,8 @@
 # Non-production Readiness Remediation and Integration Implementation Plan
 
-> **For agentic workers:** Execute this plan task-by-task only after independent human approval of the exact plan head, assignment of one dedicated Execution Task, and assignment of one implementation branch.
+> **Execution record:** This plan was executed task-by-task only after the direct owner instruction dated 2026-07-30 assigned the bounded predeployment work to Codex goal `019fb137-f0bc-7e60-b8ad-efe1a8e250b1` on the existing Stage 15 branch.
 
-> **Governance override:** This document is review material. Stage 15 remains `Planned`; no implementation, real pilot, production, risk acceptance, owner assignment, permission change, external write, merge, publication, archive, Issue closure, or Stage 16 is authorized by this plan.
+> **Governance status:** Stage 15 is `Reported` and awaits independent human review. No real pilot, deployment, production, risk acceptance, owner assignment, permission change, external write, merge, publication, archive, Issue closure, or Stage 16 is authorized by this plan or its implementation evidence.
 
 **Goal:** Build a repository-contained, local, synthetic, disposable proof for company `汇沣电商`, brand `BUW`, while excluding `PC` and `六合通`; map evidence to `PR-RISK-001` through `PR-RISK-010`; fail closed; and return at most `needs_human_governance`.
 
@@ -17,7 +17,7 @@
 - Inputs are repository-controlled synthetic data only.
 - Stage 10 remains `BLOCKED / NO-GO`; Stages 11–14 remain `Archived`.
 - All ten risks remain `open_blocked_unaccepted`; owner remains `unassigned / governance decision required`.
-- All twelve human gates remain unauthorized.
+- The written specification, implementation plan and dedicated execution assignment are recorded as authorized; implementation-evidence acceptance and gates 5–12 remain pending.
 - Invalid or malformed input returns `denied`; valid synthetic input returns `needs_human_governance`.
 - `risk_accepted`, `pilot_authorized`, `production_ready` and `release_authorized` are always false.
 - `external_actions_performed` is always `[]`.
@@ -77,6 +77,7 @@ GATE_IDS = (
     "HG-PRIVACY-DATA", "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
     "HG-RISK-DISPOSITION", "HG-PILOT-SCOPE", "HG-PILOT-EVIDENCE", "HG-RELEASE",
 )
+PENDING_GATE_IDS = GATE_IDS[3:]
 FALSE_CLAIMS = {
     "risk_accepted": False,
     "pilot_authorized": False,
@@ -146,7 +147,7 @@ def evaluate_nonproduction_readiness(model: Any, fixture: Any) -> dict[str, Any]
         "reason_codes": [f"VALIDATION_ERROR:{item}" for item in errors]
         if errors else ["LOCAL_SYNTHETIC_VALIDATION_PASSED", "HUMAN_GATES_REQUIRED"],
         "evidence_refs": [] if errors else list(EVIDENCE_IDS),
-        "required_human_gates": list(GATE_IDS),
+        "required_human_gates": list(PENDING_GATE_IDS),
         "risk_states": {risk_id: "open_blocked_unaccepted" for risk_id in RISK_IDS},
         "external_actions_performed": [],
         "claims": dict(FALSE_CLAIMS),
@@ -604,7 +605,7 @@ Mandatory Return:
 - focused and full-regression results
 - maximum result `needs_human_governance`
 - risks remain open, blocked and unaccepted
-- all human gates remain unauthorized
+- gates 1–3 are recorded governance decisions; gates 4–12 remain pending
 - external actions performed: none
 - merge, publication, archive, pilot and production: not authorized
 ```

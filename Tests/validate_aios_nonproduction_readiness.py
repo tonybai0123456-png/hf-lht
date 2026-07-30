@@ -66,6 +66,21 @@ GATE_IDS = (
     "HG-PILOT-EVIDENCE",
     "HG-RELEASE",
 )
+GATE_AUTHORIZATIONS = (
+    True,
+    True,
+    True,
+    False,
+    False,
+    False,
+    False,
+    False,
+    False,
+    False,
+    False,
+    False,
+)
+PENDING_GATE_IDS = GATE_IDS[3:]
 ACCEPTANCE_IDS = (
     "AC-ENVIRONMENT",
     "AC-IDENTITY",
@@ -340,16 +355,21 @@ def _validate_model_impl(model: Any) -> list[str]:
     gates = model["human_gates"]
     errors.extend(_ordered_ids(gates, "gate_id", GATE_IDS, "$.human_gates"))
     if isinstance(gates, list):
-        for index, gate in enumerate(gates):
+        for index, (gate, expected_authorized) in enumerate(
+            zip(gates, GATE_AUTHORIZATIONS)
+        ):
             if (
                 not isinstance(gate, dict)
                 or tuple(gate.keys()) != ("gate_id", "authorized")
-                or not _is_exact_bool(gate.get("authorized"), False)
+                or not _is_exact_bool(
+                    gate.get("authorized"),
+                    expected_authorized,
+                )
             ):
                 errors.append(
                     _error(
                         f"$.human_gates[{index}]",
-                        "unauthorized_gate_required",
+                        "recorded_gate_state_required",
                     )
                 )
 
@@ -463,7 +483,7 @@ def _validate_fixture_impl(fixture: Any) -> list[str]:
         != tuple("open_blocked_unaccepted" for _ in RISK_IDS)
     ):
         errors.append(_error("$.risk_states", "blocked_risks_required"))
-    if fixture["required_human_gates"] != list(GATE_IDS):
+    if fixture["required_human_gates"] != list(PENDING_GATE_IDS):
         errors.append(_error("$.required_human_gates", "ordered_gates_required"))
     if fixture["requested_external_actions"] != []:
         errors.append(_error("$.requested_external_actions", "must_be_empty"))
@@ -620,7 +640,7 @@ def evaluate_nonproduction_readiness(
             [f"VALIDATION_ERROR:{error}" for error in errors] if denied else []
         ),
         "evidence_refs": [] if denied else list(EVIDENCE_IDS),
-        "required_human_gates": list(GATE_IDS),
+        "required_human_gates": list(PENDING_GATE_IDS),
         "risk_states": {
             risk_id: "open_blocked_unaccepted" for risk_id in RISK_IDS
         },

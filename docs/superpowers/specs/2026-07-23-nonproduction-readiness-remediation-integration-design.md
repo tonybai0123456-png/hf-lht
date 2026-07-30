@@ -191,8 +191,8 @@ Forbidden results or claims include `ready`, `approved`, `accepted`, `go`,
 
 ## Human gates
 
-The model must require these gates in order and treat every one as unauthorized
-until an explicit decision is recorded:
+The model must preserve these gates in order and record a gate as authorized
+only after an explicit decision is recorded:
 
 1. written specification approval;
 2. implementation plan approval;
@@ -208,6 +208,11 @@ until an explicit decision is recorded:
 12. release decision.
 
 Stage 15 cannot satisfy gates 5 through 12 by itself.
+
+As-built governance records the written specification, implementation plan and
+dedicated execution assignment as completed. The evaluator therefore returns
+gates 4 through 12 as still required. This records governance history; it does
+not give the evaluator authority to approve any gate.
 
 ## Stop, withdrawal and error handling
 

@@ -35,9 +35,9 @@ risks:
   - {risk_id: PR-RISK-009, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
   - {risk_id: PR-RISK-010, state: open_blocked_unaccepted, owner: unassigned / governance decision required}
 human_gates:
-  - {gate_id: HG-SPEC-APPROVAL, authorized: false}
-  - {gate_id: HG-PLAN-APPROVAL, authorized: false}
-  - {gate_id: HG-EXECUTION-ASSIGNMENT, authorized: false}
+  - {gate_id: HG-SPEC-APPROVAL, authorized: true}
+  - {gate_id: HG-PLAN-APPROVAL, authorized: true}
+  - {gate_id: HG-EXECUTION-ASSIGNMENT, authorized: true}
   - {gate_id: HG-IMPLEMENTATION-EVIDENCE, authorized: false}
   - {gate_id: HG-NAMED-OWNER, authorized: false}
   - {gate_id: HG-ARCH-SECURITY, authorized: false}

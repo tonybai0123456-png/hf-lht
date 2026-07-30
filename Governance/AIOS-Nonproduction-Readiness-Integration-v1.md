@@ -67,9 +67,12 @@ operational support, legal compliance, production readiness or deployment.
 The only evaluator results are `denied` and `needs_human_governance`. Stage 10
 remains `BLOCKED / NO-GO`. `PR-RISK-001` through `PR-RISK-010` remain
 `open_blocked_unaccepted`; owners remain
-`unassigned / governance decision required`; all twelve human gates remain
-unauthorized. Risk acceptance, pilot authorization, production readiness and
-release authorization remain exactly false.
+`unassigned / governance decision required`. The written specification,
+implementation plan and dedicated execution assignment are recorded as
+completed governance decisions. The evaluator cannot grant those decisions and
+still requires implementation-evidence acceptance plus gates 5 through 12.
+Risk acceptance, pilot authorization, production readiness and release
+authorization remain exactly false.
 
 ## Component contracts
 
