@@ -149,7 +149,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("142804f", self.project_registry)
         self.assertIn("published through PR #37", self.project_registry)
 
-    def test_stage15_governance_design_is_planned_and_unassigned(self):
+    def test_stage15_is_reported_with_exact_predeployment_evidence(self):
         stage15_rows = [
             line for line in self.stage_registry.splitlines()
             if line.startswith("| 15 |")
@@ -162,27 +162,36 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Issue #40",
             "gov/aios-stage15-nonproduction-readiness-design",
             "PR #41",
-            "| Planned |",
-            "implementation unassigned",
-            "方案 B",
+            "019fb137-f0bc-7e60-b8ad-efe1a8e250b1",
+            "| Reported |",
             "written specification approved",
-            "implementation plan reviewed at `8984a1720cf716ab832590b2dd6748d628677edc`",
-            "correction required",
-            "corrected implementation plan awaits independent human review",
+            "implementation head `f1fc9e0447e7ad46a9734799958bf8cc9cfd614b`",
+            "tree `d1620d9ce852e571e8b2eb5b124e025a625de4a6`",
+            "11/11 focused",
+            "14/14 Project Governance",
+            "108/108 repository",
+            "9/9 exact-head CI",
+            "Mandatory Return",
+            "needs_human_governance",
+            "awaits independent human review",
             "no real pilot",
         ):
             self.assertIn(token, stage15)
 
         for token in (
-            "Stage 14 Archived / Stage 15 Planned",
-            "no active execution Stage",
+            "Stage 14 Archived / Stage 15 Reported",
             "Issue #40",
             "PR #41",
-            "implementation unassigned",
+            "019fb137-f0bc-7e60-b8ad-efe1a8e250b1",
             "written specification approved",
-            "implementation plan reviewed at `8984a1720cf716ab832590b2dd6748d628677edc`",
-            "correction required",
-            "corrected implementation plan awaits independent human review",
+            "implementation head `f1fc9e0447e7ad46a9734799958bf8cc9cfd614b`",
+            "tree `d1620d9ce852e571e8b2eb5b124e025a625de4a6`",
+            "11/11 focused",
+            "14/14 Project Governance",
+            "108/108 repository",
+            "9/9 exact-head CI",
+            "Mandatory Return submitted",
+            "awaits independent human review",
             "needs_human_governance",
         ):
             self.assertIn(token, self.project_registry)
@@ -214,7 +223,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
         for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
             self.assertNotIn(unresolved, spec)
 
-    def test_stage15_implementation_plan_is_present_but_requires_correction(self):
+    def test_stage15_implementation_plan_is_complete_and_executable(self):
         if not STAGE15_PLAN.is_file():
             self.fail(f"missing Stage 15 implementation plan: {STAGE15_PLAN}")
         plan = STAGE15_PLAN.read_text(encoding="utf-8")
