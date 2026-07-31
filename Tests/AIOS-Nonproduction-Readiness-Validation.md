@@ -31,13 +31,17 @@ Expected behavior:
   names and cross-requirement evidence substitutions are denied.
 - The exact implementation-evidence gate is recorded as accepted only by the
   Human Governance Thread decision on reviewed target
-  `b27614ba2ebebb772888c3a4b1ff3d829b47532e`; the remaining eight human gates
-  stay required and unauthorized.
+  `b27614ba2ebebb772888c3a4b1ff3d829b47532e`.
+- Gate 5 is recorded as accepted only by the owner authorization in Issue #42:
+  Tony is the single accountable owner and Stone is the backup and escalation
+  contact; gates 6 through 12 remain unauthorized.
 - Evaluation is deterministic, does not mutate inputs and performs no external
   action.
 - All repository regression tests and validators exit zero.
 
 A pass proves only repository-contained local synthetic behavior. It does not authorize deployment,
-accept a risk, assign a real owner, authorize a pilot, declare production
-readiness, authorize release, permit merge, publish or archive Stage 15, close
-Issue #40 or start Stage 16.
+accept a risk, assign an operational, support or risk-treatment owner, authorize
+a pilot, declare production readiness, authorize release, permit merge, publish
+or archive Stage 15, close Issue #40 or start Stage 16. The Gate 5 governance
+owner contract grants no automatic merge, credential, permission, risk
+acceptance, pilot, release or deployment authority.

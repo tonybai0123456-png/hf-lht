@@ -231,6 +231,23 @@ class ProjectGovernanceValidation(unittest.TestCase):
         for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
             self.assertNotIn(unresolved, spec)
 
+    def test_stage15_gate5_owner_decision_is_registered_without_extra_authority(self):
+        stage15 = next(
+            line
+            for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        )
+        for token in (
+            "Issue #42",
+            "Gate 5",
+            "Tony",
+            "Stone",
+            "gates 6–12 remain unauthorized",
+            "no automatic merge, credential, permission, risk acceptance, pilot, release or deployment authority",
+        ):
+            self.assertIn(token, stage15)
+            self.assertIn(token, self.project_registry)
+
     def test_stage15_implementation_plan_is_complete_and_executable(self):
         if not STAGE15_PLAN.is_file():
             self.fail(f"missing Stage 15 implementation plan: {STAGE15_PLAN}")

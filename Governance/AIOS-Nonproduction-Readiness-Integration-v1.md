@@ -11,6 +11,7 @@
 | Execution mode | Repository-controlled, local, synthetic and disposable |
 | Maximum result | `needs_human_governance` |
 | Production posture | Stage 10 remains `BLOCKED / NO-GO` |
+| Gate 5 accountable owner | Tony; Stone is backup and escalation contact; [Issue #42](https://github.com/tonybai0123456-png/hf-lht/issues/42) |
 
 ## Business loop
 
@@ -45,6 +46,10 @@ run local tests. The BUW AIOS Official Governance Thread separately approves
 the plan, execution assignment, implementation evidence, named owners,
 architecture and security, privacy and data, operations, each risk disposition,
 pilot scope, pilot evidence, release, merge, publication and archive.
+Gate 5 assigns Tony as the single accountable Stage 15 owner and Stone as the
+backup and escalation contact. This owner contract coordinates the gate ledger
+and evidence; it grants no automatic merge, credential, permission, risk
+acceptance, pilot, release or deployment authority.
 
 ## AI and human judgment boundary
 
@@ -66,13 +71,15 @@ operational support, legal compliance, production readiness or deployment.
 
 The only evaluator results are `denied` and `needs_human_governance`. Stage 10
 remains `BLOCKED / NO-GO`. `PR-RISK-001` through `PR-RISK-010` remain
-`open_blocked_unaccepted`; owners remain
+`open_blocked_unaccepted`; their treatment owners remain
 `unassigned / governance decision required`. The written specification,
 implementation plan and dedicated execution assignment are recorded as
 completed governance decisions. The Human Governance Thread accepted the exact
 implementation evidence at reviewed target
 `b27614ba2ebebb772888c3a4b1ff3d829b47532e`; the evaluator cannot grant or
-revoke that decision and still requires gates 5 through 12.
+revoke that decision. The owner authorization recorded through Issue #42
+accepts Gate 5 for Tony, with Stone as backup and escalation contact; gates 6
+through 12 remain unauthorized.
 Risk acceptance, pilot authorization, production readiness and release
 authorization remain exactly false.
 
@@ -114,7 +121,8 @@ are true. This is not a production rollback or RTO/RPO claim.
 
 Incident handling is tabletop-only, with no real incident declaration or
 external communication. Support handoff routes to an abstract role, assigns no
-real owner, creates no ticket and commits to no SLA.
+real operational support owner, creates no ticket and commits to no SLA. The
+Gate 5 governance owner is not an operational support assignment.
 
 ## Risk mapping
 
@@ -128,8 +136,9 @@ production authority or release authority.
 Stop immediately on unknown fields, malformed types, cycles, YAML aliases or
 merge keys, reordered or duplicate identifiers, excluded entities, external
 locators, credentials, connectors, authority-like values, changed checksums,
-incomplete recovery, real owner names, external communication, non-empty
-requested actions, or any attempt to exceed `needs_human_governance`.
+incomplete recovery, unapproved operational owner names, external
+communication, non-empty requested actions, or any attempt to exceed
+`needs_human_governance`.
 
 Withdrawal removes only disposable task-local synthetic state and preserves the
 Git/GitHub evidence trail. It performs no external rollback and must never
@@ -143,4 +152,6 @@ a Mandatory Return. The Human Governance Thread accepted the exact reported
 evidence at `b27614ba2ebebb772888c3a4b1ff3d829b47532e` and moved Stage 15 to
 `Reviewed`. Reviewed does not authorize merge, publication, archive, Issue
 closure, real pilot, production, deployment, release or Stage 16; each remains
-a separate human Governance Thread decision.
+a separate human Governance Thread decision. Gate 5 was separately accepted
+through Issue #42 with Tony as the single accountable owner and Stone as backup
+and escalation contact; gates 6 through 12 remain unauthorized.

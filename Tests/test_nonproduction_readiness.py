@@ -92,8 +92,82 @@ class NonproductionReadinessTests(unittest.TestCase):
             [row["gate_id"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            [True, True, True, True] + [False] * 8,
+            [True, True, True, True, True] + [False] * 7,
             [row["authorized"] for row in model["human_gates"]],
+        )
+
+    def test_gate5_records_one_owner_without_extending_operating_authority(self):
+        validator, model, fixture = self._assets()
+        self.assertEqual(
+            {
+                "status": "assigned",
+                "name": "Tony",
+                "github_identity": "tonybai0123456-png",
+                "business_role": "汇沣电商董事长 and BUW AIOS executive owner",
+                "backup_and_escalation_contact": "Stone",
+                "responsibilities": [
+                    "own_stage15_gate_ledger_and_evidence_completeness",
+                    "coordinate_remaining_human_governance_gates",
+                    "ensure_risks_receive_named_treatment_owners_before_disposition",
+                    "stop_when_authority_evidence_or_scope_is_ambiguous",
+                    "preserve_汇沣电商_BUW_only_boundary",
+                ],
+                "decision_mode": (
+                    "recommend_and_approve_only_by_explicit_written_"
+                    "governance_decision"
+                ),
+                "automatic_authority_granted": False,
+                "withheld_authorities": [
+                    "credentials_and_permissions",
+                    "merge_publication_and_archive",
+                    "risk_acceptance",
+                    "pilot",
+                    "release",
+                    "deployment",
+                ],
+                "accepted": True,
+                "decision_date": "2026-07-31",
+                "decision_evidence": "Owner authorization / Issue #42",
+            },
+            model["real_owner"],
+        )
+        gate_states = {
+            row["gate_id"]: row["authorized"] for row in model["human_gates"]
+        }
+        self.assertIs(gate_states["HG-NAMED-OWNER"], True)
+        self.assertEqual(
+            list(validator.GATE_IDS[5:]),
+            fixture["required_human_gates"],
+        )
+        decision = validator.evaluate_nonproduction_readiness(model, fixture)
+        self.assertEqual("needs_human_governance", decision["result"])
+        self.assertEqual(list(validator.GATE_IDS[5:]), decision["required_human_gates"])
+        self.assertEqual(
+            {risk_id: "open_blocked_unaccepted" for risk_id in validator.RISK_IDS},
+            decision["risk_states"],
+        )
+        self.assertEqual([], decision["external_actions_performed"])
+        self.assertEqual(validator.FALSE_CLAIMS, decision["claims"])
+        policy = POLICY.read_text(encoding="utf-8")
+        guide = GUIDE.read_text(encoding="utf-8")
+        for token in (
+            "Gate 5",
+            "Tony",
+            "Stone",
+            "Issue #42",
+            "gates 6 through 12 remain unauthorized",
+        ):
+            self.assertIn(token, policy)
+            self.assertIn(token, guide)
+        matrix = yaml.safe_load(MATRIX.read_text(encoding="utf-8"))
+        authority = next(
+            row
+            for row in matrix["requirements"]
+            if row["requirement_id"] == "AC-AUTHORITY"
+        )
+        self.assertIn(
+            "test_gate5_records_one_owner_without_extending_operating_authority",
+            authority["test_ids"],
         )
 
     def test_valid_package_stops_at_human_governance_without_side_effects(self):

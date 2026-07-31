@@ -12,7 +12,30 @@ allowed_results:
   - denied
   - needs_human_governance
 authority_ceiling: needs_human_governance
-real_owner: unassigned / governance decision required
+real_owner:
+  status: assigned
+  name: Tony
+  github_identity: tonybai0123456-png
+  business_role: 汇沣电商董事长 and BUW AIOS executive owner
+  backup_and_escalation_contact: Stone
+  responsibilities:
+    - own_stage15_gate_ledger_and_evidence_completeness
+    - coordinate_remaining_human_governance_gates
+    - ensure_risks_receive_named_treatment_owners_before_disposition
+    - stop_when_authority_evidence_or_scope_is_ambiguous
+    - preserve_汇沣电商_BUW_only_boundary
+  decision_mode: recommend_and_approve_only_by_explicit_written_governance_decision
+  automatic_authority_granted: false
+  withheld_authorities:
+    - credentials_and_permissions
+    - merge_publication_and_archive
+    - risk_acceptance
+    - pilot
+    - release
+    - deployment
+  accepted: true
+  decision_date: "2026-07-31"
+  decision_evidence: "Owner authorization / Issue #42"
 stage10_posture: BLOCKED / NO-GO
 components:
   - {component_id: CMP-ENVIRONMENT, evidence_id: EV-ENVIRONMENT}
@@ -39,7 +62,7 @@ human_gates:
   - {gate_id: HG-PLAN-APPROVAL, authorized: true}
   - {gate_id: HG-EXECUTION-ASSIGNMENT, authorized: true}
   - {gate_id: HG-IMPLEMENTATION-EVIDENCE, authorized: true}
-  - {gate_id: HG-NAMED-OWNER, authorized: false}
+  - {gate_id: HG-NAMED-OWNER, authorized: true}
   - {gate_id: HG-ARCH-SECURITY, authorized: false}
   - {gate_id: HG-PRIVACY-DATA, authorized: false}
   - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, authorized: false}

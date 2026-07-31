@@ -71,7 +71,7 @@ GATE_AUTHORIZATIONS = (
     True,
     True,
     True,
-    False,
+    True,
     False,
     False,
     False,
@@ -80,7 +80,36 @@ GATE_AUTHORIZATIONS = (
     False,
     False,
 )
-PENDING_GATE_IDS = GATE_IDS[4:]
+PENDING_GATE_IDS = GATE_IDS[5:]
+EXPECTED_REAL_OWNER = {
+    "status": "assigned",
+    "name": "Tony",
+    "github_identity": "tonybai0123456-png",
+    "business_role": "汇沣电商董事长 and BUW AIOS executive owner",
+    "backup_and_escalation_contact": "Stone",
+    "responsibilities": [
+        "own_stage15_gate_ledger_and_evidence_completeness",
+        "coordinate_remaining_human_governance_gates",
+        "ensure_risks_receive_named_treatment_owners_before_disposition",
+        "stop_when_authority_evidence_or_scope_is_ambiguous",
+        "preserve_汇沣电商_BUW_only_boundary",
+    ],
+    "decision_mode": (
+        "recommend_and_approve_only_by_explicit_written_governance_decision"
+    ),
+    "automatic_authority_granted": False,
+    "withheld_authorities": [
+        "credentials_and_permissions",
+        "merge_publication_and_archive",
+        "risk_acceptance",
+        "pilot",
+        "release",
+        "deployment",
+    ],
+    "accepted": True,
+    "decision_date": "2026-07-31",
+    "decision_evidence": "Owner authorization / Issue #42",
+}
 ACCEPTANCE_IDS = (
     "AC-ENVIRONMENT",
     "AC-IDENTITY",
@@ -122,6 +151,7 @@ EXPECTED_ACCEPTANCE_TEST_IDS = {
         "test_repository_mapping_matrix_policy_and_guide_are_complete",
     ),
     "AC-AUTHORITY": (
+        "test_gate5_records_one_owner_without_extending_operating_authority",
         "test_valid_package_stops_at_human_governance_without_side_effects",
         "test_malformed_input_types_and_cycles_are_denied_without_exceptions",
     ),
@@ -344,7 +374,7 @@ def _validate_model_impl(model: Any) -> list[str]:
         errors.append(_error("$.allowed_results", "invalid"))
     if model["authority_ceiling"] != "needs_human_governance":
         errors.append(_error("$.authority_ceiling", "invalid"))
-    if model["real_owner"] != "unassigned / governance decision required":
+    if model["real_owner"] != EXPECTED_REAL_OWNER:
         errors.append(_error("$.real_owner", "invalid"))
     if model["stage10_posture"] != "BLOCKED / NO-GO":
         errors.append(_error("$.stage10_posture", "invalid"))
