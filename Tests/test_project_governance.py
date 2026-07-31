@@ -63,6 +63,15 @@ STAGE15_CANDIDATE_GUIDE = (
 STAGE15_CANDIDATE_VALIDATOR = (
     ROOT / "Tests" / "validate_aios_deployment_free_candidate.py"
 )
+STAGE15_GATE_PROPOSAL_MODEL = (
+    ROOT / "Governance" / "AIOS-Stage15-Human-Gate-Proposals-v1.yaml"
+)
+STAGE15_GATE_PROPOSAL_GUIDE = (
+    ROOT / "Tests" / "AIOS-Stage15-Human-Gate-Proposals-Validation.md"
+)
+STAGE15_GATE_PROPOSAL_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_stage15_human_gate_proposals.py"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -302,6 +311,40 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Developer Agent",
             "preparation_incomplete_pending_human_gates",
             "not_ready_pending_human_governance",
+            "gates 7–12 remain unauthorized",
+            "release expressly withheld",
+        ):
+            self.assertIn(token, stage15)
+            self.assertIn(token, self.project_registry)
+
+    def test_stage15_ordered_gate8_through_11_proposals_are_registered(self):
+        stage15 = next(
+            line
+            for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        )
+        for path in (
+            STAGE15_GATE_PROPOSAL_MODEL,
+            STAGE15_GATE_PROPOSAL_GUIDE,
+            STAGE15_GATE_PROPOSAL_VALIDATOR,
+        ):
+            self.assertTrue(path.is_file(), path)
+        for token in (
+            "Issue #45",
+            "Issue #46",
+            "Issue #47",
+            "Issue #48",
+            "ordered Gate 7–11 proposals",
+            "prepared_unapproved_ordered_human_gate_proposals",
+            "Stone",
+            "Tony",
+            "Developer Agent",
+            "Data Agent",
+            "CustomerService Agent",
+            "CEO Agent",
+            "mitigate_and_remain_open_blocked_unaccepted",
+            "synthetic_rehearsal_only_no_real_pilot",
+            "synthetic_rehearsal_evidence_only",
             "gates 7–12 remain unauthorized",
             "release expressly withheld",
         ):

@@ -1,0 +1,241 @@
+proposal_version: stage15_human_gate_proposals/v1
+stage: "15"
+stage_id: NR-01
+status: prepared_unapproved_ordered_human_gate_proposals
+allowed_scope:
+  company: 汇沣电商
+  brand: BUW
+excluded_entities:
+  - PC
+  - 六合通
+sequencing:
+  accepted_gates:
+    - HG-SPEC-APPROVAL
+    - HG-PLAN-APPROVAL
+    - HG-EXECUTION-ASSIGNMENT
+    - HG-IMPLEMENTATION-EVIDENCE
+    - HG-NAMED-OWNER
+    - HG-ARCH-SECURITY
+  gate_order:
+    - HG-SPEC-APPROVAL
+    - HG-PLAN-APPROVAL
+    - HG-EXECUTION-ASSIGNMENT
+    - HG-IMPLEMENTATION-EVIDENCE
+    - HG-NAMED-OWNER
+    - HG-ARCH-SECURITY
+    - HG-PRIVACY-DATA
+    - HG-OPS-RECOVERY-INCIDENT-SUPPORT
+    - HG-RISK-DISPOSITION
+    - HG-PILOT-SCOPE
+    - HG-PILOT-EVIDENCE
+    - HG-RELEASE
+  next_gate: HG-PRIVACY-DATA
+  strict_dependency_order: true
+  release_gate_accepted: false
+proposals:
+  - gate_id: HG-PRIVACY-DATA
+    issue: "#44"
+    accepted: false
+    state: proposed_awaiting_explicit_owner_approval
+    prerequisite_gates:
+      - HG-SPEC-APPROVAL
+      - HG-PLAN-APPROVAL
+      - HG-EXECUTION-ASSIGNMENT
+      - HG-IMPLEMENTATION-EVIDENCE
+      - HG-NAMED-OWNER
+      - HG-ARCH-SECURITY
+    scope_type: synthetic_privacy_data_only
+    human_approver: Tony
+    backup_and_escalation_contact: Stone
+    technical_owner: Data Agent
+    contributors:
+      - Developer Agent
+    allowed_scope_details:
+      - synthetic_non_personal
+      - synthetic_personal_like_clearly_fictitious_non_routable
+    prohibited_scope_details:
+      - real_customer_employee_or_business_data
+      - copied_or_transformed_production_data
+      - live_identifiers_contact_details_or_payment_data
+      - secrets_credentials_tokens_or_permission_material
+      - live_connector_endpoint_or_infrastructure_account_material
+    approval_condition: explicit_owner_approval_after_exact_contract_review
+    authority_ceiling: needs_human_governance
+    external_actions_allowed: false
+  - gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT
+    issue: "#45"
+    accepted: false
+    state: proposed_awaiting_explicit_owner_approval
+    prerequisite_gates:
+      - HG-SPEC-APPROVAL
+      - HG-PLAN-APPROVAL
+      - HG-EXECUTION-ASSIGNMENT
+      - HG-IMPLEMENTATION-EVIDENCE
+      - HG-NAMED-OWNER
+      - HG-ARCH-SECURITY
+      - HG-PRIVACY-DATA
+    scope_type: synthetic_operations_recovery_incident_support_only
+    human_approver: Stone
+    backup_and_escalation_contact: Tony
+    technical_owner: Developer Agent
+    contributors:
+      - CustomerService Agent
+      - Data Agent
+    allowed_scope_details:
+      - deterministic_stage13_prepare_only_runbook_validation
+      - synthetic_dependency_degradation_and_incident_tabletop
+      - task_local_snapshot_checksum_restore_cleanup_evidence
+      - synthetic_support_intake_triage_handoff_stop_withdrawal_closure
+      - exact_ordered_escalation_functions_no_external_delivery
+    prohibited_scope_details:
+      - real_monitoring_alerting_paging_ticket_or_external_message
+      - infrastructure_failover_backup_restore_or_rollback
+      - real_incident_support_case_or_sla_slo_claim
+      - production_staging_cloud_credential_connector_or_real_data
+    design_targets:
+      service_class: CT-2
+      rto_minutes: 240
+      rpo_minutes: 60
+      achieved_capability_claim: false
+      sla_slo_committed: false
+    approval_condition: gate7_accepted_then_explicit_owner_approval
+    authority_ceiling: needs_human_governance
+    external_actions_allowed: false
+  - gate_id: HG-RISK-DISPOSITION
+    issue: "#46"
+    accepted: false
+    state: proposed_awaiting_explicit_owner_approval
+    prerequisite_gates:
+      - HG-SPEC-APPROVAL
+      - HG-PLAN-APPROVAL
+      - HG-EXECUTION-ASSIGNMENT
+      - HG-IMPLEMENTATION-EVIDENCE
+      - HG-NAMED-OWNER
+      - HG-ARCH-SECURITY
+      - HG-PRIVACY-DATA
+      - HG-OPS-RECOVERY-INCIDENT-SUPPORT
+    scope_type: risk_treatment_direction_without_acceptance
+    human_approver: Tony
+    backup_and_escalation_contact: Stone
+    technical_owner: risk_treatment_evidence_by_mapped_agents
+    contributors:
+      - Developer Agent
+      - Data Agent
+      - CustomerService Agent
+      - CEO Agent
+    risk_treatments:
+      - {risk_id: PR-RISK-001, human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-002, human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-003, human_treatment_owner: Tony, technical_support_agents: [Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-004, human_treatment_owner: Tony, technical_support_agents: [Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-005, human_treatment_owner: Stone, technical_support_agents: [Developer Agent, Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-006, human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-007, human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-008, human_treatment_owner: Stone, technical_support_agents: [CustomerService Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-009, human_treatment_owner: Tony, technical_support_agents: [Data Agent, CEO Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+      - {risk_id: PR-RISK-010, human_treatment_owner: Tony, technical_support_agents: [CEO Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, production_action_allowed: false}
+    required_evidence:
+      - gates6_through_8_exact_head_evidence
+      - exact_risk_to_evidence_mapping
+      - named_human_treatment_owner_per_risk
+      - residual_state_open_blocked_unaccepted
+      - risk_acceptance_false
+    approval_condition: gates7_and_8_accepted_then_explicit_owner_approval
+    authority_ceiling: needs_human_governance
+    external_actions_allowed: false
+  - gate_id: HG-PILOT-SCOPE
+    issue: "#47"
+    accepted: false
+    state: proposed_awaiting_explicit_owner_approval
+    prerequisite_gates:
+      - HG-SPEC-APPROVAL
+      - HG-PLAN-APPROVAL
+      - HG-EXECUTION-ASSIGNMENT
+      - HG-IMPLEMENTATION-EVIDENCE
+      - HG-NAMED-OWNER
+      - HG-ARCH-SECURITY
+      - HG-PRIVACY-DATA
+      - HG-OPS-RECOVERY-INCIDENT-SUPPORT
+      - HG-RISK-DISPOSITION
+    scope_type: synthetic_rehearsal_only_no_real_pilot
+    human_approver: Tony
+    backup_and_escalation_contact: Stone
+    technical_owner: Developer Agent
+    contributors:
+      - CustomerService Agent
+      - Data Agent
+    zero_participants:
+      real_customers: 0
+      employees_or_real_operators: 0
+      stores: 0
+      production_or_staging_environments: 0
+      real_cases_orders_accounts_or_messages: 0
+    entry_conditions:
+      - gates1_through_9_separately_accepted_and_verified
+      - all_risks_have_treatment_dispositions_but_remain_unaccepted
+      - stage10_remains_blocked_no_go
+      - external_actions_performed_empty
+    stop_conditions:
+      - real_or_unmarked_data
+      - cross_boundary_scope
+      - missing_evidence_or_owner
+      - requested_external_action
+      - support_recovery_or_metric_failure
+      - representation_as_real_pilot
+    approval_condition: gates7_through_9_accepted_then_explicit_zero_participant_scope_approval
+    authority_ceiling: needs_human_governance
+    external_actions_allowed: false
+  - gate_id: HG-PILOT-EVIDENCE
+    issue: "#48"
+    accepted: false
+    state: proposed_awaiting_explicit_owner_approval
+    prerequisite_gates:
+      - HG-SPEC-APPROVAL
+      - HG-PLAN-APPROVAL
+      - HG-EXECUTION-ASSIGNMENT
+      - HG-IMPLEMENTATION-EVIDENCE
+      - HG-NAMED-OWNER
+      - HG-ARCH-SECURITY
+      - HG-PRIVACY-DATA
+      - HG-OPS-RECOVERY-INCIDENT-SUPPORT
+      - HG-RISK-DISPOSITION
+      - HG-PILOT-SCOPE
+    scope_type: synthetic_rehearsal_evidence_only
+    human_approver: Stone
+    backup_and_escalation_contact: Tony
+    technical_owner: Data Agent
+    contributors:
+      - Developer Agent
+      - CustomerService Agent
+    truth_labels:
+      evidence_type: synthetic_rehearsal_only
+      real_pilot_performed: false
+      pilot_authorized: false
+      risk_accepted: false
+      production_ready: false
+      release_authorized: false
+    required_evidence:
+      - exact_commit_test_ci_and_evidence_identifiers
+      - synthetic_scope_and_company_brand_reconciliation
+      - environment_identity_data_evidence_observation_recovery_incident_support_results
+      - risk_to_evidence_mapping_pr_risk_001_through_010
+      - synthetic_support_case_human_closure
+      - external_actions_performed_empty
+    unacceptable_evidence:
+      - narrative_or_screenshot_without_source_identifiers
+      - different_commit_or_incomplete_ci
+      - real_customer_employee_store_order_account_support_or_incident_data
+      - external_message_ticket_page_alert_or_connector_record
+      - invented_missing_duplicated_or_reordered_evidence_identifier
+      - real_pilot_production_rto_rpo_sla_slo_or_risk_acceptance_claim
+    approval_condition: gate10_accepted_then_exact_head_synthetic_evidence_human_approval
+    authority_ceiling: needs_human_governance
+    external_actions_allowed: false
+claims:
+  risk_accepted: false
+  real_pilot_performed: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+external_actions_performed: []
