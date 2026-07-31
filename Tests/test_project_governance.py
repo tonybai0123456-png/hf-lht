@@ -72,6 +72,15 @@ STAGE15_GATE_PROPOSAL_GUIDE = (
 STAGE15_GATE_PROPOSAL_VALIDATOR = (
     ROOT / "Tests" / "validate_aios_stage15_human_gate_proposals.py"
 )
+STAGE15_COMPLETION_AUDIT_MODEL = (
+    ROOT / "Governance" / "AIOS-Predeployment-Completion-Audit-v1.yaml"
+)
+STAGE15_COMPLETION_AUDIT_GUIDE = (
+    ROOT / "Tests" / "AIOS-Predeployment-Completion-Audit-Validation.md"
+)
+STAGE15_COMPLETION_AUDIT_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_predeployment_completion_audit.py"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -558,6 +567,25 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("persist-credentials: false", self.workflow)
         for prohibited in ("contents: write", "pull-requests: write", "git push"):
             self.assertNotIn(prohibited, self.workflow)
+
+    def test_stage15_predeployment_completion_audit_is_registered_truthfully(self):
+        for asset in (
+            STAGE15_COMPLETION_AUDIT_MODEL,
+            STAGE15_COMPLETION_AUDIT_GUIDE,
+            STAGE15_COMPLETION_AUDIT_VALIDATOR,
+        ):
+            self.assertTrue(asset.is_file(), asset)
+            self.assertGreater(asset.stat().st_size, 100, asset)
+        for registry in (self.project_registry, self.stage_registry):
+            for token in (
+                "AIOS-Predeployment-Completion-Audit-v1.yaml",
+                "incomplete_pending_ordered_human_governance",
+                "not_complete_pending_human_governance",
+                "Gates 7–11",
+                "Issue #49",
+                "release expressly withheld",
+            ):
+                self.assertIn(token, registry)
 
 
 if __name__ == "__main__":
