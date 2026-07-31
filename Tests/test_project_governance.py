@@ -178,7 +178,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Human Governance Thread review passed",
             "implementation-evidence gate accepted",
             "not merged, published, archived or deployed",
-            "no real pilot",
+            "no cloud resource",
         ):
             self.assertIn(token, stage15)
 
@@ -242,8 +242,29 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Gate 5",
             "Tony",
             "Stone",
-            "gates 6–12 remain unauthorized",
-            "no automatic merge, credential, permission, risk acceptance, pilot, release or deployment authority",
+            "Gate 5 decision originally left gates 6–12 unauthorized",
+        ):
+            self.assertIn(token, stage15)
+            self.assertIn(token, self.project_registry)
+
+    def test_stage15_gate6_architecture_security_decision_is_registered_without_resources(
+        self,
+    ):
+        stage15 = next(
+            line
+            for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        )
+        for token in (
+            "Issue #43",
+            "Gate 6",
+            "platform-neutral",
+            "synthetic data",
+            "isolated non-production",
+            "Stone",
+            "Developer Agent",
+            "gates 7–12 remain unauthorized",
+            "no cloud resource, credential, real-data, connector, pilot, merge, publication, release or deployment authority",
         ):
             self.assertIn(token, stage15)
             self.assertIn(token, self.project_registry)

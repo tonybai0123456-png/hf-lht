@@ -40,7 +40,6 @@ risk_states:
   PR-RISK-009: open_blocked_unaccepted
   PR-RISK-010: open_blocked_unaccepted
 required_human_gates:
-  - HG-ARCH-SECURITY
   - HG-PRIVACY-DATA
   - HG-OPS-RECOVERY-INCIDENT-SUPPORT
   - HG-RISK-DISPOSITION

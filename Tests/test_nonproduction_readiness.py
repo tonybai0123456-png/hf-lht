@@ -92,7 +92,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             [row["gate_id"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            [True, True, True, True, True] + [False] * 7,
+            [True, True, True, True, True, True] + [False] * 6,
             [row["authorized"] for row in model["human_gates"]],
         )
 
@@ -136,12 +136,15 @@ class NonproductionReadinessTests(unittest.TestCase):
         }
         self.assertIs(gate_states["HG-NAMED-OWNER"], True)
         self.assertEqual(
-            list(validator.GATE_IDS[5:]),
+            list(validator.PENDING_GATE_IDS),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
-        self.assertEqual(list(validator.GATE_IDS[5:]), decision["required_human_gates"])
+        self.assertEqual(
+            list(validator.PENDING_GATE_IDS),
+            decision["required_human_gates"],
+        )
         self.assertEqual(
             {risk_id: "open_blocked_unaccepted" for risk_id in validator.RISK_IDS},
             decision["risk_states"],
@@ -167,6 +170,85 @@ class NonproductionReadinessTests(unittest.TestCase):
         )
         self.assertIn(
             "test_gate5_records_one_owner_without_extending_operating_authority",
+            authority["test_ids"],
+        )
+
+    def test_gate6_records_architecture_security_approval_without_provisioning(self):
+        validator, model, fixture = self._assets()
+        self.assertEqual(
+            {
+                "status": "authorized_by_human_governance",
+                "approach": "platform_neutral_synthetic_isolated_nonproduction",
+                "human_approver": "Stone",
+                "technical_accountable_responsible": "Developer Agent",
+                "approved_scope": [
+                    "repository_controlled_architecture_and_security_design",
+                    "deterministic_synthetic_validation",
+                    "isolated_local_and_pull_request_ci",
+                    "fail_closed_boundary_and_threat_control_evidence",
+                ],
+                "provisioned_resources": False,
+                "external_network_access": False,
+                "real_credentials_or_permissions": False,
+                "real_connectors_or_data": False,
+                "production_security_accepted": False,
+                "risk_accepted": False,
+                "withheld_authorities": [
+                    "cloud_and_infrastructure_provisioning",
+                    "credentials_secrets_and_permissions",
+                    "real_connectors_and_data",
+                    "pilot",
+                    "merge_publication_and_archive",
+                    "release",
+                    "deployment",
+                ],
+                "decision_date": "2026-07-31",
+                "decision_evidence": "Owner authorization / Issue #43",
+            },
+            model["architecture_security_approval"],
+        )
+        gate_states = {
+            row["gate_id"]: row["authorized"] for row in model["human_gates"]
+        }
+        self.assertIs(gate_states["HG-ARCH-SECURITY"], True)
+        self.assertEqual(
+            list(validator.GATE_IDS[6:]),
+            fixture["required_human_gates"],
+        )
+        decision = validator.evaluate_nonproduction_readiness(model, fixture)
+        self.assertEqual("needs_human_governance", decision["result"])
+        self.assertEqual(
+            list(validator.GATE_IDS[6:]),
+            decision["required_human_gates"],
+        )
+        self.assertEqual(
+            {risk_id: "open_blocked_unaccepted" for risk_id in validator.RISK_IDS},
+            decision["risk_states"],
+        )
+        self.assertEqual([], decision["external_actions_performed"])
+        self.assertEqual(validator.FALSE_CLAIMS, decision["claims"])
+        policy = POLICY.read_text(encoding="utf-8")
+        guide = GUIDE.read_text(encoding="utf-8")
+        for token in (
+            "Gate 6",
+            "platform-neutral",
+            "synthetic",
+            "isolated non-production",
+            "Stone",
+            "Developer Agent",
+            "Issue #43",
+            "gates 7 through 12 remain unauthorized",
+        ):
+            self.assertIn(token, policy)
+            self.assertIn(token, guide)
+        matrix = yaml.safe_load(MATRIX.read_text(encoding="utf-8"))
+        authority = next(
+            row
+            for row in matrix["requirements"]
+            if row["requirement_id"] == "AC-AUTHORITY"
+        )
+        self.assertIn(
+            "test_gate6_records_architecture_security_approval_without_provisioning",
             authority["test_ids"],
         )
 

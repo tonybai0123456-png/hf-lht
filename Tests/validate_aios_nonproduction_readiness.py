@@ -72,7 +72,7 @@ GATE_AUTHORIZATIONS = (
     True,
     True,
     True,
-    False,
+    True,
     False,
     False,
     False,
@@ -80,7 +80,7 @@ GATE_AUTHORIZATIONS = (
     False,
     False,
 )
-PENDING_GATE_IDS = GATE_IDS[5:]
+PENDING_GATE_IDS = GATE_IDS[6:]
 EXPECTED_REAL_OWNER = {
     "status": "assigned",
     "name": "Tony",
@@ -109,6 +109,35 @@ EXPECTED_REAL_OWNER = {
     "accepted": True,
     "decision_date": "2026-07-31",
     "decision_evidence": "Owner authorization / Issue #42",
+}
+EXPECTED_ARCHITECTURE_SECURITY_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "approach": "platform_neutral_synthetic_isolated_nonproduction",
+    "human_approver": "Stone",
+    "technical_accountable_responsible": "Developer Agent",
+    "approved_scope": [
+        "repository_controlled_architecture_and_security_design",
+        "deterministic_synthetic_validation",
+        "isolated_local_and_pull_request_ci",
+        "fail_closed_boundary_and_threat_control_evidence",
+    ],
+    "provisioned_resources": False,
+    "external_network_access": False,
+    "real_credentials_or_permissions": False,
+    "real_connectors_or_data": False,
+    "production_security_accepted": False,
+    "risk_accepted": False,
+    "withheld_authorities": [
+        "cloud_and_infrastructure_provisioning",
+        "credentials_secrets_and_permissions",
+        "real_connectors_and_data",
+        "pilot",
+        "merge_publication_and_archive",
+        "release",
+        "deployment",
+    ],
+    "decision_date": "2026-07-31",
+    "decision_evidence": "Owner authorization / Issue #43",
 }
 ACCEPTANCE_IDS = (
     "AC-ENVIRONMENT",
@@ -152,6 +181,7 @@ EXPECTED_ACCEPTANCE_TEST_IDS = {
     ),
     "AC-AUTHORITY": (
         "test_gate5_records_one_owner_without_extending_operating_authority",
+        "test_gate6_records_architecture_security_approval_without_provisioning",
         "test_valid_package_stops_at_human_governance_without_side_effects",
         "test_malformed_input_types_and_cycles_are_denied_without_exceptions",
     ),
@@ -349,6 +379,7 @@ def _validate_model_impl(model: Any) -> list[str]:
         "allowed_results",
         "authority_ceiling",
         "real_owner",
+        "architecture_security_approval",
         "stage10_posture",
         "components",
         "risks",
@@ -376,6 +407,11 @@ def _validate_model_impl(model: Any) -> list[str]:
         errors.append(_error("$.authority_ceiling", "invalid"))
     if model["real_owner"] != EXPECTED_REAL_OWNER:
         errors.append(_error("$.real_owner", "invalid"))
+    if (
+        model["architecture_security_approval"]
+        != EXPECTED_ARCHITECTURE_SECURITY_APPROVAL
+    ):
+        errors.append(_error("$.architecture_security_approval", "invalid"))
     if model["stage10_posture"] != "BLOCKED / NO-GO":
         errors.append(_error("$.stage10_posture", "invalid"))
 

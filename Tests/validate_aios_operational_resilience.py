@@ -718,7 +718,9 @@ def validate_current_registry_lifecycle(
         "needs_human_governance", "Human Governance Thread review passed",
         "implementation-evidence gate accepted",
         "not merged, published, archived or deployed",
-        "no real pilot",
+        "Issue #43", "Gate 6", "platform-neutral", "synthetic data",
+        "isolated non-production", "Stone", "Developer Agent",
+        "gates 7–12 remain unauthorized", "no cloud resource",
     )
     if not all(token in stage15 for token in stage15_required):
         errors.append("Stage 15 must preserve the exact bounded Reviewed evidence")
@@ -737,7 +739,9 @@ def validate_current_registry_lifecycle(
         "needs_human_governance", "Human Governance Thread review passed",
         "implementation-evidence gate accepted",
         "Reviewed is not merged, published, archived or deployed",
-        "no real pilot",
+        "Issue #43", "Gate 6", "platform-neutral", "synthetic data",
+        "isolated non-production", "Stone", "Developer Agent",
+        "gates 7–12 remain unauthorized", "no cloud resource",
     )
     if not all(token in project for token in project_required):
         errors.append(

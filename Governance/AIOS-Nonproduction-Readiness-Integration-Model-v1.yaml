@@ -36,6 +36,32 @@ real_owner:
   accepted: true
   decision_date: "2026-07-31"
   decision_evidence: "Owner authorization / Issue #42"
+architecture_security_approval:
+  status: authorized_by_human_governance
+  approach: platform_neutral_synthetic_isolated_nonproduction
+  human_approver: Stone
+  technical_accountable_responsible: Developer Agent
+  approved_scope:
+    - repository_controlled_architecture_and_security_design
+    - deterministic_synthetic_validation
+    - isolated_local_and_pull_request_ci
+    - fail_closed_boundary_and_threat_control_evidence
+  provisioned_resources: false
+  external_network_access: false
+  real_credentials_or_permissions: false
+  real_connectors_or_data: false
+  production_security_accepted: false
+  risk_accepted: false
+  withheld_authorities:
+    - cloud_and_infrastructure_provisioning
+    - credentials_secrets_and_permissions
+    - real_connectors_and_data
+    - pilot
+    - merge_publication_and_archive
+    - release
+    - deployment
+  decision_date: "2026-07-31"
+  decision_evidence: "Owner authorization / Issue #43"
 stage10_posture: BLOCKED / NO-GO
 components:
   - {component_id: CMP-ENVIRONMENT, evidence_id: EV-ENVIRONMENT}
@@ -63,7 +89,7 @@ human_gates:
   - {gate_id: HG-EXECUTION-ASSIGNMENT, authorized: true}
   - {gate_id: HG-IMPLEMENTATION-EVIDENCE, authorized: true}
   - {gate_id: HG-NAMED-OWNER, authorized: true}
-  - {gate_id: HG-ARCH-SECURITY, authorized: false}
+  - {gate_id: HG-ARCH-SECURITY, authorized: true}
   - {gate_id: HG-PRIVACY-DATA, authorized: false}
   - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, authorized: false}
   - {gate_id: HG-RISK-DISPOSITION, authorized: false}

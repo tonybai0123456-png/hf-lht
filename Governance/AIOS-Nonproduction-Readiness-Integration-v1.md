@@ -12,6 +12,7 @@
 | Maximum result | `needs_human_governance` |
 | Production posture | Stage 10 remains `BLOCKED / NO-GO` |
 | Gate 5 accountable owner | Tony; Stone is backup and escalation contact; [Issue #42](https://github.com/tonybai0123456-png/hf-lht/issues/42) |
+| Gate 6 architecture and security | Platform-neutral, synthetic and isolated non-production; Stone is the human approver and Developer Agent owns the technical solution and validation; [Issue #43](https://github.com/tonybai0123456-png/hf-lht/issues/43) |
 
 ## Business loop
 
@@ -50,6 +51,12 @@ Gate 5 assigns Tony as the single accountable Stage 15 owner and Stone as the
 backup and escalation contact. This owner contract coordinates the gate ledger
 and evidence; it grants no automatic merge, credential, permission, risk
 acceptance, pilot, release or deployment authority.
+Gate 6 authorizes only the repository-controlled, platform-neutral architecture
+and security design and its synthetic validation in isolated non-production.
+Stone is the human architecture and security approver; Developer Agent is
+accountable and responsible for the technical solution and validation. This
+does not authorize cloud resources, infrastructure, credentials, permissions,
+real data, connectors, pilot, merge, publication, release or deployment.
 
 ## AI and human judgment boundary
 
@@ -78,8 +85,14 @@ completed governance decisions. The Human Governance Thread accepted the exact
 implementation evidence at reviewed target
 `b27614ba2ebebb772888c3a4b1ff3d829b47532e`; the evaluator cannot grant or
 revoke that decision. The owner authorization recorded through Issue #42
-accepts Gate 5 for Tony, with Stone as backup and escalation contact; gates 6
-through 12 remain unauthorized.
+accepts Gate 5 for Tony, with Stone as backup and escalation contact;
+gates 6 through 12 remain unauthorized.
+The separate architecture and security authorization recorded through Issue
+#43 accepts Gate 6 only. It uses a platform-neutral, synthetic and isolated
+non-production boundary, with Stone as human approver and Developer Agent as
+technical accountable and responsible owner; gates 7 through 12 remain
+unauthorized. No cloud resource, credential, real-data, connector, pilot,
+merge, publication, release or deployment authority is granted.
 Risk acceptance, pilot authorization, production readiness and release
 authorization remain exactly false.
 
@@ -91,6 +104,15 @@ The environment is local, synthetic and disposable. The canonical
 `external_endpoints`, `connectors` and `credentials` declarations must be empty
 lists. They are allowed only at their exact environment paths; non-empty or
 misplaced capability fields are denied.
+
+### Architecture and security
+
+The approved design remains platform-neutral and repository-controlled. Its
+only executable proof is deterministic synthetic validation in isolated
+non-production local or pull-request CI contexts. No resource is provisioned,
+no external network access is enabled, and no real credential, permission,
+connector or data is used. Passing this proof is not production security
+acceptance or risk acceptance.
 
 ### Identity
 
@@ -154,4 +176,10 @@ evidence at `b27614ba2ebebb772888c3a4b1ff3d829b47532e` and moved Stage 15 to
 closure, real pilot, production, deployment, release or Stage 16; each remains
 a separate human Governance Thread decision. Gate 5 was separately accepted
 through Issue #42 with Tony as the single accountable owner and Stone as backup
-and escalation contact; gates 6 through 12 remain unauthorized.
+and escalation contact; at that decision point, gates 6 through 12 remained
+unauthorized. Gate 6 was separately accepted through Issue #43 for the
+platform-neutral, synthetic and isolated non-production architecture and
+security design. Stone is the human approver and Developer Agent owns the
+technical solution and validation; gates 7 through 12 remain unauthorized.
+No cloud resource, credential, real-data, connector, pilot, merge, publication,
+release or deployment authority is granted.

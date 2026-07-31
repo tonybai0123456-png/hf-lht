@@ -35,6 +35,13 @@ Expected behavior:
 - Gate 5 is recorded as accepted only by the owner authorization in Issue #42:
   Tony is the single accountable owner and Stone is the backup and escalation
   contact; gates 6 through 12 remain unauthorized.
+- Gate 6 is recorded as accepted only by the architecture and security
+  authorization in Issue #43: the design is platform-neutral, uses synthetic
+  data and runs only in isolated non-production; Stone is the human approver
+  and Developer Agent owns the technical solution and validation;
+  gates 7 through 12 remain unauthorized.
+- Gate 6 validation provisions no cloud resource, enables no external network
+  access and uses no real credential, permission, connector or data.
 - Evaluation is deterministic, does not mutate inputs and performs no external
   action.
 - All repository regression tests and validators exit zero.
@@ -45,3 +52,7 @@ a pilot, declare production readiness, authorize release, permit merge, publish
 or archive Stage 15, close Issue #40 or start Stage 16. The Gate 5 governance
 owner contract grants no automatic merge, credential, permission, risk
 acceptance, pilot, release or deployment authority.
+The Gate 6 architecture and security record grants no cloud resource,
+credential, real-data, connector, pilot, merge, publication, release or
+deployment authority and is not production security acceptance or risk
+acceptance.
