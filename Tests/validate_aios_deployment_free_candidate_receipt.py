@@ -109,7 +109,6 @@ EVIDENCE_IDS = (
     "EV-SUPPORT",
 )
 PENDING_GATES = (
-    "HG-PRIVACY-DATA",
     "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
     "HG-RISK-DISPOSITION",
     "HG-PILOT-SCOPE",
@@ -210,6 +209,7 @@ def _validate_candidate_receipt_impl(model: Any) -> list[str]:
         "exact_head_ci",
         "risk_evidence_and_treatment_mapping",
         "synthetic_control_evidence",
+        "governance_overlay",
         "withheld_authorities",
         "candidate_decision",
         "claims",
@@ -353,6 +353,25 @@ def _validate_candidate_receipt_impl(model: Any) -> list[str]:
         errors.append(
             _error("$.synthetic_control_evidence", "synthetic_only_required")
         )
+    expected_overlay = {
+        "accepted_gate": "HG-PRIVACY-DATA",
+        "decision_evidence": "Owner authorization / Issue #44",
+        "allowed_data_classes": [
+            "synthetic_non_personal",
+            "synthetic_personal_like_clearly_fictitious_non_routable",
+        ],
+        "human_approver": "Tony",
+        "backup_and_escalation_contact": "Stone",
+        "technical_validation_owner": "Data Agent",
+        "implementation_support": "Developer Agent",
+        "next_gate": "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
+        "real_data_authorized": False,
+        "credentials_connectors_infrastructure_or_accounts_authorized": False,
+        "pilot_risk_merge_release_or_deployment_authorized": False,
+        "external_actions_performed": [],
+    }
+    if model["governance_overlay"] != expected_overlay:
+        errors.append(_error("$.governance_overlay", "gate7_overlay_required"))
     if model["withheld_authorities"] != list(WITHHELD_AUTHORITIES):
         errors.append(
             _error("$.withheld_authorities", "exact_withholding_required")
@@ -429,7 +448,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     if (
         candidate.get("status")
         != "technical_evidence_verified_pending_human_gates"
-        or gate_truth != [True] * 6 + [False] * 6
+        or gate_truth != [True] * 7 + [False] * 5
         or candidate.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.candidate", "alignment_required"))
@@ -518,7 +537,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "requirements-dev.txt",
         "PyYAML 6.0.3",
         "open_blocked_unaccepted",
-        "Gate 7–11",
+        "Gate 8–11",
         "Issue #49",
         "external_actions_performed=[]",
         "不得解释为",

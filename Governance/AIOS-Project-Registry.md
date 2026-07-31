@@ -33,6 +33,15 @@ superseding technical-evidence snapshot is
 passed 127/127 tests, 10/10 validators and 9/9 exact-head CI. Gates 7–11 remain
 unapproved and Issue #49 keeps release expressly withheld.
 
+## Current Stage 15 decision overlay
+
+| Decision | Current controlled state |
+|---|---|
+| Gate 7 accepted | `Owner authorization / Issue #44`; only `synthetic_non_personal` and `synthetic_personal_like_clearly_fictitious_non_routable` |
+| Accountability | Tony human approver; Stone backup and escalation; Data Agent technical validation owner; Developer Agent implementation support |
+| Ordered package | `gate7_accepted_gate8_through_11_pending`; Gate 8 is the only valid next decision |
+| Withheld boundary | Gates 8–12 remain unauthorized; no real data, credential, connector, infrastructure, pilot, risk acceptance, merge, publication, release or deployment authority |
+
 ## Registry rules
 
 1. Project IDs are unique and immutable.
@@ -85,3 +94,4 @@ unapproved and Issue #49 keeps release expressly withheld.
 | 2026-07-31 | Registered the ordered Gate 7–11 proposals for Issue #44, Issue #45, Issue #46, Issue #47 and Issue #48 as `prepared_unapproved_ordered_human_gate_proposals`. Tony and Stone retain the named human approval/review roles; Developer Agent, Data Agent, CustomerService Agent and CEO Agent are evidence-only technical contributors. Gate 9 uses `mitigate_and_remain_open_blocked_unaccepted`; Gate 10 is `synthetic_rehearsal_only_no_real_pilot`; Gate 11 is `synthetic_rehearsal_evidence_only`. Gates 7–12 remain unauthorized and release expressly withheld under Issue #49. | Owner objective / NR-01 Execution Task / Issues #44–#49 / Draft PR #41 |
 | 2026-07-31 | Registered `Governance/AIOS-Predeployment-Completion-Audit-v1.yaml` as the controlled total-progress ledger. Its truthful state is `incomplete_pending_ordered_human_governance` and result is `not_complete_pending_human_governance`: repository-controlled construction and Gate 6 evidence are proven, Gates 7–11 remain ordered human decisions, and merge, real-world authority and Gate 12 remain outside the active completion claim. Issue #49 keeps release expressly withheld. | Owner objective / NR-01 Execution Task / Issues #44–#49 / Draft PR #41 |
 | 2026-07-31 | Added `Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml` for exact source `36716abc76373d053c75e68352f46589f4ddc8f1`. The receipt records 29 changed paths, clean-export 127/127 tests, 10/10 validators, compilation, diff and scan results, 9/9 exact-head CI, and all ten risk/evidence/proposed-owner mappings. Receipt state is `verified_technical_evidence_pending_human_gates`; candidate state is `technical_evidence_verified_pending_human_gates`. Gates 7–11 remain unapproved and release expressly withheld. | NR-01 Execution Task / Issues #40 and #44–#49 / Draft PR #41 |
+| 2026-07-31 | Gate 7 accepted under `Owner authorization / Issue #44` for exactly two synthetic data classes. Recorded `gate7_accepted_gate8_through_11_pending`; Gate 8 is the only valid next decision. Gates 8–12 remain unauthorized and all real-world, pilot, risk, merge, publication, release and deployment authorities remain withheld. | Owner / BUW AIOS Official Governance Thread / Issue #44 / Draft PR #41 |

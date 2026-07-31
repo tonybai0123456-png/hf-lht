@@ -41,7 +41,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
         model = yaml.safe_load(MODEL.read_text(encoding="utf-8"))
         self.assertEqual([], validator.validate_proposals(model))
         self.assertEqual(
-            "prepared_unapproved_ordered_human_gate_proposals",
+            "gate7_accepted_gate8_through_11_pending",
             model["status"],
         )
         self.assertEqual(
@@ -66,7 +66,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             [proposal["issue"] for proposal in proposals],
         )
         self.assertEqual(
-            [False] * 5,
+            [True] + [False] * 4,
             [proposal["accepted"] for proposal in proposals],
         )
         self.assertEqual(
@@ -137,7 +137,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             proposals[4]["truth_labels"],
         )
         self.assertEqual(
-            "HG-PRIVACY-DATA",
+            "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
             model["sequencing"]["next_gate"],
         )
         self.assertEqual([], model["external_actions_performed"])
@@ -154,8 +154,12 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             "not_ready_pending_human_governance",
             result["result"],
         )
-        self.assertEqual("HG-PRIVACY-DATA", result["next_gate"])
-        self.assertEqual([], result["accepted_proposal_gates"])
+        self.assertEqual(
+            "HG-OPS-RECOVERY-INCIDENT-SUPPORT", result["next_gate"]
+        )
+        self.assertEqual(
+            ["HG-PRIVACY-DATA"], result["accepted_proposal_gates"]
+        )
         self.assertEqual([], result["external_actions_performed"])
         self.assertTrue(all(value is False for value in result["claims"].values()))
 
@@ -203,7 +207,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
 
         guide = GUIDE.read_text(encoding="utf-8")
         for token in (
-            "prepared_unapproved_ordered_human_gate_proposals",
+            "gate7_accepted_gate8_through_11_pending",
             "not_ready_pending_human_governance",
             "HG-PRIVACY-DATA",
             "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
@@ -226,7 +230,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             "synthetic_rehearsal_evidence_only",
             "Gate 12",
             "release expressly withheld",
-            "accepted_proposal_gates=[]",
+            "accepted_proposal_gates=['HG-PRIVACY-DATA']",
             "external_actions_performed=[]",
         ):
             self.assertIn(token, guide)
@@ -263,6 +267,10 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             "result=not_ready_pending_human_governance",
             completed.stdout,
         )
-        self.assertIn("next_gate=HG-PRIVACY-DATA", completed.stdout)
-        self.assertIn("accepted_proposal_gates=[]", completed.stdout)
+        self.assertIn(
+            "next_gate=HG-OPS-RECOVERY-INCIDENT-SUPPORT", completed.stdout
+        )
+        self.assertIn(
+            "accepted_proposal_gates=['HG-PRIVACY-DATA']", completed.stdout
+        )
         self.assertIn("external_actions_performed=[]", completed.stdout)

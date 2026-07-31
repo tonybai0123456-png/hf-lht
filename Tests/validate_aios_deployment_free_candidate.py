@@ -44,16 +44,15 @@ GATE_STATES = (
     "accepted",
     "accepted",
     "accepted",
-    "proposed_awaiting_explicit_owner_approval",
+    "accepted",
     "proposed_awaiting_explicit_owner_approval",
     "proposed_awaiting_explicit_owner_approval",
     "proposed_awaiting_explicit_owner_approval",
     "proposed_awaiting_explicit_owner_approval",
     "release_withheld_by_objective",
 )
-PENDING_GATE_IDS = GATE_IDS[6:]
+PENDING_GATE_IDS = GATE_IDS[7:]
 REASON_CODES = (
-    "HG-PRIVACY-DATA",
     "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
     "HG-RISK-DISPOSITION",
     "HG-PILOT-SCOPE",
@@ -102,7 +101,7 @@ FALSE_CLAIMS = {
     "credentials_used": False,
 }
 EXPECTED_DATA_GOVERNANCE = {
-    "status": "proposed_awaiting_explicit_owner_approval",
+    "status": "authorized_by_human_governance",
     "allowed_data_classes": [
         "synthetic_non_personal",
         "synthetic_personal_like_clearly_fictitious_non_routable",
@@ -118,11 +117,18 @@ EXPECTED_DATA_GOVERNANCE = {
     "backup_and_escalation_contact": "Stone",
     "technical_validation_owner": "Data Agent",
     "implementation_support": "Developer Agent",
+    "real_data_authorized": False,
+    "credentials_or_permission_material_authorized": False,
+    "connectors_or_endpoints_authorized": False,
+    "infrastructure_or_accounts_authorized": False,
+    "pilot_authorized": False,
+    "risk_accepted": False,
+    "merge_publication_or_deployment_authorized": False,
     "external_actions_allowed": False,
-    "decision_evidence": "Issue #44 proposal; explicit owner approval pending",
+    "decision_evidence": "Owner authorization / Issue #44",
 }
 EVALUATED_DATA_GOVERNANCE = {
-    "status": "proposed_awaiting_explicit_owner_approval",
+    "status": "authorized_by_human_governance",
     "human_approver": "Tony",
     "backup_and_escalation_contact": "Stone",
     "technical_validation_owner": "Data Agent",
@@ -297,7 +303,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
             )
             if not isinstance(gate, dict):
                 continue
-            expected_accepted = index < 6
+            expected_accepted = index < 7
             if (
                 gate.get("gate_id") != gate_id
                 or type(gate.get("accepted")) is not bool
@@ -428,7 +434,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         )
 
     integration_gates = integration.get("human_gates")
-    expected_gate_states = list(zip(GATE_IDS, [True] * 6 + [False] * 6))
+    expected_gate_states = list(zip(GATE_IDS, [True] * 7 + [False] * 5))
     actual_gate_states = (
         [
             (gate.get("gate_id"), gate.get("authorized"))
@@ -478,7 +484,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "Developer Agent",
         "Issue #44",
         "Issue #49",
-        "Gate 7–12",
+        "Gate 8–12",
         "external_actions_performed=[]",
         "不得解释为",
     )

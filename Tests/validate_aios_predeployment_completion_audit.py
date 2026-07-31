@@ -26,7 +26,7 @@ REQUIREMENT_STATES = (
     "proven_complete",
     "proven_complete",
     "proven_complete",
-    "pending_human_governance",
+    "proven_complete",
     "pending_human_governance",
     "pending_human_governance",
     "pending_human_governance",
@@ -37,30 +37,26 @@ REQUIREMENT_STATES = (
     "intentionally_excluded_or_withheld",
 )
 QUEUE_GATES = (
-    "HG-PRIVACY-DATA",
     "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
     "HG-RISK-DISPOSITION",
     "HG-PILOT-SCOPE",
     "HG-PILOT-EVIDENCE",
 )
-QUEUE_ISSUES = ("#44", "#45", "#46", "#47", "#48")
+QUEUE_ISSUES = ("#45", "#46", "#47", "#48")
 QUEUE_STATES = (
     "proposed_awaiting_explicit_owner_approval",
     "blocked_by_prior_human_gate",
     "blocked_by_prior_human_gate",
     "blocked_by_prior_human_gate",
-    "blocked_by_prior_human_gate",
 )
-QUEUE_APPROVERS = ("Tony", "Stone", "Tony", "Tony", "Stone")
+QUEUE_APPROVERS = ("Stone", "Tony", "Tony", "Stone")
 QUEUE_TECHNICAL_OWNERS = (
-    "Data Agent",
     "Developer Agent",
     "risk_treatment_evidence_by_mapped_agents",
     "Developer Agent",
     "Data Agent",
 )
 QUEUE_PREREQUISITES = (
-    "HG-ARCH-SECURITY",
     "HG-PRIVACY-DATA",
     "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
     "HG-RISK-DISPOSITION",
@@ -372,7 +368,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     if (
         candidate.get("status")
         != "technical_evidence_verified_pending_human_gates"
-        or candidate_gate_truth != [True] * 6 + [False] * 6
+        or candidate_gate_truth != [True] * 7 + [False] * 5
         or candidate.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.candidate", "alignment_required"))
@@ -389,9 +385,13 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     )
     if (
         proposals.get("status")
-        != "prepared_unapproved_ordered_human_gate_proposals"
+        != "gate7_accepted_gate8_through_11_pending"
         or proposals.get("sequencing", {}).get("next_gate") != QUEUE_GATES[0]
-        or proposal_truth != list(zip(QUEUE_GATES, [False] * 5))
+        or proposal_truth
+        != [
+            ("HG-PRIVACY-DATA", True),
+            *list(zip(QUEUE_GATES, [False] * 4)),
+        ]
         or proposals.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.proposals", "alignment_required"))
@@ -404,7 +404,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         else []
     )
     if (
-        integration_truth != [True] * 6 + [False] * 6
+        integration_truth != [True] * 7 + [False] * 5
         or integration.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.integration", "alignment_required"))
@@ -416,7 +416,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "pending_human_governance",
         "intentionally_withheld",
         "intentionally_excluded",
-        "Gate 7–11",
+        "Gate 8–11",
         "Issue #44",
         "Issue #49",
         "Stage 10",

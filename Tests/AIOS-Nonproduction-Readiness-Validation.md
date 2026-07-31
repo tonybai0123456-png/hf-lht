@@ -42,6 +42,15 @@ Expected behavior:
   gates 7 through 12 remain unauthorized.
 - Gate 6 validation provisions no cloud resource, enables no external network
   access and uses no real credential, permission, connector or data.
+- Gate 7 is recorded as accepted only by the owner authorization in Issue #44:
+  `synthetic_non_personal` and
+  `synthetic_personal_like_clearly_fictitious_non_routable` are the only
+  allowed data classes; Tony is human approver, Stone is backup and escalation,
+  Data Agent is technical validation owner and Developer Agent is
+  implementation support. Gates 8 through 12 remain unauthorized.
+- Gate 7 authorizes no real data, credential, permission, connector, endpoint,
+  infrastructure, account, pilot, risk acceptance, merge, publication, release
+  or deployment.
 - Evaluation is deterministic, does not mutate inputs and performs no external
   action.
 - All repository regression tests and validators exit zero.
@@ -56,3 +65,5 @@ The Gate 6 architecture and security record grants no cloud resource,
 credential, real-data, connector, pilot, merge, publication, release or
 deployment authority and is not production security acceptance or risk
 acceptance.
+The Gate 7 privacy and data record grants only the two named synthetic data
+classes and performs no external action.

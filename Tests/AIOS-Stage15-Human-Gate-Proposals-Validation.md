@@ -2,22 +2,24 @@
 
 ## Purpose and truthful status
 
-This package converts the already prepared Stage 15 Gate 7–11 decision
-packets into one closed, ordered and machine-verifiable contract. Its status
-is `prepared_unapproved_ordered_human_gate_proposals`; a valid package
+This package records the Stage 15 Gate 7 decision and preserves the remaining
+Gate 8–11 packets as one closed, ordered and machine-verifiable contract. Its
+status is `gate7_accepted_gate8_through_11_pending`; a valid package
 evaluates only to `not_ready_pending_human_governance`.
 
-Passing validation is not approval. Every proposal remains false until its
-named human approver makes a separate explicit decision after all prerequisite
-gates have been accepted and verified. `accepted_proposal_gates=[]` and
+Passing validation does not approve another gate. Gate 7 alone is accepted by
+the explicit owner decision in Issue #44. Gates 8–11 remain false until their
+named human approvers make separate decisions after all prerequisite gates have
+been accepted and verified. `accepted_proposal_gates=['HG-PRIVACY-DATA']` and
 `external_actions_performed=[]`.
 
 ## Ordered proposals
 
-1. `HG-PRIVACY-DATA` — Issue #44. Tony is human approver, Stone is backup and
+1. `HG-PRIVACY-DATA` — Issue #44, accepted. Tony is human approver, Stone is backup and
    escalation contact, Data Agent is technical validation owner and Developer
    Agent is implementation support. Only controlled synthetic data is in
-   scope.
+   scope. This grants no real-data, credential, connector, infrastructure,
+   pilot, risk, merge, release or deployment authority.
 2. `HG-OPS-RECOVERY-INCIDENT-SUPPORT` — Issue #45. Stone is human approver,
    Tony is backup and executive escalation contact, Developer Agent is the
    technical owner, CustomerService Agent validates the synthetic support
@@ -71,8 +73,8 @@ Expected validator output:
 ```text
 AIOS Stage 15 human-gate proposal validation PASSED
 result=not_ready_pending_human_governance
-next_gate=HG-PRIVACY-DATA
-accepted_proposal_gates=[]
+next_gate=HG-OPS-RECOVERY-INCIDENT-SUPPORT
+accepted_proposal_gates=['HG-PRIVACY-DATA']
 external_actions_performed=[]
 ```
 

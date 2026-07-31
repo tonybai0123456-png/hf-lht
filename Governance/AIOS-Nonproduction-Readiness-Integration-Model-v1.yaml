@@ -62,6 +62,25 @@ architecture_security_approval:
     - deployment
   decision_date: "2026-07-31"
   decision_evidence: "Owner authorization / Issue #43"
+privacy_data_approval:
+  status: authorized_by_human_governance
+  allowed_data_classes:
+    - synthetic_non_personal
+    - synthetic_personal_like_clearly_fictitious_non_routable
+  human_approver: Tony
+  backup_and_escalation_contact: Stone
+  technical_validation_owner: Data Agent
+  implementation_support: Developer Agent
+  real_data_authorized: false
+  credentials_or_permission_material_authorized: false
+  connectors_or_endpoints_authorized: false
+  infrastructure_or_accounts_authorized: false
+  pilot_authorized: false
+  risk_accepted: false
+  merge_publication_or_deployment_authorized: false
+  external_actions_allowed: false
+  decision_date: "2026-07-31"
+  decision_evidence: "Owner authorization / Issue #44"
 stage10_posture: BLOCKED / NO-GO
 components:
   - {component_id: CMP-ENVIRONMENT, evidence_id: EV-ENVIRONMENT}
@@ -90,7 +109,7 @@ human_gates:
   - {gate_id: HG-IMPLEMENTATION-EVIDENCE, authorized: true}
   - {gate_id: HG-NAMED-OWNER, authorized: true}
   - {gate_id: HG-ARCH-SECURITY, authorized: true}
-  - {gate_id: HG-PRIVACY-DATA, authorized: false}
+  - {gate_id: HG-PRIVACY-DATA, authorized: true}
   - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, authorized: false}
   - {gate_id: HG-RISK-DISPOSITION, authorized: false}
   - {gate_id: HG-PILOT-SCOPE, authorized: false}

@@ -26,14 +26,14 @@ gate_ledger:
   - {gate_id: HG-IMPLEMENTATION-EVIDENCE, accepted: true, state: accepted, decision_evidence: "PR #41 review on b27614ba2ebebb772888c3a4b1ff3d829b47532e"}
   - {gate_id: HG-NAMED-OWNER, accepted: true, state: accepted, decision_evidence: "Issue #42"}
   - {gate_id: HG-ARCH-SECURITY, accepted: true, state: accepted, decision_evidence: "Issue #43"}
-  - {gate_id: HG-PRIVACY-DATA, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #44"}
+  - {gate_id: HG-PRIVACY-DATA, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #44"}
   - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #45"}
   - {gate_id: HG-RISK-DISPOSITION, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #46"}
   - {gate_id: HG-PILOT-SCOPE, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #47"}
   - {gate_id: HG-PILOT-EVIDENCE, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #48"}
   - {gate_id: HG-RELEASE, accepted: false, state: release_withheld_by_objective, decision_evidence: "Issue #49"}
 data_governance:
-  status: proposed_awaiting_explicit_owner_approval
+  status: authorized_by_human_governance
   allowed_data_classes:
     - synthetic_non_personal
     - synthetic_personal_like_clearly_fictitious_non_routable
@@ -47,8 +47,15 @@ data_governance:
   backup_and_escalation_contact: Stone
   technical_validation_owner: Data Agent
   implementation_support: Developer Agent
+  real_data_authorized: false
+  credentials_or_permission_material_authorized: false
+  connectors_or_endpoints_authorized: false
+  infrastructure_or_accounts_authorized: false
+  pilot_authorized: false
+  risk_accepted: false
+  merge_publication_or_deployment_authorized: false
   external_actions_allowed: false
-  decision_evidence: "Issue #44 proposal; explicit owner approval pending"
+  decision_evidence: "Owner authorization / Issue #44"
 risk_posture:
   stage10: BLOCKED / NO-GO
   risk_count: 10
@@ -71,14 +78,12 @@ evidence_requirements:
 candidate_decision:
   result: not_ready_pending_human_governance
   reason_codes:
-    - HG-PRIVACY-DATA
     - HG-OPS-RECOVERY-INCIDENT-SUPPORT
     - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE-WITHHELD-BY-OBJECTIVE
   remaining_human_gates:
-    - HG-PRIVACY-DATA
     - HG-OPS-RECOVERY-INCIDENT-SUPPORT
     - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE

@@ -58,7 +58,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
         )
         self.assertEqual(["PC", "六合通"], model["excluded_entities"])
         self.assertEqual(
-            [True] * 6 + [False] * 6,
+            [True] * 7 + [False] * 5,
             [gate["accepted"] for gate in model["gate_ledger"]],
         )
         self.assertEqual(
@@ -96,7 +96,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
         )
         self.assertEqual(
             {
-                "status": "proposed_awaiting_explicit_owner_approval",
+                "status": "authorized_by_human_governance",
                 "human_approver": "Tony",
                 "backup_and_escalation_contact": "Stone",
                 "technical_validation_owner": "Data Agent",
@@ -122,13 +122,13 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             {
                 **before,
                 "gate_ledger": [
-                    *before["gate_ledger"][:6],
+                    *before["gate_ledger"][:7],
                     {
-                        **before["gate_ledger"][6],
+                        **before["gate_ledger"][7],
                         "accepted": True,
                         "state": "accepted",
                     },
-                    *before["gate_ledger"][7:],
+                    *before["gate_ledger"][8:],
                 ],
             },
             {**before, "claims": {**before["claims"], "real_data_used": True}},
@@ -163,7 +163,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             "Developer Agent",
             "Issue #44",
             "Issue #49",
-            "Gate 7–12",
+            "Gate 8–12",
             "external_actions_performed=[]",
             "不得解释为",
         ):
@@ -241,7 +241,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             [item["status"] for item in model["evidence_requirements"]],
         )
         self.assertEqual(
-            [True] * 6 + [False] * 6,
+            [True] * 7 + [False] * 5,
             [gate["accepted"] for gate in model["gate_ledger"]],
         )
         self.assertEqual(

@@ -369,6 +369,26 @@ class ProjectGovernanceValidation(unittest.TestCase):
             self.assertIn(token, stage15)
             self.assertIn(token, self.project_registry)
 
+    def test_stage15_gate7_decision_overlay_is_registered_without_real_authority(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 7 accepted",
+                "Owner authorization / Issue #44",
+                "gate7_accepted_gate8_through_11_pending",
+                "Gate 8 is the only valid next decision",
+                "synthetic_non_personal",
+                "synthetic_personal_like_clearly_fictitious_non_routable",
+                "Tony",
+                "Stone",
+                "Data Agent",
+                "Developer Agent",
+                "Gates 8–12 remain unauthorized",
+                "no real data, credential, connector, infrastructure, pilot, risk acceptance, merge, publication, release or deployment authority",
+            ):
+                self.assertIn(token, registry)
+
     def test_stage15_implementation_plan_is_complete_and_executable(self):
         if not STAGE15_PLAN.is_file():
             self.fail(f"missing Stage 15 implementation plan: {STAGE15_PLAN}")

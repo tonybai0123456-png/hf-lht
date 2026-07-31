@@ -19,7 +19,8 @@ outside the active objective. Its truthful status is
 - `intentionally_excluded` means real data, connectors, infrastructure,
   accounts or permission changes are outside the authorized work.
 
-The ordered Gate 7–11 queue is defined in Issues #44–#48. Gate 7 in Issue #44 is
+Gate 7 in Issue #44 is accepted for the exact synthetic-only data boundary.
+The remaining ordered Gate 8–11 queue is defined in Issues #45–#48. Gate 8 is
 the only current decision point; later gates remain blocked by their prior
 gate. Issue #49 expressly withholds Gate 12 and defines the deployment-free
 candidate evidence package.

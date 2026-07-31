@@ -183,3 +183,19 @@ security design. Stone is the human approver and Developer Agent owns the
 technical solution and validation; gates 7 through 12 remain unauthorized.
 No cloud resource, credential, real-data, connector, pilot, merge, publication,
 release or deployment authority is granted.
+
+### Gate 7 privacy and data approval
+
+Gate 7 was separately accepted through Issue #44 on 2026-07-31. Only
+`synthetic_non_personal` and
+`synthetic_personal_like_clearly_fictitious_non_routable` are authorized.
+Tony is the human approver, Stone is backup and escalation contact, Data Agent
+is technical validation owner, and Developer Agent provides implementation
+support.
+
+This approval does not authorize real customer, employee, business, payment or
+production-derived data; live identifiers or contact details; credentials,
+secrets or permission material; connectors, endpoints, infrastructure or
+accounts; pilot, risk acceptance, merge, publication, release or deployment.
+Gates 8 through 12 remain unauthorized, and Gate 8 is the only valid next
+decision.

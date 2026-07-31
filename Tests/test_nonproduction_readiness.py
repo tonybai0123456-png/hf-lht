@@ -92,7 +92,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             [row["gate_id"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            [True, True, True, True, True, True] + [False] * 6,
+            [True] * 7 + [False] * 5,
             [row["authorized"] for row in model["human_gates"]],
         )
 
@@ -212,13 +212,13 @@ class NonproductionReadinessTests(unittest.TestCase):
         }
         self.assertIs(gate_states["HG-ARCH-SECURITY"], True)
         self.assertEqual(
-            list(validator.GATE_IDS[6:]),
+            list(validator.GATE_IDS[7:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[6:]),
+            list(validator.GATE_IDS[7:]),
             decision["required_human_gates"],
         )
         self.assertEqual(
@@ -237,7 +237,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             "Stone",
             "Developer Agent",
             "Issue #43",
-            "gates 7 through 12 remain unauthorized",
+            "Gates 8 through 12 remain unauthorized",
         ):
             self.assertIn(token, policy)
             self.assertIn(token, guide)
@@ -251,6 +251,49 @@ class NonproductionReadinessTests(unittest.TestCase):
             "test_gate6_records_architecture_security_approval_without_provisioning",
             authority["test_ids"],
         )
+
+    def test_gate7_records_synthetic_data_approval_without_real_data_authority(self):
+        validator, model, fixture = self._assets()
+        self.assertEqual(
+            {
+                "status": "authorized_by_human_governance",
+                "allowed_data_classes": [
+                    "synthetic_non_personal",
+                    "synthetic_personal_like_clearly_fictitious_non_routable",
+                ],
+                "human_approver": "Tony",
+                "backup_and_escalation_contact": "Stone",
+                "technical_validation_owner": "Data Agent",
+                "implementation_support": "Developer Agent",
+                "real_data_authorized": False,
+                "credentials_or_permission_material_authorized": False,
+                "connectors_or_endpoints_authorized": False,
+                "infrastructure_or_accounts_authorized": False,
+                "pilot_authorized": False,
+                "risk_accepted": False,
+                "merge_publication_or_deployment_authorized": False,
+                "external_actions_allowed": False,
+                "decision_date": "2026-07-31",
+                "decision_evidence": "Owner authorization / Issue #44",
+            },
+            model["privacy_data_approval"],
+        )
+        self.assertEqual(
+            [True] * 7 + [False] * 5,
+            [row["authorized"] for row in model["human_gates"]],
+        )
+        self.assertEqual(
+            list(validator.GATE_IDS[7:]),
+            fixture["required_human_gates"],
+        )
+        decision = validator.evaluate_nonproduction_readiness(model, fixture)
+        self.assertEqual("needs_human_governance", decision["result"])
+        self.assertEqual(
+            list(validator.GATE_IDS[7:]),
+            decision["required_human_gates"],
+        )
+        self.assertEqual([], decision["external_actions_performed"])
+        self.assertEqual(validator.FALSE_CLAIMS, decision["claims"])
 
     def test_valid_package_stops_at_human_governance_without_side_effects(self):
         validator, model, fixture = self._assets()

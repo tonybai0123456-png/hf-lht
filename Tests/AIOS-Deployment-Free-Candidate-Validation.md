@@ -25,15 +25,15 @@ permission decision（不得解释为上述任何授权）.
 - Repository, local validation, and pull-request CI are the only execution
   surfaces. `external_actions_performed=[]`.
 
-Gate 7 remains a proposal recorded in Issue #44:
+Gate 7 is accepted by the explicit owner decision recorded in Issue #44:
 
 - Tony is the human approver.
 - Stone is the backup and escalation contact.
 - Data Agent is the technical validation owner.
 - Developer Agent provides implementation support only.
 
-This responsibility split grants no automatic authority. Gate 7–12 remain
-unaccepted. Issue #49 expressly withholds release while defining the
+This responsibility split grants only the stated synthetic-data boundary.
+Gate 8–12 remain unaccepted. Issue #49 expressly withholds release while defining the
 deployment-free evidence boundary.
 
 ## Evidence contract

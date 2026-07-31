@@ -155,7 +155,7 @@ class DeploymentFreeCandidateReceiptTests(unittest.TestCase):
             "requirements-dev.txt",
             "PyYAML 6.0.3",
             "open_blocked_unaccepted",
-            "Gate 7–11",
+            "Gate 8–11",
             "Issue #49",
             "external_actions_performed=[]",
             "不得解释为",
