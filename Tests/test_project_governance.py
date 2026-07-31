@@ -54,6 +54,15 @@ STAGE15_GUIDE = ROOT / "Tests" / "AIOS-Nonproduction-Readiness-Validation.md"
 STAGE15_WORKFLOW = (
     ROOT / ".github" / "workflows" / "validate-aios-nonproduction-readiness.yml"
 )
+STAGE15_CANDIDATE_MODEL = (
+    ROOT / "Governance" / "AIOS-Deployment-Free-Candidate-Evidence-v1.yaml"
+)
+STAGE15_CANDIDATE_GUIDE = (
+    ROOT / "Tests" / "AIOS-Deployment-Free-Candidate-Validation.md"
+)
+STAGE15_CANDIDATE_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_deployment_free_candidate.py"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -265,6 +274,36 @@ class ProjectGovernanceValidation(unittest.TestCase):
             "Developer Agent",
             "gates 7–12 remain unauthorized",
             "no cloud resource, credential, real-data, connector, pilot, merge, publication, release or deployment authority",
+        ):
+            self.assertIn(token, stage15)
+            self.assertIn(token, self.project_registry)
+
+    def test_stage15_gate7_proposal_and_release_withholding_are_registered(self):
+        stage15 = next(
+            line
+            for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        )
+        for path in (
+            STAGE15_CANDIDATE_MODEL,
+            STAGE15_CANDIDATE_GUIDE,
+            STAGE15_CANDIDATE_VALIDATOR,
+        ):
+            self.assertTrue(path.is_file(), path)
+        for token in (
+            "Issue #44",
+            "Issue #49",
+            "Gate 7 proposal",
+            "synthetic_non_personal",
+            "synthetic_personal_like_clearly_fictitious_non_routable",
+            "Tony",
+            "Stone",
+            "Data Agent",
+            "Developer Agent",
+            "preparation_incomplete_pending_human_gates",
+            "not_ready_pending_human_governance",
+            "gates 7–12 remain unauthorized",
+            "release expressly withheld",
         ):
             self.assertIn(token, stage15)
             self.assertIn(token, self.project_registry)
