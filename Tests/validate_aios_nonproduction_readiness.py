@@ -74,13 +74,13 @@ GATE_AUTHORIZATIONS = (
     True,
     True,
     True,
-    False,
+    True,
     False,
     False,
     False,
     False,
 )
-PENDING_GATE_IDS = GATE_IDS[7:]
+PENDING_GATE_IDS = GATE_IDS[8:]
 EXPECTED_REAL_OWNER = {
     "status": "assigned",
     "name": "Tony",
@@ -160,6 +160,40 @@ EXPECTED_PRIVACY_DATA_APPROVAL = {
     "decision_date": "2026-07-31",
     "decision_evidence": "Owner authorization / Issue #44",
 }
+EXPECTED_OPERATIONS_RECOVERY_INCIDENT_SUPPORT_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "synthetic_operations_recovery_incident_support_only",
+    "human_approver": "Stone",
+    "backup_and_escalation_contact": "Tony",
+    "technical_owner": "Developer Agent",
+    "evidence_contributors": [
+        "CustomerService Agent",
+        "Data Agent",
+    ],
+    "allowed_scope_details": [
+        "deterministic_stage13_prepare_only_runbook_validation",
+        "synthetic_dependency_degradation_and_incident_tabletop",
+        "task_local_snapshot_checksum_restore_cleanup_evidence",
+        "synthetic_support_intake_triage_handoff_stop_withdrawal_closure",
+        "exact_ordered_escalation_functions_no_external_delivery",
+    ],
+    "prohibited_scope_details": [
+        "real_monitoring_alerting_paging_ticket_or_external_message",
+        "infrastructure_failover_backup_restore_or_rollback",
+        "real_incident_support_case_or_sla_slo_claim",
+        "production_staging_cloud_credential_connector_or_real_data",
+    ],
+    "design_targets": {
+        "service_class": "CT-2",
+        "rto_minutes": 240,
+        "rpo_minutes": 60,
+        "achieved_capability_claim": False,
+        "sla_slo_committed": False,
+    },
+    "external_actions_allowed": False,
+    "decision_date": "2026-07-31",
+    "decision_evidence": "Owner authorization / Issue #45",
+}
 ACCEPTANCE_IDS = (
     "AC-ENVIRONMENT",
     "AC-IDENTITY",
@@ -204,6 +238,7 @@ EXPECTED_ACCEPTANCE_TEST_IDS = {
         "test_gate5_records_one_owner_without_extending_operating_authority",
         "test_gate6_records_architecture_security_approval_without_provisioning",
         "test_gate7_records_synthetic_data_approval_without_real_data_authority",
+        "test_gate8_records_synthetic_operations_approval_without_real_operations",
         "test_valid_package_stops_at_human_governance_without_side_effects",
         "test_malformed_input_types_and_cycles_are_denied_without_exceptions",
     ),
@@ -403,6 +438,7 @@ def _validate_model_impl(model: Any) -> list[str]:
         "real_owner",
         "architecture_security_approval",
         "privacy_data_approval",
+        "operations_recovery_incident_support_approval",
         "stage10_posture",
         "components",
         "risks",
@@ -437,6 +473,16 @@ def _validate_model_impl(model: Any) -> list[str]:
         errors.append(_error("$.architecture_security_approval", "invalid"))
     if model["privacy_data_approval"] != EXPECTED_PRIVACY_DATA_APPROVAL:
         errors.append(_error("$.privacy_data_approval", "invalid"))
+    if (
+        model["operations_recovery_incident_support_approval"]
+        != EXPECTED_OPERATIONS_RECOVERY_INCIDENT_SUPPORT_APPROVAL
+    ):
+        errors.append(
+            _error(
+                "$.operations_recovery_incident_support_approval",
+                "invalid",
+            )
+        )
     if model["stage10_posture"] != "BLOCKED / NO-GO":
         errors.append(_error("$.stage10_posture", "invalid"))
 

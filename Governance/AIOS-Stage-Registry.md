@@ -64,9 +64,11 @@ expressly withheld.
 | Decision | Current controlled state |
 |---|---|
 | Gate 7 accepted | `Owner authorization / Issue #44`; only `synthetic_non_personal` and `synthetic_personal_like_clearly_fictitious_non_routable` |
-| Accountability | Tony human approver; Stone backup and escalation; Data Agent technical validation owner; Developer Agent implementation support |
-| Ordered package | `gate7_accepted_gate8_through_11_pending`; Gate 8 is the only valid next decision |
-| Withheld boundary | Gates 8–12 remain unauthorized; no real data, credential, connector, infrastructure, pilot, risk acceptance, merge, publication, release or deployment authority |
+| Gate 8 accepted | `Owner authorization / Issue #45`; only `synthetic_operations_recovery_incident_support_only` |
+| Accountability | Gate 7: Tony human approver, Stone backup, Data Agent technical validation owner, Developer Agent implementation support. Gate 8: Stone human approver, Tony backup, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors |
+| Design targets | CT-2; RTO 240 minutes and RPO 60 minutes are targets only, not achieved capability |
+| Ordered package | `gates7_and_8_accepted_gate9_through_11_pending`; Gate 9 is the only valid next decision |
+| Withheld boundary | Gates 9–12 remain unauthorized; no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority |
 
 ## Pre-freeze exception record
 
@@ -176,3 +178,4 @@ The dashboard is a governance summary. It does not replace this registry or GitH
 | 2026-07-31 | 2.2 / Stage 15 predeployment completion audit | Added `Governance/AIOS-Predeployment-Completion-Audit-v1.yaml` to distinguish proven work from `pending_human_governance`, `intentionally_withheld` and `intentionally_excluded` scope. The audit remains `incomplete_pending_ordered_human_governance` / `not_complete_pending_human_governance`; Gates 7–11 are the ordered decision queue, Stage 10 remains `BLOCKED / NO-GO`, and Issue #49 keeps release expressly withheld. | Owner objective / NR-01 Execution Task / Issues #44–#49 / Draft PR #41 |
 | 2026-07-31 | 2.2 / Stage 15 deployment-free candidate receipt | Added `Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml` for source `36716abc76373d053c75e68352f46589f4ddc8f1`, with 29 changed paths, clean-export 127/127 tests, 10/10 validators, compilation, diff and sensitive-material scan, 9/9 exact-head CI, and all ten risk/evidence/proposed-treatment-owner mappings. The receipt is `verified_technical_evidence_pending_human_gates`; the candidate is `technical_evidence_verified_pending_human_gates`. Gates 7–11 remain unapproved, every risk remains open and unaccepted, and release expressly withheld by Issue #49. | NR-01 Execution Task / Issues #40 and #44–#49 / Draft PR #41 |
 | 2026-07-31 | 2.2 / Stage 15 Gate 7 decision | Gate 7 accepted under `Owner authorization / Issue #44` for exactly two synthetic data classes. Recorded `gate7_accepted_gate8_through_11_pending`; Gate 8 is the only valid next decision. Gates 8–12 remain unauthorized and no real-world, pilot, risk, merge, publication, release or deployment authority is granted. | Owner / BUW AIOS Official Governance Thread / Issue #44 / Draft PR #41 |
+| 2026-07-31 | 2.2 / Stage 15 Gate 8 decision | Gate 8 accepted under `Owner authorization / Issue #45` for synthetic operations, recovery, incident-tabletop and support-flow validation only. Recorded `gates7_and_8_accepted_gate9_through_11_pending`; Gate 9 is the only valid next decision. CT-2 RTO 240/RPO 60 remain design targets; Gates 9–12 and every real operations, infrastructure, risk, pilot, merge, publication, release and deployment authority remain withheld. | Owner / BUW AIOS Official Governance Thread / Issue #45 / Draft PR #41 |

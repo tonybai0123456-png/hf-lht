@@ -9,7 +9,7 @@ requirements:
   - {requirement_id: AC-INCIDENT, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-INCIDENT], local_synthetic_proof: true, real_world_authority: false}
   - {requirement_id: AC-SUPPORT, test_ids: [test_business_data_evidence_and_authority_attacks_are_denied], evidence_ids: [EV-SUPPORT], local_synthetic_proof: true, real_world_authority: false}
   - {requirement_id: AC-RISK-MAPPING, test_ids: [test_repository_mapping_matrix_policy_and_guide_are_complete], evidence_ids: [EV-ENVIRONMENT, EV-IDENTITY, EV-DATA, EV-EVIDENCE, EV-OBSERVATION, EV-RECOVERY, EV-INCIDENT, EV-SUPPORT], local_synthetic_proof: true, real_world_authority: false}
-  - {requirement_id: AC-AUTHORITY, test_ids: [test_gate5_records_one_owner_without_extending_operating_authority, test_gate6_records_architecture_security_approval_without_provisioning, test_gate7_records_synthetic_data_approval_without_real_data_authority, test_valid_package_stops_at_human_governance_without_side_effects, test_malformed_input_types_and_cycles_are_denied_without_exceptions], evidence_ids: [], local_synthetic_proof: true, real_world_authority: false}
+  - {requirement_id: AC-AUTHORITY, test_ids: [test_gate5_records_one_owner_without_extending_operating_authority, test_gate6_records_architecture_security_approval_without_provisioning, test_gate7_records_synthetic_data_approval_without_real_data_authority, test_gate8_records_synthetic_operations_approval_without_real_operations, test_valid_package_stops_at_human_governance_without_side_effects, test_malformed_input_types_and_cycles_are_denied_without_exceptions], evidence_ids: [], local_synthetic_proof: true, real_world_authority: false}
 authority_claims:
   risk_accepted: false
   pilot_authorized: false

@@ -20,7 +20,9 @@ outside the active objective. Its truthful status is
   accounts or permission changes are outside the authorized work.
 
 Gate 7 in Issue #44 is accepted for the exact synthetic-only data boundary.
-The remaining ordered Gate 8–11 queue is defined in Issues #45–#48. Gate 8 is
+Gate 8 in Issue #45 is accepted for the exact synthetic operations, recovery,
+incident-tabletop and support boundary. The remaining ordered Gate 9–11 queue
+is defined in Issues #46–#48. Gate 9 is
 the only current decision point; later gates remain blocked by their prior
 gate. Issue #49 expressly withholds Gate 12 and defines the deployment-free
 candidate evidence package.

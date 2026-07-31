@@ -46,7 +46,7 @@ requirement_ledger:
       - HG-PRIVACY-DATA
   - requirement_id: PREDEP-05
     requirement: operations_recovery_incident_and_support_gate
-    state: pending_human_governance
+    state: proven_complete
     evidence:
       - Issue #45
       - HG-OPS-RECOVERY-INCIDENT-SUPPORT
@@ -106,17 +106,10 @@ issue49_evidence_snapshot:
   - {evidence_id: DFC-EV-11, state: complete}
   - {evidence_id: DFC-EV-12, state: complete}
 human_decision_queue:
-  - gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT
-    issue: "#45"
-    accepted: false
-    state: proposed_awaiting_explicit_owner_approval
-    human_approver: Stone
-    technical_owner: Developer Agent
-    prerequisite: HG-PRIVACY-DATA
   - gate_id: HG-RISK-DISPOSITION
     issue: "#46"
     accepted: false
-    state: blocked_by_prior_human_gate
+    state: proposed_awaiting_explicit_owner_approval
     human_approver: Tony
     technical_owner: risk_treatment_evidence_by_mapped_agents
     prerequisite: HG-OPS-RECOVERY-INCIDENT-SUPPORT
@@ -137,7 +130,6 @@ human_decision_queue:
 completion_decision:
   result: not_complete_pending_human_governance
   remaining_requirements:
-    - HG-OPS-RECOVERY-INCIDENT-SUPPORT
     - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE

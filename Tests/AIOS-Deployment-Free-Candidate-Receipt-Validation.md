@@ -36,7 +36,9 @@ used.
 ## Governance boundary
 
 Gate 7 is accepted under Issue #44 for the two named synthetic data classes
-only. Gate 8–11 remain pending explicit ordered human decisions. Gate 12
+only. Gate 8 is accepted under Issue #45 for synthetic operations, recovery,
+incident-tabletop and support-flow validation only. Gate 9–11 remain pending
+explicit ordered human decisions. Gate 12
 remains withheld by Issue #49. Merge, publication, archive, real data, credentials and
 permissions, connectors, external infrastructure and accounts, real pilot,
 risk acceptance, release and deployment remain withheld or excluded.

@@ -45,15 +45,14 @@ GATE_STATES = (
     "accepted",
     "accepted",
     "accepted",
-    "proposed_awaiting_explicit_owner_approval",
+    "accepted",
     "proposed_awaiting_explicit_owner_approval",
     "proposed_awaiting_explicit_owner_approval",
     "proposed_awaiting_explicit_owner_approval",
     "release_withheld_by_objective",
 )
-PENDING_GATE_IDS = GATE_IDS[7:]
+PENDING_GATE_IDS = GATE_IDS[8:]
 REASON_CODES = (
-    "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
     "HG-RISK-DISPOSITION",
     "HG-PILOT-SCOPE",
     "HG-PILOT-EVIDENCE",
@@ -135,6 +134,27 @@ EVALUATED_DATA_GOVERNANCE = {
     "implementation_support": "Developer Agent",
     "external_actions_allowed": False,
 }
+EXPECTED_OPERATIONS_GOVERNANCE = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "synthetic_operations_recovery_incident_support_only",
+    "human_approver": "Stone",
+    "backup_and_escalation_contact": "Tony",
+    "technical_owner": "Developer Agent",
+    "evidence_contributors": [
+        "CustomerService Agent",
+        "Data Agent",
+    ],
+    "design_targets": {
+        "service_class": "CT-2",
+        "rto_minutes": 240,
+        "rpo_minutes": 60,
+        "achieved_capability_claim": False,
+        "sla_slo_committed": False,
+    },
+    "real_operations_authorized": False,
+    "external_actions_allowed": False,
+    "decision_evidence": "Owner authorization / Issue #45",
+}
 
 
 def _error(path: str, code: str) -> str:
@@ -203,6 +223,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
         "source_state",
         "gate_ledger",
         "data_governance",
+        "operations_governance",
         "risk_posture",
         "evidence_requirements",
         "candidate_decision",
@@ -303,7 +324,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
             )
             if not isinstance(gate, dict):
                 continue
-            expected_accepted = index < 7
+            expected_accepted = index < 8
             if (
                 gate.get("gate_id") != gate_id
                 or type(gate.get("accepted")) is not bool
@@ -317,6 +338,13 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
     if model["data_governance"] != EXPECTED_DATA_GOVERNANCE:
         errors.append(
             _error("$.data_governance", "controlled_proposal_required")
+        )
+    if model["operations_governance"] != EXPECTED_OPERATIONS_GOVERNANCE:
+        errors.append(
+            _error(
+                "$.operations_governance",
+                "controlled_synthetic_operations_approval_required",
+            )
         )
     risk_posture = model["risk_posture"]
     expected_risk_posture = {
@@ -434,7 +462,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         )
 
     integration_gates = integration.get("human_gates")
-    expected_gate_states = list(zip(GATE_IDS, [True] * 7 + [False] * 5))
+    expected_gate_states = list(zip(GATE_IDS, [True] * 8 + [False] * 4))
     actual_gate_states = (
         [
             (gate.get("gate_id"), gate.get("authorized"))
@@ -484,7 +512,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "Developer Agent",
         "Issue #44",
         "Issue #49",
-        "Gate 8–12",
+        "Gate 9–12",
         "external_actions_performed=[]",
         "不得解释为",
     )

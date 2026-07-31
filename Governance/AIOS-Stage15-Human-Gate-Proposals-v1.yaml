@@ -1,7 +1,7 @@
 proposal_version: stage15_human_gate_proposals/v1
 stage: "15"
 stage_id: NR-01
-status: gate7_accepted_gate8_through_11_pending
+status: gates7_and_8_accepted_gate9_through_11_pending
 allowed_scope:
   company: 汇沣电商
   brand: BUW
@@ -17,6 +17,7 @@ sequencing:
     - HG-NAMED-OWNER
     - HG-ARCH-SECURITY
     - HG-PRIVACY-DATA
+    - HG-OPS-RECOVERY-INCIDENT-SUPPORT
   gate_order:
     - HG-SPEC-APPROVAL
     - HG-PLAN-APPROVAL
@@ -30,7 +31,7 @@ sequencing:
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE
-  next_gate: HG-OPS-RECOVERY-INCIDENT-SUPPORT
+  next_gate: HG-RISK-DISPOSITION
   strict_dependency_order: true
   release_gate_accepted: false
 proposals:
@@ -65,8 +66,8 @@ proposals:
     external_actions_allowed: false
   - gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT
     issue: "#45"
-    accepted: false
-    state: proposed_awaiting_explicit_owner_approval
+    accepted: true
+    state: accepted
     prerequisite_gates:
       - HG-SPEC-APPROVAL
       - HG-PLAN-APPROVAL
@@ -99,7 +100,7 @@ proposals:
       rpo_minutes: 60
       achieved_capability_claim: false
       sla_slo_committed: false
-    approval_condition: gate7_accepted_then_explicit_owner_approval
+    approval_condition: satisfied_by_explicit_owner_approval
     authority_ceiling: needs_human_governance
     external_actions_allowed: false
   - gate_id: HG-RISK-DISPOSITION

@@ -27,7 +27,7 @@ gate_ledger:
   - {gate_id: HG-NAMED-OWNER, accepted: true, state: accepted, decision_evidence: "Issue #42"}
   - {gate_id: HG-ARCH-SECURITY, accepted: true, state: accepted, decision_evidence: "Issue #43"}
   - {gate_id: HG-PRIVACY-DATA, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #44"}
-  - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #45"}
+  - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #45"}
   - {gate_id: HG-RISK-DISPOSITION, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #46"}
   - {gate_id: HG-PILOT-SCOPE, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #47"}
   - {gate_id: HG-PILOT-EVIDENCE, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #48"}
@@ -56,6 +56,24 @@ data_governance:
   merge_publication_or_deployment_authorized: false
   external_actions_allowed: false
   decision_evidence: "Owner authorization / Issue #44"
+operations_governance:
+  status: authorized_by_human_governance
+  scope_type: synthetic_operations_recovery_incident_support_only
+  human_approver: Stone
+  backup_and_escalation_contact: Tony
+  technical_owner: Developer Agent
+  evidence_contributors:
+    - CustomerService Agent
+    - Data Agent
+  design_targets:
+    service_class: CT-2
+    rto_minutes: 240
+    rpo_minutes: 60
+    achieved_capability_claim: false
+    sla_slo_committed: false
+  real_operations_authorized: false
+  external_actions_allowed: false
+  decision_evidence: "Owner authorization / Issue #45"
 risk_posture:
   stage10: BLOCKED / NO-GO
   risk_count: 10
@@ -78,13 +96,11 @@ evidence_requirements:
 candidate_decision:
   result: not_ready_pending_human_governance
   reason_codes:
-    - HG-OPS-RECOVERY-INCIDENT-SUPPORT
     - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE-WITHHELD-BY-OBJECTIVE
   remaining_human_gates:
-    - HG-OPS-RECOVERY-INCIDENT-SUPPORT
     - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE

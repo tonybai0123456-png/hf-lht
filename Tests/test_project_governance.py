@@ -385,7 +385,30 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "Data Agent",
                 "Developer Agent",
                 "Gates 8–12 remain unauthorized",
-                "no real data, credential, connector, infrastructure, pilot, risk acceptance, merge, publication, release or deployment authority",
+                "no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_gate8_decision_overlay_is_registered_without_real_operations(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 8 accepted",
+                "Owner authorization / Issue #45",
+                "gates7_and_8_accepted_gate9_through_11_pending",
+                "Gate 9 is the only valid next decision",
+                "synthetic_operations_recovery_incident_support_only",
+                "Stone",
+                "Tony",
+                "Developer Agent",
+                "CustomerService Agent",
+                "Data Agent",
+                "CT-2",
+                "RTO 240",
+                "RPO 60",
+                "Gates 9–12 remain unauthorized",
+                "no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority",
             ):
                 self.assertIn(token, registry)
 

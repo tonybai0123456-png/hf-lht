@@ -33,7 +33,14 @@ Gate 7 is accepted by the explicit owner decision recorded in Issue #44:
 - Developer Agent provides implementation support only.
 
 This responsibility split grants only the stated synthetic-data boundary.
-Gate 8–12 remain unaccepted. Issue #49 expressly withholds release while defining the
+Gate 8 is separately accepted under Issue #45 for synthetic operations,
+recovery, incident-tabletop and support-flow validation only. Stone is the
+human approver, Tony is backup and escalation, Developer Agent is technical
+owner, and CustomerService Agent plus Data Agent are evidence contributors.
+It authorizes no real monitoring, alerting, ticketing, incident, failover,
+restore, support operation or achieved RTO/RPO claim.
+
+Gate 9–12 remain unaccepted. Issue #49 expressly withholds release while defining the
 deployment-free evidence boundary.
 
 ## Evidence contract

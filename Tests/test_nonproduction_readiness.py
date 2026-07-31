@@ -92,7 +92,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             [row["gate_id"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            [True] * 7 + [False] * 5,
+            [True] * 8 + [False] * 4,
             [row["authorized"] for row in model["human_gates"]],
         )
 
@@ -212,13 +212,13 @@ class NonproductionReadinessTests(unittest.TestCase):
         }
         self.assertIs(gate_states["HG-ARCH-SECURITY"], True)
         self.assertEqual(
-            list(validator.GATE_IDS[7:]),
+            list(validator.GATE_IDS[8:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[7:]),
+            list(validator.GATE_IDS[8:]),
             decision["required_human_gates"],
         )
         self.assertEqual(
@@ -279,17 +279,77 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["privacy_data_approval"],
         )
         self.assertEqual(
-            [True] * 7 + [False] * 5,
+            [True] * 8 + [False] * 4,
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            list(validator.GATE_IDS[7:]),
+            list(validator.GATE_IDS[8:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[7:]),
+            list(validator.GATE_IDS[8:]),
+            decision["required_human_gates"],
+        )
+        self.assertEqual([], decision["external_actions_performed"])
+        self.assertEqual(validator.FALSE_CLAIMS, decision["claims"])
+
+    def test_gate8_records_synthetic_operations_approval_without_real_operations(
+        self,
+    ):
+        validator, model, fixture = self._assets()
+        self.assertEqual(
+            {
+                "status": "authorized_by_human_governance",
+                "scope_type": (
+                    "synthetic_operations_recovery_incident_support_only"
+                ),
+                "human_approver": "Stone",
+                "backup_and_escalation_contact": "Tony",
+                "technical_owner": "Developer Agent",
+                "evidence_contributors": [
+                    "CustomerService Agent",
+                    "Data Agent",
+                ],
+                "allowed_scope_details": [
+                    "deterministic_stage13_prepare_only_runbook_validation",
+                    "synthetic_dependency_degradation_and_incident_tabletop",
+                    "task_local_snapshot_checksum_restore_cleanup_evidence",
+                    "synthetic_support_intake_triage_handoff_stop_withdrawal_closure",
+                    "exact_ordered_escalation_functions_no_external_delivery",
+                ],
+                "prohibited_scope_details": [
+                    "real_monitoring_alerting_paging_ticket_or_external_message",
+                    "infrastructure_failover_backup_restore_or_rollback",
+                    "real_incident_support_case_or_sla_slo_claim",
+                    "production_staging_cloud_credential_connector_or_real_data",
+                ],
+                "design_targets": {
+                    "service_class": "CT-2",
+                    "rto_minutes": 240,
+                    "rpo_minutes": 60,
+                    "achieved_capability_claim": False,
+                    "sla_slo_committed": False,
+                },
+                "external_actions_allowed": False,
+                "decision_date": "2026-07-31",
+                "decision_evidence": "Owner authorization / Issue #45",
+            },
+            model["operations_recovery_incident_support_approval"],
+        )
+        self.assertEqual(
+            [True] * 8 + [False] * 4,
+            [row["authorized"] for row in model["human_gates"]],
+        )
+        self.assertEqual(
+            list(validator.GATE_IDS[8:]),
+            fixture["required_human_gates"],
+        )
+        decision = validator.evaluate_nonproduction_readiness(model, fixture)
+        self.assertEqual("needs_human_governance", decision["result"])
+        self.assertEqual(
+            list(validator.GATE_IDS[8:]),
             decision["required_human_gates"],
         )
         self.assertEqual([], decision["external_actions_performed"])

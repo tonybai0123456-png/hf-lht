@@ -199,3 +199,23 @@ secrets or permission material; connectors, endpoints, infrastructure or
 accounts; pilot, risk acceptance, merge, publication, release or deployment.
 Gates 8 through 12 remain unauthorized, and Gate 8 is the only valid next
 decision.
+
+### Gate 8 operations, recovery, incident and support approval
+
+Gate 8 was separately accepted through Issue #45 on 2026-07-31. The approved
+scope is limited to deterministic Stage 13 prepare-only runbook validation,
+synthetic dependency degradation and incident tabletop, task-local
+snapshot/checksum/restore/cleanup evidence, synthetic support
+intake/triage/handoff/stop/withdrawal/closure, and ordered escalation functions
+without external delivery.
+
+Stone is the human approver, Tony is backup and escalation contact, Developer
+Agent is technical owner, and CustomerService Agent plus Data Agent contribute
+evidence. CT-2 RTO 240 minutes and RPO 60 minutes remain design targets, not
+achieved-capability or SLA/SLO claims.
+
+This approval does not authorize real monitoring, alerting, paging, tickets,
+external messages, incidents, failover, backup/restore, support commitments,
+cloud resources, credentials, connectors, real data, pilot, risk acceptance,
+merge, publication, release or deployment. Gates 9 through 12 remain
+unauthorized, and Gate 9 is the only valid next decision.

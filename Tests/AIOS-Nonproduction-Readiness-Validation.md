@@ -51,6 +51,17 @@ Expected behavior:
 - Gate 7 authorizes no real data, credential, permission, connector, endpoint,
   infrastructure, account, pilot, risk acceptance, merge, publication, release
   or deployment.
+- Gate 8 is recorded as accepted only by the owner authorization in Issue #45:
+  Stone is the human approver, Tony is backup and escalation, Developer Agent
+  is technical owner, and CustomerService Agent plus Data Agent contribute
+  evidence. Only deterministic synthetic runbook, degradation, recovery,
+  incident-tabletop and support-flow validation is in scope. Gates 9 through 12
+  remain unauthorized.
+- Gate 8 authorizes no real monitoring, alerting, ticketing, incident,
+  failover, backup/restore, support commitment, cloud resource, real data,
+  credential, connector, pilot, risk acceptance, merge, publication, release
+  or deployment. CT-2 RTO 240 minutes and RPO 60 minutes are design targets
+  only.
 - Evaluation is deterministic, does not mutate inputs and performs no external
   action.
 - All repository regression tests and validators exit zero.
@@ -67,3 +78,5 @@ deployment authority and is not production security acceptance or risk
 acceptance.
 The Gate 7 privacy and data record grants only the two named synthetic data
 classes and performs no external action.
+The Gate 8 operations record grants only the named synthetic validation scope
+and performs no external action.

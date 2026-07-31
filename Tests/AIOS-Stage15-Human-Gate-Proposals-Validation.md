@@ -2,15 +2,18 @@
 
 ## Purpose and truthful status
 
-This package records the Stage 15 Gate 7 decision and preserves the remaining
-Gate 8–11 packets as one closed, ordered and machine-verifiable contract. Its
-status is `gate7_accepted_gate8_through_11_pending`; a valid package
+This package records the Stage 15 Gate 7 and Gate 8 decisions and preserves the
+remaining Gate 9–11 packets as one closed, ordered and machine-verifiable
+contract. Its status is
+`gates7_and_8_accepted_gate9_through_11_pending`; a valid package
 evaluates only to `not_ready_pending_human_governance`.
 
-Passing validation does not approve another gate. Gate 7 alone is accepted by
-the explicit owner decision in Issue #44. Gates 8–11 remain false until their
+Passing validation does not approve another gate. Gates 7 and 8 are accepted
+by the explicit owner decisions in Issues #44 and #45. Gates 9–11 remain false until their
 named human approvers make separate decisions after all prerequisite gates have
-been accepted and verified. `accepted_proposal_gates=['HG-PRIVACY-DATA']` and
+been accepted and verified.
+`accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT']`
+and
 `external_actions_performed=[]`.
 
 ## Ordered proposals
@@ -20,11 +23,12 @@ been accepted and verified. `accepted_proposal_gates=['HG-PRIVACY-DATA']` and
    Agent is implementation support. Only controlled synthetic data is in
    scope. This grants no real-data, credential, connector, infrastructure,
    pilot, risk, merge, release or deployment authority.
-2. `HG-OPS-RECOVERY-INCIDENT-SUPPORT` — Issue #45. Stone is human approver,
+2. `HG-OPS-RECOVERY-INCIDENT-SUPPORT` — Issue #45, accepted. Stone is human approver,
    Tony is backup and executive escalation contact, Developer Agent is the
    technical owner, CustomerService Agent validates the synthetic support
    process and Data Agent validates metrics and evidence. No real monitoring,
-   ticket, incident, failover, restore or support operation is allowed.
+   ticket, incident, failover, restore or support operation is allowed. CT-2
+   RTO 240 minutes and RPO 60 minutes remain design targets only.
 3. `HG-RISK-DISPOSITION` — Issue #46. Tony is human approver and overall risk
    owner; Stone is the independent reviewer and escalation contact. The ten
    risk records have named human treatment owners and mapped technical support.
@@ -73,8 +77,8 @@ Expected validator output:
 ```text
 AIOS Stage 15 human-gate proposal validation PASSED
 result=not_ready_pending_human_governance
-next_gate=HG-OPS-RECOVERY-INCIDENT-SUPPORT
-accepted_proposal_gates=['HG-PRIVACY-DATA']
+next_gate=HG-RISK-DISPOSITION
+accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT']
 external_actions_performed=[]
 ```
 
