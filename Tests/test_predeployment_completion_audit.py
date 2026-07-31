@@ -47,6 +47,14 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
         )
         self.assertEqual(["PC", "六合通"], model["excluded_entities"])
         self.assertEqual(
+            "36716abc76373d053c75e68352f46589f4ddc8f1",
+            model["audited_source_state"]["technical_receipt_source_commit"],
+        )
+        self.assertEqual(
+            "Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml",
+            model["audited_source_state"]["technical_receipt"],
+        )
+        self.assertEqual(
             [
                 "proven_complete",
                 "proven_complete",
@@ -56,7 +64,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
                 "pending_human_governance",
                 "pending_human_governance",
                 "pending_human_governance",
-                "partial_pending_human_gates_and_final_capture",
+                "partial_pending_human_gates",
                 "intentionally_withheld",
                 "intentionally_excluded",
                 "intentionally_excluded_or_withheld",

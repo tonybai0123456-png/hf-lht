@@ -15,6 +15,7 @@ GUIDE = ROOT / "Tests/AIOS-Deployment-Free-Candidate-Validation.md"
 WORKFLOW = (
     ROOT / ".github/workflows/validate-aios-support-controlled-pilot.yml"
 )
+RECEIPT = ROOT / "Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml"
 
 
 def load_validator():
@@ -48,7 +49,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             model["candidate_evidence_version"],
         )
         self.assertEqual(
-            "preparation_incomplete_pending_human_gates",
+            "technical_evidence_verified_pending_human_gates",
             model["status"],
         )
         self.assertEqual(
@@ -152,7 +153,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
 
         guide = GUIDE.read_text(encoding="utf-8")
         for token in (
-            "preparation_incomplete_pending_human_gates",
+            "technical_evidence_verified_pending_human_gates",
             "not_ready_pending_human_governance",
             "synthetic_non_personal",
             "synthetic_personal_like_clearly_fictitious_non_routable",
@@ -203,3 +204,47 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             completed.stdout,
         )
         self.assertIn("external_actions_performed=[]", completed.stdout)
+
+    def test_candidate_tracks_verified_receipt_without_upgrading_human_gates(self):
+        model = yaml.safe_load(MODEL.read_text(encoding="utf-8"))
+        receipt = yaml.safe_load(RECEIPT.read_text(encoding="utf-8"))
+        self.assertEqual(
+            "technical_evidence_verified_pending_human_gates", model["status"]
+        )
+        self.assertEqual(
+            receipt["source_state"]["candidate_commit"],
+            model["source_state"]["technical_evidence_commit"],
+        )
+        self.assertEqual(
+            receipt["source_state"]["candidate_tree"],
+            model["source_state"]["technical_evidence_tree"],
+        )
+        self.assertEqual(
+            "Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml",
+            model["source_state"]["technical_evidence_receipt"],
+        )
+        self.assertEqual(
+            [
+                "verified_external_capture",
+                "verified",
+                "verified",
+                "verified",
+                "verified",
+                "incomplete_pending_human_gates",
+                "verified_unapproved_treatment_mapping",
+                "verified_synthetic_only",
+                "complete",
+                "verified",
+                "complete",
+                "complete",
+            ],
+            [item["status"] for item in model["evidence_requirements"]],
+        )
+        self.assertEqual(
+            [True] * 6 + [False] * 6,
+            [gate["accepted"] for gate in model["gate_ledger"]],
+        )
+        self.assertEqual(
+            "not_ready_pending_human_governance",
+            model["candidate_decision"]["result"],
+        )

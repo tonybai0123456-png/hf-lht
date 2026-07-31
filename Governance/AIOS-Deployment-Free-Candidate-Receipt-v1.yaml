@@ -1,0 +1,132 @@
+receipt_version: deployment_free_candidate_receipt/v1
+stage: "15"
+stage_id: NR-01
+status: verified_technical_evidence_pending_human_gates
+allowed_scope:
+  company: 汇沣电商
+  brand: BUW
+excluded_entities:
+  - PC
+  - 六合通
+source_state:
+  base_commit: 403f97ea56678185398ee52fff2b35eeff7a700f
+  candidate_commit: 36716abc76373d053c75e68352f46589f4ddc8f1
+  candidate_tree: ec48f7c537162b32f6bc35947d9e49758e1b53bd
+  pull_request: "#41 / Draft / open / unmerged"
+  receipt_record_commit_state: external_capture_after_push
+changed_file_manifest:
+  count: 29
+  paths:
+    - .github/workflows/validate-aios-nonproduction-readiness.yml
+    - .gitignore
+    - Governance/AIOS-Deployment-Free-Candidate-Evidence-v1.yaml
+    - Governance/AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml
+    - Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml
+    - Governance/AIOS-Nonproduction-Readiness-Integration-v1.md
+    - Governance/AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml
+    - Governance/AIOS-Predeployment-Completion-Audit-v1.yaml
+    - Governance/AIOS-Project-Registry.md
+    - Governance/AIOS-Stage-Registry.md
+    - Governance/AIOS-Stage15-Human-Gate-Proposals-v1.yaml
+    - Tests/AIOS-Deployment-Free-Candidate-Validation.md
+    - Tests/AIOS-Nonproduction-Readiness-Validation.md
+    - Tests/AIOS-Predeployment-Completion-Audit-Validation.md
+    - Tests/AIOS-Stage15-Human-Gate-Proposals-Validation.md
+    - Tests/Fixtures/nonproduction-readiness/synthetic-local-integration.yaml
+    - Tests/test_deployment_free_candidate.py
+    - Tests/test_nonproduction_readiness.py
+    - Tests/test_operational_resilience.py
+    - Tests/test_predeployment_completion_audit.py
+    - Tests/test_project_governance.py
+    - Tests/test_stage15_human_gate_proposals.py
+    - Tests/validate_aios_deployment_free_candidate.py
+    - Tests/validate_aios_nonproduction_readiness.py
+    - Tests/validate_aios_operational_resilience.py
+    - Tests/validate_aios_predeployment_completion_audit.py
+    - Tests/validate_aios_stage15_human_gate_proposals.py
+    - docs/superpowers/plans/2026-07-23-nonproduction-readiness-remediation-integration.md
+    - docs/superpowers/specs/2026-07-23-nonproduction-readiness-remediation-integration-design.md
+clean_reproduction:
+  source_method: git_archive_clean_export
+  source_command: git archive 36716abc76373d053c75e68352f46589f4ddc8f1
+  dependency_manifest: requirements-dev.txt
+  dependency_resolution: PyYAML 6.0.3
+  tests_passed: 127
+  tests_total: 127
+  validators_passed: 10
+  validators_total: 10
+  compilation: passed
+  diff_check: passed
+  sensitive_material_scan: passed
+  performed_date: "2026-07-31"
+exact_head_ci:
+  - {workflow: Validate AIOS Architecture and Security Foundations, run_number: 62, run_id: 30609596588, conclusion: success}
+  - {workflow: Validate AIOS Privacy and Data Governance, run_number: 53, run_id: 30609596630, conclusion: success}
+  - {workflow: Validate AIOS Production Readiness Assessment, run_number: 70, run_id: 30609596617, conclusion: success}
+  - {workflow: Validate AIOS Support Controlled Pilot, run_number: 29, run_id: 30609596590, conclusion: success}
+  - {workflow: Validate AIOS Workflow Schema, run_number: 61, run_id: 30609596618, conclusion: success}
+  - {workflow: Validate AIOS Project Governance, run_number: 74, run_id: 30609596635, conclusion: success}
+  - {workflow: Validate Runtime Orchestrator v1, run_number: 83, run_id: 30609596625, conclusion: success}
+  - {workflow: Validate AIOS Operational Resilience, run_number: 46, run_id: 30609596639, conclusion: success}
+  - {workflow: Validate AIOS Non-production Readiness, run_number: 12, run_id: 30609596718, conclusion: success}
+risk_evidence_and_treatment_mapping:
+  - {risk_id: PR-RISK-001, evidence_ids: [EV-ENVIRONMENT], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-002, evidence_ids: [EV-IDENTITY], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-003, evidence_ids: [EV-DATA], human_treatment_owner: Tony, technical_support_agents: [Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-004, evidence_ids: [EV-DATA, EV-EVIDENCE], human_treatment_owner: Tony, technical_support_agents: [Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-005, evidence_ids: [EV-OBSERVATION, EV-EVIDENCE], human_treatment_owner: Stone, technical_support_agents: [Developer Agent, Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-006, evidence_ids: [EV-RECOVERY], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-007, evidence_ids: [EV-INCIDENT], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-008, evidence_ids: [EV-SUPPORT], human_treatment_owner: Stone, technical_support_agents: [CustomerService Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-009, evidence_ids: [EV-IDENTITY, EV-DATA], human_treatment_owner: Tony, technical_support_agents: [Data Agent, CEO Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-010, evidence_ids: [EV-ENVIRONMENT, EV-EVIDENCE], human_treatment_owner: Tony, technical_support_agents: [CEO Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+synthetic_control_evidence:
+  classification: repository_controlled_synthetic_only
+  evidence_ids:
+    - EV-ENVIRONMENT
+    - EV-IDENTITY
+    - EV-DATA
+    - EV-EVIDENCE
+    - EV-OBSERVATION
+    - EV-RECOVERY
+    - EV-INCIDENT
+    - EV-SUPPORT
+  real_data_used: false
+  external_connector_used: false
+  infrastructure_or_account_material_used: false
+withheld_authorities:
+  - merge
+  - publication
+  - archive
+  - real_data
+  - credentials_and_permissions
+  - connectors
+  - external_infrastructure_and_accounts
+  - real_pilot
+  - risk_acceptance
+  - release
+  - deployment
+candidate_decision:
+  result: not_ready_pending_human_governance
+  technically_verified_source: true
+  remaining_human_gates:
+    - HG-PRIVACY-DATA
+    - HG-OPS-RECOVERY-INCIDENT-SUPPORT
+    - HG-RISK-DISPOSITION
+    - HG-PILOT-SCOPE
+    - HG-PILOT-EVIDENCE
+    - HG-RELEASE
+  release_gate_authorized: false
+  deployment_free_evidence_only: true
+claims:
+  risk_accepted: false
+  real_pilot_performed: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+  real_data_used: false
+  connector_used: false
+  infrastructure_provisioned: false
+  credentials_used: false
+external_actions_performed: []

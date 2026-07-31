@@ -1,7 +1,7 @@
 candidate_evidence_version: deployment_free_candidate_evidence/v1
 stage: "15"
 stage_id: NR-01
-status: preparation_incomplete_pending_human_gates
+status: technical_evidence_verified_pending_human_gates
 allowed_scope:
   company: 汇沣电商
   brand: BUW
@@ -13,9 +13,12 @@ source_state:
   reviewed_tree: d3fec0a73e1f5b90d3c5829b387095da1e2ff5e4
   gate_record_commit: 204fbde1b23c49a00e07bef9cefce035f6b27cc4
   gate_record_tree: 71e6b82e407b626bb256d2459109ea88be018e8b
+  technical_evidence_commit: 36716abc76373d053c75e68352f46589f4ddc8f1
+  technical_evidence_tree: ec48f7c537162b32f6bc35947d9e49758e1b53bd
+  technical_evidence_receipt: Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml
   pull_request: "#41 / Draft / open / unmerged"
   parent_issue: "#40 / open"
-  candidate_commit_state: pending_final_capture
+  candidate_commit_state: external_capture_verified_pending_human_gates
 gate_ledger:
   - {gate_id: HG-SPEC-APPROVAL, accepted: true, state: accepted, decision_evidence: "Issue #40"}
   - {gate_id: HG-PLAN-APPROVAL, accepted: true, state: accepted, decision_evidence: "Issue #40"}
@@ -53,16 +56,16 @@ risk_posture:
   treatment_ownership: proposed_not_authorized
   risk_acceptance: false
 evidence_requirements:
-  - {evidence_id: DFC-EV-01, requirement: exact_commit_and_tree, status: pending_final_capture}
-  - {evidence_id: DFC-EV-02, requirement: changed_file_and_asset_manifest, status: pending_final_capture}
-  - {evidence_id: DFC-EV-03, requirement: clean_checkout_reproducibility, status: baseline_only}
-  - {evidence_id: DFC-EV-04, requirement: local_tests_validators_compile_and_diff, status: baseline_only}
-  - {evidence_id: DFC-EV-05, requirement: exact_head_ci, status: pending_final_capture}
+  - {evidence_id: DFC-EV-01, requirement: exact_commit_and_tree, status: verified_external_capture}
+  - {evidence_id: DFC-EV-02, requirement: changed_file_and_asset_manifest, status: verified}
+  - {evidence_id: DFC-EV-03, requirement: clean_checkout_reproducibility, status: verified}
+  - {evidence_id: DFC-EV-04, requirement: local_tests_validators_compile_and_diff, status: verified}
+  - {evidence_id: DFC-EV-05, requirement: exact_head_ci, status: verified}
   - {evidence_id: DFC-EV-06, requirement: gate_ledger_1_through_11, status: incomplete_pending_human_gates}
-  - {evidence_id: DFC-EV-07, requirement: risk_map_and_treatment_owners, status: incomplete_pending_human_gate}
-  - {evidence_id: DFC-EV-08, requirement: synthetic_control_evidence, status: baseline_only}
+  - {evidence_id: DFC-EV-07, requirement: risk_map_and_treatment_owners, status: verified_unapproved_treatment_mapping}
+  - {evidence_id: DFC-EV-08, requirement: synthetic_control_evidence, status: verified_synthetic_only}
   - {evidence_id: DFC-EV-09, requirement: dependency_manifest_and_install_instructions, status: complete}
-  - {evidence_id: DFC-EV-10, requirement: scan_for_secrets_real_data_connectors_and_infrastructure_material, status: pending_final_capture}
+  - {evidence_id: DFC-EV-10, requirement: scan_for_secrets_real_data_connectors_and_infrastructure_material, status: verified}
   - {evidence_id: DFC-EV-11, requirement: withheld_authorities, status: complete}
   - {evidence_id: DFC-EV-12, requirement: mandatory_return_external_actions_empty, status: complete}
 candidate_decision:

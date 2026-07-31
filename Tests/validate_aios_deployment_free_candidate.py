@@ -19,6 +19,9 @@ WORKFLOW_PATH = Path(
 INTEGRATION_MODEL_PATH = Path(
     "Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml"
 )
+RECEIPT_MODEL_PATH = Path(
+    "Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml"
+)
 
 GATE_IDS = (
     "HG-SPEC-APPROVAL",
@@ -73,16 +76,16 @@ EVIDENCE_REQUIREMENTS = (
     "mandatory_return_external_actions_empty",
 )
 EVIDENCE_STATUSES = (
-    "pending_final_capture",
-    "pending_final_capture",
-    "baseline_only",
-    "baseline_only",
-    "pending_final_capture",
+    "verified_external_capture",
+    "verified",
+    "verified",
+    "verified",
+    "verified",
     "incomplete_pending_human_gates",
-    "incomplete_pending_human_gate",
-    "baseline_only",
+    "verified_unapproved_treatment_mapping",
+    "verified_synthetic_only",
     "complete",
-    "pending_final_capture",
+    "verified",
     "complete",
     "complete",
 )
@@ -210,7 +213,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
         errors.append(_error("$.candidate_evidence_version", "invalid"))
     if model["stage"] != "15" or model["stage_id"] != "NR-01":
         errors.append(_error("$.stage", "invalid"))
-    if model["status"] != "preparation_incomplete_pending_human_gates":
+    if model["status"] != "technical_evidence_verified_pending_human_gates":
         errors.append(_error("$.status", "must_remain_incomplete"))
     if model["allowed_scope"] != {"company": "汇沣电商", "brand": "BUW"}:
         errors.append(_error("$.allowed_scope", "invalid"))
@@ -223,6 +226,9 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
         "reviewed_tree",
         "gate_record_commit",
         "gate_record_tree",
+        "technical_evidence_commit",
+        "technical_evidence_tree",
+        "technical_evidence_receipt",
         "pull_request",
         "parent_issue",
         "candidate_commit_state",
@@ -245,11 +251,31 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
             "71e6b82e407b626bb256d2459109ea88be018e8b"
         ):
             errors.append(_error("$.source_state.gate_record_tree", "invalid"))
+        if source_state.get("technical_evidence_commit") != (
+            "36716abc76373d053c75e68352f46589f4ddc8f1"
+        ):
+            errors.append(
+                _error("$.source_state.technical_evidence_commit", "invalid")
+            )
+        if source_state.get("technical_evidence_tree") != (
+            "ec48f7c537162b32f6bc35947d9e49758e1b53bd"
+        ):
+            errors.append(
+                _error("$.source_state.technical_evidence_tree", "invalid")
+            )
+        if source_state.get("technical_evidence_receipt") != (
+            "Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml"
+        ):
+            errors.append(
+                _error("$.source_state.technical_evidence_receipt", "invalid")
+            )
         if source_state.get("pull_request") != "#41 / Draft / open / unmerged":
             errors.append(_error("$.source_state.pull_request", "invalid"))
         if source_state.get("parent_issue") != "#40 / open":
             errors.append(_error("$.source_state.parent_issue", "invalid"))
-        if source_state.get("candidate_commit_state") != "pending_final_capture":
+        if source_state.get("candidate_commit_state") != (
+            "external_capture_verified_pending_human_gates"
+        ):
             errors.append(
                 _error("$.source_state.candidate_commit_state", "invalid")
             )
@@ -378,12 +404,28 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     try:
         model = load_candidate_evidence(root)
         integration = _load_controlled_yaml(root / INTEGRATION_MODEL_PATH)
+        receipt = _load_controlled_yaml(root / RECEIPT_MODEL_PATH)
         guide = (root / GUIDE_PATH).read_text(encoding="utf-8")
         workflow_text = (root / WORKFLOW_PATH).read_text(encoding="utf-8")
         workflow = yaml.safe_load(workflow_text)
     except (OSError, ValueError) as exc:
         return [_error("$repository", f"load_error:{type(exc).__name__}")]
     errors = validate_candidate_evidence(model)
+
+    receipt_source = receipt.get("source_state")
+    if (
+        receipt.get("status")
+        != "verified_technical_evidence_pending_human_gates"
+        or not isinstance(receipt_source, dict)
+        or receipt_source.get("candidate_commit")
+        != model.get("source_state", {}).get("technical_evidence_commit")
+        or receipt_source.get("candidate_tree")
+        != model.get("source_state", {}).get("technical_evidence_tree")
+        or receipt.get("external_actions_performed") != []
+    ):
+        errors.append(
+            _error("$repository.receipt", "technical_evidence_alignment_required")
+        )
 
     integration_gates = integration.get("human_gates")
     expected_gate_states = list(zip(GATE_IDS, [True] * 6 + [False] * 6))
@@ -426,7 +468,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         )
 
     guide_tokens = (
-        "preparation_incomplete_pending_human_gates",
+        "technical_evidence_verified_pending_human_gates",
         "not_ready_pending_human_governance",
         "synthetic_non_personal",
         "synthetic_personal_like_clearly_fictitious_non_routable",

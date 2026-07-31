@@ -31,7 +31,7 @@ REQUIREMENT_STATES = (
     "pending_human_governance",
     "pending_human_governance",
     "pending_human_governance",
-    "partial_pending_human_gates_and_final_capture",
+    "partial_pending_human_gates",
     "intentionally_withheld",
     "intentionally_excluded",
     "intentionally_excluded_or_withheld",
@@ -67,16 +67,16 @@ QUEUE_PREREQUISITES = (
     "HG-PILOT-SCOPE",
 )
 EVIDENCE_STATES = (
-    "pending_final_capture",
-    "pending_final_capture",
-    "baseline_only",
-    "baseline_only",
-    "pending_final_capture",
+    "verified_external_capture",
+    "verified",
+    "verified",
+    "verified",
+    "verified",
     "incomplete_pending_human_gates",
-    "incomplete_pending_human_gate",
-    "baseline_only",
+    "verified_unapproved_treatment_mapping",
+    "verified_synthetic_only",
     "complete",
-    "pending_final_capture",
+    "verified",
     "complete",
     "complete",
 )
@@ -183,6 +183,9 @@ def _validate_completion_audit_impl(model: Any) -> list[str]:
         "baseline_commit",
         "baseline_tree",
         "reviewed_implementation_commit",
+        "technical_receipt_source_commit",
+        "technical_receipt_source_tree",
+        "technical_receipt",
         "pull_request",
         "parent_issue",
         "release_boundary_issue",
@@ -194,6 +197,15 @@ def _validate_completion_audit_impl(model: Any) -> list[str]:
         "baseline_tree": "58734f98a922cd8b15436312ff21911117052038",
         "reviewed_implementation_commit": (
             "b27614ba2ebebb772888c3a4b1ff3d829b47532e"
+        ),
+        "technical_receipt_source_commit": (
+            "36716abc76373d053c75e68352f46589f4ddc8f1"
+        ),
+        "technical_receipt_source_tree": (
+            "ec48f7c537162b32f6bc35947d9e49758e1b53bd"
+        ),
+        "technical_receipt": (
+            "Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml"
         ),
         "pull_request": "#41 / Draft / open / unmerged",
         "parent_issue": "#40 / open",
@@ -296,10 +308,7 @@ def _validate_completion_audit_impl(model: Any) -> list[str]:
 
     expected_decision = {
         "result": "not_complete_pending_human_governance",
-        "remaining_requirements": [
-            *QUEUE_GATES,
-            "final_exact_head_candidate_evidence_capture",
-        ],
+        "remaining_requirements": list(QUEUE_GATES),
         "stage10": "BLOCKED / NO-GO",
         "release_gate_authorized": False,
         "deployment_free_evidence_only": True,
@@ -362,7 +371,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     )
     if (
         candidate.get("status")
-        != "preparation_incomplete_pending_human_gates"
+        != "technical_evidence_verified_pending_human_gates"
         or candidate_gate_truth != [True] * 6 + [False] * 6
         or candidate.get("external_actions_performed") != []
     ):

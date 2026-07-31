@@ -5,7 +5,7 @@
 This validation package records the truthful, deployment-free preparation
 state for Stage 15 / NR-01. A successful schema validation means only that the
 record is internally consistent. The current status is
-`preparation_incomplete_pending_human_gates`, and the only valid evaluation is
+`technical_evidence_verified_pending_human_gates`, and the only valid evaluation is
 `not_ready_pending_human_governance`.
 
 The result must not be interpreted as a merge, publication, archive, real
@@ -54,7 +54,11 @@ The machine-readable record contains twelve evidence requirements:
 11. Explicitly withheld authorities.
 12. Mandatory Return with `external_actions_performed=[]`.
 
-Pending records remain pending; baseline-only records are not final evidence.
+The separate controlled receipt verifies the exact source commit/tree,
+29-path manifest, clean-export replay, local tests and validators, exact-head
+CI, synthetic controls, dependency resolution, scan and Mandatory Return.
+Gate-ledger completion remains pending human governance. Risk treatment owners
+are verified as a proposed mapping only and remain unapproved.
 
 ## Run locally
 

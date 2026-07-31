@@ -81,6 +81,15 @@ STAGE15_COMPLETION_AUDIT_GUIDE = (
 STAGE15_COMPLETION_AUDIT_VALIDATOR = (
     ROOT / "Tests" / "validate_aios_predeployment_completion_audit.py"
 )
+STAGE15_CANDIDATE_RECEIPT_MODEL = (
+    ROOT / "Governance" / "AIOS-Deployment-Free-Candidate-Receipt-v1.yaml"
+)
+STAGE15_CANDIDATE_RECEIPT_GUIDE = (
+    ROOT / "Tests" / "AIOS-Deployment-Free-Candidate-Receipt-Validation.md"
+)
+STAGE15_CANDIDATE_RECEIPT_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_deployment_free_candidate_receipt.py"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -583,6 +592,28 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "not_complete_pending_human_governance",
                 "Gates 7–11",
                 "Issue #49",
+                "release expressly withheld",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_candidate_receipt_is_registered_without_release_authority(self):
+        for asset in (
+            STAGE15_CANDIDATE_RECEIPT_MODEL,
+            STAGE15_CANDIDATE_RECEIPT_GUIDE,
+            STAGE15_CANDIDATE_RECEIPT_VALIDATOR,
+        ):
+            self.assertTrue(asset.is_file(), asset)
+            self.assertGreater(asset.stat().st_size, 100, asset)
+        for registry in (self.project_registry, self.stage_registry):
+            for token in (
+                "AIOS-Deployment-Free-Candidate-Receipt-v1.yaml",
+                "36716abc76373d053c75e68352f46589f4ddc8f1",
+                "verified_technical_evidence_pending_human_gates",
+                "technical_evidence_verified_pending_human_gates",
+                "127/127",
+                "10/10",
+                "9/9",
+                "Gates 7–11",
                 "release expressly withheld",
             ):
                 self.assertIn(token, registry)

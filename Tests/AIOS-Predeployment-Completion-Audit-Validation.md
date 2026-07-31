@@ -23,6 +23,10 @@ The ordered Gate 7–11 queue is defined in Issues #44–#48. Gate 7 in Issue #4
 the only current decision point; later gates remain blocked by their prior
 gate. Issue #49 expressly withholds Gate 12 and defines the deployment-free
 candidate evidence package.
+The technical portion of that package is now externally captured and verified
+through `Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml`; the audit
+remains incomplete only because the ordered human-gate requirements are not
+accepted.
 
 ## Truth boundary
 
