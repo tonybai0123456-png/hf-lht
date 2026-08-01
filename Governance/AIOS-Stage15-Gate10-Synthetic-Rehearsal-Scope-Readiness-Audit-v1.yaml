@@ -1,0 +1,73 @@
+audit_version: stage15_gate10_synthetic_rehearsal_scope_readiness/v1
+stage: "15"
+stage_id: NR-01
+status: ready_for_explicit_zero_participant_scope_decision_not_approved
+next_gate: HG-PILOT-SCOPE
+source_assets:
+  gate9_readiness: Governance/AIOS-Stage15-Gate9-Risk-Treatment-Readiness-Audit-v1.yaml
+  gate_proposals: Governance/AIOS-Stage15-Human-Gate-Proposals-v1.yaml
+  candidate_evidence: Governance/AIOS-Deployment-Free-Candidate-Evidence-v1.yaml
+  synthetic_fixture: Tests/Fixtures/nonproduction-readiness/synthetic-local-integration.yaml
+prerequisites:
+  gates1_through_9_accepted_and_verified: true
+  HG-RISK-DISPOSITION: accepted
+  every_risk_open_blocked_unaccepted: true
+  stage10_posture: BLOCKED / NO-GO
+gate10_decision_boundary:
+  human_approver: Tony
+  backup_and_escalation_contact: Stone
+  technical_owner: Developer Agent
+  contributors:
+    - CustomerService Agent
+    - Data Agent
+  gate_accepted: false
+  approval_state: proposed_awaiting_explicit_owner_approval
+  scope_type: synthetic_rehearsal_only_no_real_pilot
+  decision_evidence: "Issue #47"
+  real_pilot_authorized: false
+  external_actions_allowed: false
+zero_participant_boundary:
+  real_customers: 0
+  employees_or_real_operators: 0
+  stores: 0
+  production_or_staging_environments: 0
+  real_cases_orders_accounts_or_messages: 0
+allowed_rehearsal_scope:
+  - repository_controlled_buw_synthetic_fixtures
+  - local_or_pull_request_ci_execution
+  - deterministic_evaluator_and_fail_closed_controls
+  - synthetic_support_incident_recovery_and_evidence_records
+  - maximum_result_needs_human_governance
+stop_conditions:
+  - real_or_unmarked_data
+  - cross_boundary_scope
+  - missing_evidence_or_owner
+  - requested_external_action
+  - support_recovery_or_metric_failure
+  - representation_as_real_pilot
+required_truth:
+  company: 汇沣电商
+  brand: BUW
+  excluded_entities:
+    - PC
+    - 六合通
+  synthetic_fixture_validated: true
+  external_endpoints_empty: true
+  connectors_empty: true
+  credentials_empty: true
+  requested_external_actions_empty: true
+  real_data_used: false
+  real_pilot_performed: false
+  pilot_authorized: false
+  risk_accepted: false
+  production_ready: false
+  release_authorized: false
+claims:
+  gate10_accepted: false
+  real_pilot_performed: false
+  pilot_authorized: false
+  risk_accepted: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+external_actions_performed: []
