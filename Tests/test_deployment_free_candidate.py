@@ -58,7 +58,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
         )
         self.assertEqual(["PC", "六合通"], model["excluded_entities"])
         self.assertEqual(
-            [True] * 8 + [False] * 4,
+            [True] * 9 + [False] * 3,
             [gate["accepted"] for gate in model["gate_ledger"]],
         )
         self.assertEqual(
@@ -82,7 +82,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
         )
         self.assertEqual([], model["external_actions_performed"])
 
-    def test_evaluator_is_pure_fail_closed_and_preserves_proposed_authority(self):
+    def test_evaluator_is_pure_fail_closed_and_preserves_treatment_only_authority(self):
         validator = load_validator()
         model = yaml.safe_load(MODEL.read_text(encoding="utf-8"))
         before = copy.deepcopy(model)
@@ -125,8 +125,8 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
                     *before["gate_ledger"][:8],
                     {
                         **before["gate_ledger"][8],
-                        "accepted": True,
-                        "state": "accepted",
+                        "accepted": False,
+                        "state": "proposed_awaiting_explicit_owner_approval",
                     },
                     *before["gate_ledger"][9:],
                 ],
@@ -163,7 +163,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             "Developer Agent",
             "Issue #44",
             "Issue #49",
-            "Gate 9–12",
+            "Gate 10–12",
             "external_actions_performed=[]",
             "不得解释为",
         ):
@@ -231,7 +231,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
                 "verified",
                 "verified",
                 "incomplete_pending_human_gates",
-                "verified_unapproved_treatment_mapping",
+                "verified_authorized_treatment_mapping_risks_unaccepted",
                 "verified_synthetic_only",
                 "complete",
                 "verified",
@@ -241,7 +241,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             [item["status"] for item in model["evidence_requirements"]],
         )
         self.assertEqual(
-            [True] * 8 + [False] * 4,
+            [True] * 9 + [False] * 3,
             [gate["accepted"] for gate in model["gate_ledger"]],
         )
         self.assertEqual(

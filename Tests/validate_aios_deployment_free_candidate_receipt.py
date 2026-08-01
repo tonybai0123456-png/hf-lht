@@ -109,7 +109,6 @@ EVIDENCE_IDS = (
     "EV-SUPPORT",
 )
 PENDING_GATES = (
-    "HG-RISK-DISPOSITION",
     "HG-PILOT-SCOPE",
     "HG-PILOT-EVIDENCE",
     "HG-RELEASE",
@@ -336,10 +335,15 @@ def _validate_candidate_receipt_impl(model: Any) -> list[str]:
                 "disposition": "mitigate_and_remain_open_blocked_unaccepted",
                 "risk_state": "open_blocked_unaccepted",
                 "risk_accepted": False,
-                "treatment_authorized": False,
+                "treatment_authorized": True,
             }
             if record != expected:
-                errors.append(_error(path, "unaccepted_proposed_mapping_required"))
+                errors.append(
+                    _error(
+                        path,
+                        "authorized_treatment_mapping_risks_unaccepted_required",
+                    )
+                )
 
     expected_controls = {
         "classification": "repository_controlled_synthetic_only",
@@ -356,10 +360,12 @@ def _validate_candidate_receipt_impl(model: Any) -> list[str]:
         "accepted_gates": [
             "HG-PRIVACY-DATA",
             "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
+            "HG-RISK-DISPOSITION",
         ],
         "decision_evidence": [
             "Owner authorization / Issue #44",
             "Owner authorization / Issue #45",
+            "Owner authorization / Issue #46",
         ],
         "allowed_data_classes": [
             "synthetic_non_personal",
@@ -379,11 +385,24 @@ def _validate_candidate_receipt_impl(model: Any) -> list[str]:
         "operations_scope_type": (
             "synthetic_operations_recovery_incident_support_only"
         ),
-        "next_gate": "HG-RISK-DISPOSITION",
+        "risk_treatment_human_approver": "Tony",
+        "overall_risk_owner": "Tony",
+        "independent_reviewer_and_escalation_contact": "Stone",
+        "risk_treatment_technical_evidence_contributors": [
+            "Developer Agent",
+            "Data Agent",
+            "CustomerService Agent",
+            "CEO Agent",
+        ],
+        "risk_treatment_disposition": (
+            "mitigate_and_remain_open_blocked_unaccepted"
+        ),
+        "treatment_ownership_authorized": True,
+        "next_gate": "HG-PILOT-SCOPE",
         "real_data_authorized": False,
         "real_operations_authorized": False,
         "credentials_connectors_infrastructure_or_accounts_authorized": False,
-        "pilot_risk_merge_release_or_deployment_authorized": False,
+        "pilot_risk_acceptance_merge_release_or_deployment_authorized": False,
         "external_actions_performed": [],
     }
     if model["governance_overlay"] != expected_overlay:
@@ -464,7 +483,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     if (
         candidate.get("status")
         != "technical_evidence_verified_pending_human_gates"
-        or gate_truth != [True] * 8 + [False] * 4
+        or gate_truth != [True] * 9 + [False] * 3
         or candidate.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.candidate", "alignment_required"))
@@ -553,7 +572,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "requirements-dev.txt",
         "PyYAML 6.0.3",
         "open_blocked_unaccepted",
-        "Gate 9–11",
+        "Gate 10–11",
         "Issue #49",
         "external_actions_performed=[]",
         "不得解释为",

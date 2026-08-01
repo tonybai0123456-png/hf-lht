@@ -407,7 +407,30 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "CT-2",
                 "RTO 240",
                 "RPO 60",
-                "Gates 9–12 remain unauthorized",
+                "Gates 9–12 and every real operations",
+                "no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_gate9_decision_overlay_is_registered_without_risk_acceptance(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 9 accepted",
+                "Owner authorization / Issue #46",
+                "gates7_through_9_accepted_gates10_and_11_pending",
+                "Gate 10 is the only valid next decision",
+                "PR-RISK-001 through PR-RISK-010",
+                "mitigate_and_remain_open_blocked_unaccepted",
+                "Tony is human approver and overall risk owner",
+                "Stone is independent reviewer and escalation contact",
+                "Developer Agent",
+                "Data Agent",
+                "CustomerService Agent",
+                "CEO Agent",
+                "all ten risks remain open, blocked and unaccepted",
+                "Gates 10–12 remain unauthorized",
                 "no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority",
             ):
                 self.assertIn(token, registry)

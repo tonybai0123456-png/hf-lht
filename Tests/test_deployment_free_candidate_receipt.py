@@ -63,7 +63,7 @@ class DeploymentFreeCandidateReceiptTests(unittest.TestCase):
             all(
                 risk["risk_state"] == "open_blocked_unaccepted"
                 and risk["risk_accepted"] is False
-                and risk["treatment_authorized"] is False
+                and risk["treatment_authorized"] is True
                 for risk in model["risk_evidence_and_treatment_mapping"]
             )
         )
@@ -155,7 +155,7 @@ class DeploymentFreeCandidateReceiptTests(unittest.TestCase):
             "requirements-dev.txt",
             "PyYAML 6.0.3",
             "open_blocked_unaccepted",
-            "Gate 9–11",
+            "Gate 10–11",
             "Issue #49",
             "external_actions_performed=[]",
             "不得解释为",

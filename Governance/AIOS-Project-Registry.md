@@ -9,7 +9,7 @@
 | Published Project policy | `Governance/AIOS-Project-Governance-Baseline-v1.md` (v1.0) |
 | Canonical repository | `tonybai0123456-png/hf-lht` |
 | Initial scope | Exactly one governed project: `BUW-AIOS` |
-| Last updated | 2026-07-31 |
+| Last updated | 2026-08-01 |
 
 This registry is the controlled source for project identity and project status.
 It does not replace `Governance/AIOS-Stage-Registry.md`, which controls Stage
@@ -30,8 +30,9 @@ superseding technical-evidence snapshot is
 `36716abc76373d053c75e68352f46589f4ddc8f1`. The receipt is
 `verified_technical_evidence_pending_human_gates`; the candidate contract is
 `technical_evidence_verified_pending_human_gates`. Clean-export reproduction
-passed 127/127 tests, 10/10 validators and 9/9 exact-head CI. Gates 7–11 remain
-unapproved and Issue #49 keeps release expressly withheld.
+passed 127/127 tests, 10/10 validators and 9/9 exact-head CI. Gate 9 is now
+accepted for treatment direction and evidence responsibility only; Gates 10–11
+remain unapproved and Issue #49 keeps release expressly withheld.
 
 ## Current Stage 15 decision overlay
 
@@ -39,10 +40,11 @@ unapproved and Issue #49 keeps release expressly withheld.
 |---|---|
 | Gate 7 accepted | `Owner authorization / Issue #44`; only `synthetic_non_personal` and `synthetic_personal_like_clearly_fictitious_non_routable` |
 | Gate 8 accepted | `Owner authorization / Issue #45`; only `synthetic_operations_recovery_incident_support_only` |
-| Accountability | Gate 7: Tony human approver, Stone backup, Data Agent technical validation owner, Developer Agent implementation support. Gate 8: Stone human approver, Tony backup, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors |
+| Gate 9 accepted | `Owner authorization / Issue #46`; only `mitigate_and_remain_open_blocked_unaccepted` treatment direction and evidence responsibility; all ten risks remain open, blocked and unaccepted |
+| Accountability | Gate 7: Tony human approver, Stone backup, Data Agent technical validation owner, Developer Agent implementation support. Gate 8: Stone human approver, Tony backup, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors. Gate 9: Tony human approver and overall risk owner, Stone independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent are mapped evidence contributors only |
 | Design targets | CT-2; RTO 240 minutes and RPO 60 minutes are targets only, not achieved capability |
-| Ordered package | `gates7_and_8_accepted_gate9_through_11_pending`; Gate 9 is the only valid next decision |
-| Withheld boundary | Gates 9–12 remain unauthorized; no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority |
+| Ordered package | `gates7_through_9_accepted_gates10_and_11_pending`; Gate 10 is the only valid next decision |
+| Withheld boundary | Gates 10–12 remain unauthorized; no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority |
 
 ## Registry rules
 
@@ -98,3 +100,4 @@ unapproved and Issue #49 keeps release expressly withheld.
 | 2026-07-31 | Added `Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml` for exact source `36716abc76373d053c75e68352f46589f4ddc8f1`. The receipt records 29 changed paths, clean-export 127/127 tests, 10/10 validators, compilation, diff and scan results, 9/9 exact-head CI, and all ten risk/evidence/proposed-owner mappings. Receipt state is `verified_technical_evidence_pending_human_gates`; candidate state is `technical_evidence_verified_pending_human_gates`. Gates 7–11 remain unapproved and release expressly withheld. | NR-01 Execution Task / Issues #40 and #44–#49 / Draft PR #41 |
 | 2026-07-31 | Gate 7 accepted under `Owner authorization / Issue #44` for exactly two synthetic data classes. Recorded `gate7_accepted_gate8_through_11_pending`; Gate 8 is the only valid next decision. Gates 8–12 remain unauthorized and all real-world, pilot, risk, merge, publication, release and deployment authorities remain withheld. | Owner / BUW AIOS Official Governance Thread / Issue #44 / Draft PR #41 |
 | 2026-07-31 | Gate 8 accepted under `Owner authorization / Issue #45` for synthetic operations, recovery, incident-tabletop and support-flow validation only. Recorded `gates7_and_8_accepted_gate9_through_11_pending`; Gate 9 is the only valid next decision. CT-2 RTO 240/RPO 60 remain design targets; Gates 9–12 and every real operations, infrastructure, risk, pilot, merge, publication, release and deployment authority remain withheld. | Owner / BUW AIOS Official Governance Thread / Issue #45 / Draft PR #41 |
+| 2026-08-01 | Gate 9 accepted under `Owner authorization / Issue #46` for the exact PR-RISK-001 through PR-RISK-010 treatment-owner and evidence-contributor mapping. Tony is human approver and overall risk owner; Stone is independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent contribute only mapped evidence. Recorded `gates7_through_9_accepted_gates10_and_11_pending`; Gate 10 is the only valid next decision. All risks remain open, blocked and unaccepted; Gates 10–12 and every real-data, credential, connector, infrastructure, pilot, risk-acceptance, merge, publication, release and deployment authority remain withheld. | Owner / BUW AIOS Official Governance Thread / Issue #46 / Draft PR #41 |

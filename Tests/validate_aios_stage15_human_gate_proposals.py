@@ -63,7 +63,7 @@ PROPOSAL_CONTRIBUTORS = (
 PROPOSAL_APPROVAL_CONDITIONS = (
     "satisfied_by_explicit_owner_approval",
     "satisfied_by_explicit_owner_approval",
-    "gates7_and_8_accepted_then_explicit_owner_approval",
+    "satisfied_by_explicit_owner_approval",
     "gates7_through_9_accepted_then_explicit_zero_participant_scope_approval",
     "gate10_accepted_then_exact_head_synthetic_evidence_human_approval",
 )
@@ -171,6 +171,11 @@ def _validate_common_proposal(
     path = f"$.proposals[{index}]"
     if not isinstance(proposal, dict):
         return [_error(path, "mapping_required")]
+    role_keys = (
+        ("overall_risk_owner", "independent_reviewer_and_escalation_contact")
+        if index == 2
+        else ("backup_and_escalation_contact",)
+    )
     expected_keys = (
         "gate_id",
         "issue",
@@ -179,11 +184,12 @@ def _validate_common_proposal(
         "prerequisite_gates",
         "scope_type",
         "human_approver",
-        "backup_and_escalation_contact",
+        *role_keys,
         "technical_owner",
         "contributors",
         *PROPOSAL_SPECIAL_KEYS[index],
         "approval_condition",
+        *(("decision_evidence",) if index == 2 else ()),
         "authority_ceiling",
         "external_actions_allowed",
     )
@@ -191,22 +197,31 @@ def _validate_common_proposal(
     expected_common = {
         "gate_id": PROPOSAL_GATE_IDS[index],
         "issue": PROPOSAL_ISSUES[index],
-        "accepted": index < 2,
+        "accepted": index < 3,
         "state": (
             "accepted"
-            if index < 2
+            if index < 3
             else "proposed_awaiting_explicit_owner_approval"
         ),
         "prerequisite_gates": list(GATE_ORDER[: 6 + index]),
         "scope_type": PROPOSAL_SCOPES[index],
         "human_approver": PROPOSAL_APPROVERS[index],
-        "backup_and_escalation_contact": PROPOSAL_BACKUPS[index],
         "technical_owner": PROPOSAL_TECHNICAL_OWNERS[index],
         "contributors": PROPOSAL_CONTRIBUTORS[index],
         "approval_condition": PROPOSAL_APPROVAL_CONDITIONS[index],
         "authority_ceiling": "needs_human_governance",
         "external_actions_allowed": False,
     }
+    if index == 2:
+        expected_common.update(
+            {
+                "overall_risk_owner": "Tony",
+                "independent_reviewer_and_escalation_contact": "Stone",
+                "decision_evidence": "Owner authorization / Issue #46",
+            }
+        )
+    else:
+        expected_common["backup_and_escalation_contact"] = PROPOSAL_BACKUPS[index]
     for key, expected in expected_common.items():
         actual = proposal.get(key)
         if key in {"accepted", "external_actions_allowed"}:
@@ -381,16 +396,16 @@ def _validate_proposals_impl(model: Any) -> list[str]:
         errors.append(_error("$.proposal_version", "invalid"))
     if model["stage"] != "15" or model["stage_id"] != "NR-01":
         errors.append(_error("$.stage", "invalid"))
-    if model["status"] != "gates7_and_8_accepted_gate9_through_11_pending":
-        errors.append(_error("$.status", "gate8_overlay_required"))
+    if model["status"] != "gates7_through_9_accepted_gates10_and_11_pending":
+        errors.append(_error("$.status", "gate9_overlay_required"))
     if model["allowed_scope"] != {"company": "汇沣电商", "brand": "BUW"}:
         errors.append(_error("$.allowed_scope", "invalid"))
     if model["excluded_entities"] != ["PC", "六合通"]:
         errors.append(_error("$.excluded_entities", "invalid"))
     if model["sequencing"] != {
-        "accepted_gates": list(GATE_ORDER[:8]),
+        "accepted_gates": list(GATE_ORDER[:9]),
         "gate_order": list(GATE_ORDER),
-        "next_gate": "HG-RISK-DISPOSITION",
+        "next_gate": "HG-PILOT-SCOPE",
         "strict_dependency_order": True,
         "release_gate_accepted": False,
     }:
@@ -436,18 +451,19 @@ def evaluate_proposals(model: Any) -> dict[str, Any]:
         return {
             "result": "denied",
             "reason_codes": [f"VALIDATION_ERROR:{error}" for error in errors],
-            "next_gate": "HG-RISK-DISPOSITION",
+            "next_gate": "HG-PILOT-SCOPE",
             "accepted_proposal_gates": [],
             "claims": dict(FALSE_CLAIMS),
             "external_actions_performed": [],
         }
     return {
         "result": "not_ready_pending_human_governance",
-        "reason_codes": list(PROPOSAL_GATE_IDS[2:]),
-        "next_gate": "HG-RISK-DISPOSITION",
+        "reason_codes": list(PROPOSAL_GATE_IDS[3:]),
+        "next_gate": "HG-PILOT-SCOPE",
         "accepted_proposal_gates": [
             "HG-PRIVACY-DATA",
             "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
+            "HG-RISK-DISPOSITION",
         ],
         "claims": dict(FALSE_CLAIMS),
         "external_actions_performed": [],
@@ -468,10 +484,10 @@ def validate_repository(root: Path = ROOT) -> list[str]:
 
     candidate_gates = candidate.get("gate_ledger")
     candidate_pending = (
-        candidate_gates[8:11] if isinstance(candidate_gates, list) else []
+        candidate_gates[9:11] if isinstance(candidate_gates, list) else []
     )
     expected_candidate = list(
-        zip(PROPOSAL_GATE_IDS[2:], PROPOSAL_ISSUES[2:])
+        zip(PROPOSAL_GATE_IDS[3:], PROPOSAL_ISSUES[3:])
     )
     actual_candidate = [
         (
@@ -494,7 +510,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
 
     integration_gates = integration.get("human_gates")
     integration_pending = (
-        integration_gates[8:11] if isinstance(integration_gates, list) else []
+        integration_gates[9:11] if isinstance(integration_gates, list) else []
     )
     actual_integration = [
         gate.get("gate_id")
@@ -502,7 +518,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         else None
         for gate in integration_pending
     ]
-    if actual_integration != list(PROPOSAL_GATE_IDS[2:]):
+    if actual_integration != list(PROPOSAL_GATE_IDS[3:]):
         errors.append(
             _error(
                 "$repository.integration.human_gates",
@@ -511,7 +527,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         )
 
     guide_tokens = (
-        "gates7_and_8_accepted_gate9_through_11_pending",
+        "gates7_through_9_accepted_gates10_and_11_pending",
         "not_ready_pending_human_governance",
         *PROPOSAL_GATE_IDS,
         "Issue #44",
@@ -530,7 +546,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "synthetic_rehearsal_evidence_only",
         "Gate 12",
         "release expressly withheld",
-        "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT']",
+        "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION']",
         "external_actions_performed=[]",
     )
     for token in guide_tokens:

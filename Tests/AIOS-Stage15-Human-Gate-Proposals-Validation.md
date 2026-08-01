@@ -2,17 +2,18 @@
 
 ## Purpose and truthful status
 
-This package records the Stage 15 Gate 7 and Gate 8 decisions and preserves the
-remaining Gate 9–11 packets as one closed, ordered and machine-verifiable
+This package records the Stage 15 Gate 7 through Gate 9 decisions and preserves
+the remaining Gate 10–11 packets as one closed, ordered and machine-verifiable
 contract. Its status is
-`gates7_and_8_accepted_gate9_through_11_pending`; a valid package
+`gates7_through_9_accepted_gates10_and_11_pending`; a valid package
 evaluates only to `not_ready_pending_human_governance`.
 
-Passing validation does not approve another gate. Gates 7 and 8 are accepted
-by the explicit owner decisions in Issues #44 and #45. Gates 9–11 remain false until their
+Passing validation does not approve another gate. Gates 7 through 9 are
+accepted by the explicit owner decisions in Issues #44 through #46. Gates
+10–11 remain false until their
 named human approvers make separate decisions after all prerequisite gates have
 been accepted and verified.
-`accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT']`
+`accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION']`
 and
 `external_actions_performed=[]`.
 
@@ -29,7 +30,7 @@ and
    process and Data Agent validates metrics and evidence. No real monitoring,
    ticket, incident, failover, restore or support operation is allowed. CT-2
    RTO 240 minutes and RPO 60 minutes remain design targets only.
-3. `HG-RISK-DISPOSITION` — Issue #46. Tony is human approver and overall risk
+3. `HG-RISK-DISPOSITION` — Issue #46, accepted. Tony is human approver and overall risk
    owner; Stone is the independent reviewer and escalation contact. The ten
    risk records have named human treatment owners and mapped technical support.
    The only disposition is
@@ -77,8 +78,8 @@ Expected validator output:
 ```text
 AIOS Stage 15 human-gate proposal validation PASSED
 result=not_ready_pending_human_governance
-next_gate=HG-RISK-DISPOSITION
-accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT']
+next_gate=HG-PILOT-SCOPE
+accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION']
 external_actions_performed=[]
 ```
 

@@ -28,7 +28,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
         for path in (MODEL, VALIDATOR, GUIDE):
             self.assertTrue(path.is_file(), path)
 
-    def test_ordered_proposals_are_closed_unapproved_and_fully_owned(self):
+    def test_ordered_proposals_record_gate9_treatment_approval_and_later_gates_pending(self):
         validator = load_validator()
         for name in (
             "load_proposals",
@@ -41,7 +41,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
         model = yaml.safe_load(MODEL.read_text(encoding="utf-8"))
         self.assertEqual([], validator.validate_proposals(model))
         self.assertEqual(
-            "gates7_and_8_accepted_gate9_through_11_pending",
+            "gates7_through_9_accepted_gates10_and_11_pending",
             model["status"],
         )
         self.assertEqual(
@@ -66,7 +66,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             [proposal["issue"] for proposal in proposals],
         )
         self.assertEqual(
-            [True, True] + [False] * 3,
+            [True, True, True, False, False],
             [proposal["accepted"] for proposal in proposals],
         )
         self.assertEqual(
@@ -137,7 +137,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             proposals[4]["truth_labels"],
         )
         self.assertEqual(
-            "HG-RISK-DISPOSITION",
+            "HG-PILOT-SCOPE",
             model["sequencing"]["next_gate"],
         )
         self.assertEqual([], model["external_actions_performed"])
@@ -155,12 +155,13 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             result["result"],
         )
         self.assertEqual(
-            "HG-RISK-DISPOSITION", result["next_gate"]
+            "HG-PILOT-SCOPE", result["next_gate"]
         )
         self.assertEqual(
             [
                 "HG-PRIVACY-DATA",
                 "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
+                "HG-RISK-DISPOSITION",
             ],
             result["accepted_proposal_gates"],
         )
@@ -169,8 +170,9 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
 
         unknown_field = copy.deepcopy(before)
         unknown_field["proposals"][0]["unexpected_authority"] = "approved"
-        accepted_gate = copy.deepcopy(before)
-        accepted_gate["proposals"][2]["accepted"] = True
+        revoked_gate = copy.deepcopy(before)
+        revoked_gate["proposals"][2]["accepted"] = False
+        revoked_gate["proposals"][2]["state"] = "proposed_awaiting_explicit_owner_approval"
         changed_owner = copy.deepcopy(before)
         changed_owner["proposals"][2]["risk_treatments"][0][
             "human_treatment_owner"
@@ -190,7 +192,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             [],
             {},
             unknown_field,
-            accepted_gate,
+            revoked_gate,
             changed_owner,
             reordered,
             external_action,
@@ -211,7 +213,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
 
         guide = GUIDE.read_text(encoding="utf-8")
         for token in (
-            "gates7_and_8_accepted_gate9_through_11_pending",
+            "gates7_through_9_accepted_gates10_and_11_pending",
             "not_ready_pending_human_governance",
             "HG-PRIVACY-DATA",
             "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
@@ -234,7 +236,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             "synthetic_rehearsal_evidence_only",
             "Gate 12",
             "release expressly withheld",
-            "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT']",
+            "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION']",
             "external_actions_performed=[]",
         ):
             self.assertIn(token, guide)
@@ -272,10 +274,10 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             completed.stdout,
         )
         self.assertIn(
-            "next_gate=HG-RISK-DISPOSITION", completed.stdout
+            "next_gate=HG-PILOT-SCOPE", completed.stdout
         )
         self.assertIn(
-            "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT']",
+            "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION']",
             completed.stdout,
         )
         self.assertIn("external_actions_performed=[]", completed.stdout)

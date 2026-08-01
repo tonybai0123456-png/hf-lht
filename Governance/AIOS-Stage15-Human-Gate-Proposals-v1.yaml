@@ -1,7 +1,7 @@
 proposal_version: stage15_human_gate_proposals/v1
 stage: "15"
 stage_id: NR-01
-status: gates7_and_8_accepted_gate9_through_11_pending
+status: gates7_through_9_accepted_gates10_and_11_pending
 allowed_scope:
   company: 汇沣电商
   brand: BUW
@@ -18,6 +18,7 @@ sequencing:
     - HG-ARCH-SECURITY
     - HG-PRIVACY-DATA
     - HG-OPS-RECOVERY-INCIDENT-SUPPORT
+    - HG-RISK-DISPOSITION
   gate_order:
     - HG-SPEC-APPROVAL
     - HG-PLAN-APPROVAL
@@ -31,7 +32,7 @@ sequencing:
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE
-  next_gate: HG-RISK-DISPOSITION
+  next_gate: HG-PILOT-SCOPE
   strict_dependency_order: true
   release_gate_accepted: false
 proposals:
@@ -105,8 +106,8 @@ proposals:
     external_actions_allowed: false
   - gate_id: HG-RISK-DISPOSITION
     issue: "#46"
-    accepted: false
-    state: proposed_awaiting_explicit_owner_approval
+    accepted: true
+    state: accepted
     prerequisite_gates:
       - HG-SPEC-APPROVAL
       - HG-PLAN-APPROVAL
@@ -118,7 +119,8 @@ proposals:
       - HG-OPS-RECOVERY-INCIDENT-SUPPORT
     scope_type: risk_treatment_direction_without_acceptance
     human_approver: Tony
-    backup_and_escalation_contact: Stone
+    overall_risk_owner: Tony
+    independent_reviewer_and_escalation_contact: Stone
     technical_owner: risk_treatment_evidence_by_mapped_agents
     contributors:
       - Developer Agent
@@ -142,7 +144,8 @@ proposals:
       - named_human_treatment_owner_per_risk
       - residual_state_open_blocked_unaccepted
       - risk_acceptance_false
-    approval_condition: gates7_and_8_accepted_then_explicit_owner_approval
+    approval_condition: satisfied_by_explicit_owner_approval
+    decision_evidence: "Owner authorization / Issue #46"
     authority_ceiling: needs_human_governance
     external_actions_allowed: false
   - gate_id: HG-PILOT-SCOPE

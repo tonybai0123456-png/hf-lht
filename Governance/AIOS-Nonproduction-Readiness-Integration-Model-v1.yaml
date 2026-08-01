@@ -110,6 +110,28 @@ operations_recovery_incident_support_approval:
   external_actions_allowed: false
   decision_date: "2026-07-31"
   decision_evidence: "Owner authorization / Issue #45"
+risk_treatment_approval:
+  status: authorized_by_human_governance
+  scope_type: risk_treatment_direction_without_acceptance
+  human_approver: Tony
+  overall_risk_owner: Tony
+  independent_reviewer_and_escalation_contact: Stone
+  technical_evidence_contributors:
+    - Developer Agent
+    - Data Agent
+    - CustomerService Agent
+    - CEO Agent
+  disposition: mitigate_and_remain_open_blocked_unaccepted
+  treatment_ownership_authorized: true
+  risk_acceptance: false
+  risk_closure: false
+  production_action_allowed: false
+  real_data_authorized: false
+  credentials_connectors_or_infrastructure_authorized: false
+  pilot_merge_publication_release_or_deployment_authorized: false
+  external_actions_allowed: false
+  decision_date: "2026-08-01"
+  decision_evidence: "Owner authorization / Issue #46"
 stage10_posture: BLOCKED / NO-GO
 components:
   - {component_id: CMP-ENVIRONMENT, evidence_id: EV-ENVIRONMENT}
@@ -140,7 +162,7 @@ human_gates:
   - {gate_id: HG-ARCH-SECURITY, authorized: true}
   - {gate_id: HG-PRIVACY-DATA, authorized: true}
   - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, authorized: true}
-  - {gate_id: HG-RISK-DISPOSITION, authorized: false}
+  - {gate_id: HG-RISK-DISPOSITION, authorized: true}
   - {gate_id: HG-PILOT-SCOPE, authorized: false}
   - {gate_id: HG-PILOT-EVIDENCE, authorized: false}
   - {gate_id: HG-RELEASE, authorized: false}

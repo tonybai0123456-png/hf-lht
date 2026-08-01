@@ -46,14 +46,13 @@ GATE_STATES = (
     "accepted",
     "accepted",
     "accepted",
-    "proposed_awaiting_explicit_owner_approval",
+    "accepted",
     "proposed_awaiting_explicit_owner_approval",
     "proposed_awaiting_explicit_owner_approval",
     "release_withheld_by_objective",
 )
-PENDING_GATE_IDS = GATE_IDS[8:]
+PENDING_GATE_IDS = GATE_IDS[9:]
 REASON_CODES = (
-    "HG-RISK-DISPOSITION",
     "HG-PILOT-SCOPE",
     "HG-PILOT-EVIDENCE",
     "HG-RELEASE-WITHHELD-BY-OBJECTIVE",
@@ -80,7 +79,7 @@ EVIDENCE_STATUSES = (
     "verified",
     "verified",
     "incomplete_pending_human_gates",
-    "verified_unapproved_treatment_mapping",
+    "verified_authorized_treatment_mapping_risks_unaccepted",
     "verified_synthetic_only",
     "complete",
     "verified",
@@ -155,6 +154,26 @@ EXPECTED_OPERATIONS_GOVERNANCE = {
     "external_actions_allowed": False,
     "decision_evidence": "Owner authorization / Issue #45",
 }
+EXPECTED_RISK_TREATMENT_GOVERNANCE = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "risk_treatment_direction_without_acceptance",
+    "human_approver": "Tony",
+    "overall_risk_owner": "Tony",
+    "independent_reviewer_and_escalation_contact": "Stone",
+    "technical_evidence_contributors": [
+        "Developer Agent",
+        "Data Agent",
+        "CustomerService Agent",
+        "CEO Agent",
+    ],
+    "disposition": "mitigate_and_remain_open_blocked_unaccepted",
+    "treatment_ownership_authorized": True,
+    "risk_acceptance": False,
+    "risk_closure": False,
+    "production_action_allowed": False,
+    "external_actions_allowed": False,
+    "decision_evidence": "Owner authorization / Issue #46",
+}
 
 
 def _error(path: str, code: str) -> str:
@@ -224,6 +243,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
         "gate_ledger",
         "data_governance",
         "operations_governance",
+        "risk_treatment_governance",
         "risk_posture",
         "evidence_requirements",
         "candidate_decision",
@@ -324,7 +344,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
             )
             if not isinstance(gate, dict):
                 continue
-            expected_accepted = index < 8
+            expected_accepted = index < 9
             if (
                 gate.get("gate_id") != gate_id
                 or type(gate.get("accepted")) is not bool
@@ -346,12 +366,19 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
                 "controlled_synthetic_operations_approval_required",
             )
         )
+    if model["risk_treatment_governance"] != EXPECTED_RISK_TREATMENT_GOVERNANCE:
+        errors.append(
+            _error(
+                "$.risk_treatment_governance",
+                "controlled_risk_treatment_approval_required",
+            )
+        )
     risk_posture = model["risk_posture"]
     expected_risk_posture = {
         "stage10": "BLOCKED / NO-GO",
         "risk_count": 10,
         "risk_state": "open_blocked_unaccepted",
-        "treatment_ownership": "proposed_not_authorized",
+        "treatment_ownership": "authorized_for_treatment_evidence_only",
         "risk_acceptance": False,
     }
     if risk_posture != expected_risk_posture:
@@ -462,7 +489,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         )
 
     integration_gates = integration.get("human_gates")
-    expected_gate_states = list(zip(GATE_IDS, [True] * 8 + [False] * 4))
+    expected_gate_states = list(zip(GATE_IDS, [True] * 9 + [False] * 3))
     actual_gate_states = (
         [
             (gate.get("gate_id"), gate.get("authorized"))
@@ -512,7 +539,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "Developer Agent",
         "Issue #44",
         "Issue #49",
-        "Gate 9–12",
+        "Gate 10–12",
         "external_actions_performed=[]",
         "不得解释为",
     )

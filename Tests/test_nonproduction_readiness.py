@@ -92,7 +92,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             [row["gate_id"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            [True] * 8 + [False] * 4,
+            [True] * 9 + [False] * 3,
             [row["authorized"] for row in model["human_gates"]],
         )
 
@@ -212,13 +212,13 @@ class NonproductionReadinessTests(unittest.TestCase):
         }
         self.assertIs(gate_states["HG-ARCH-SECURITY"], True)
         self.assertEqual(
-            list(validator.GATE_IDS[8:]),
+            list(validator.GATE_IDS[9:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[8:]),
+            list(validator.GATE_IDS[9:]),
             decision["required_human_gates"],
         )
         self.assertEqual(
@@ -279,17 +279,17 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["privacy_data_approval"],
         )
         self.assertEqual(
-            [True] * 8 + [False] * 4,
+            [True] * 9 + [False] * 3,
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            list(validator.GATE_IDS[8:]),
+            list(validator.GATE_IDS[9:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[8:]),
+            list(validator.GATE_IDS[9:]),
             decision["required_human_gates"],
         )
         self.assertEqual([], decision["external_actions_performed"])
@@ -339,21 +339,74 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["operations_recovery_incident_support_approval"],
         )
         self.assertEqual(
-            [True] * 8 + [False] * 4,
+            [True] * 9 + [False] * 3,
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            list(validator.GATE_IDS[8:]),
+            list(validator.GATE_IDS[9:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[8:]),
+            list(validator.GATE_IDS[9:]),
             decision["required_human_gates"],
         )
         self.assertEqual([], decision["external_actions_performed"])
         self.assertEqual(validator.FALSE_CLAIMS, decision["claims"])
+
+    def test_gate9_records_treatment_ownership_without_risk_acceptance(self):
+        validator, model, fixture = self._assets()
+        self.assertEqual(
+            {
+                "status": "authorized_by_human_governance",
+                "scope_type": "risk_treatment_direction_without_acceptance",
+                "human_approver": "Tony",
+                "overall_risk_owner": "Tony",
+                "independent_reviewer_and_escalation_contact": "Stone",
+                "technical_evidence_contributors": [
+                    "Developer Agent",
+                    "Data Agent",
+                    "CustomerService Agent",
+                    "CEO Agent",
+                ],
+                "disposition": "mitigate_and_remain_open_blocked_unaccepted",
+                "treatment_ownership_authorized": True,
+                "risk_acceptance": False,
+                "risk_closure": False,
+                "production_action_allowed": False,
+                "real_data_authorized": False,
+                "credentials_connectors_or_infrastructure_authorized": False,
+                "pilot_merge_publication_release_or_deployment_authorized": False,
+                "external_actions_allowed": False,
+                "decision_date": "2026-08-01",
+                "decision_evidence": "Owner authorization / Issue #46",
+            },
+            model["risk_treatment_approval"],
+        )
+        self.assertEqual(
+            [True] * 9 + [False] * 3,
+            [row["authorized"] for row in model["human_gates"]],
+        )
+        self.assertTrue(
+            all(
+                risk["state"] == "open_blocked_unaccepted"
+                and risk["owner"] == "unassigned / governance decision required"
+                for risk in model["risks"]
+            )
+        )
+        decision = validator.evaluate_nonproduction_readiness(model, fixture)
+        self.assertEqual("needs_human_governance", decision["result"])
+        self.assertEqual(
+            list(validator.GATE_IDS[9:]),
+            decision["required_human_gates"],
+        )
+        self.assertEqual(
+            {risk_id: "open_blocked_unaccepted" for risk_id in validator.RISK_IDS},
+            decision["risk_states"],
+        )
+        self.assertEqual(validator.FALSE_CLAIMS, decision["claims"])
+        self.assertEqual([], decision["external_actions_performed"])
 
     def test_valid_package_stops_at_human_governance_without_side_effects(self):
         validator, model, fixture = self._assets()

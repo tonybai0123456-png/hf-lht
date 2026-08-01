@@ -76,6 +76,10 @@ FALSE_CLAIMS = {
     "release_authorized": False,
     "deployment_authorized": False,
 }
+ACCEPTED_CLAIMS = {
+    **FALSE_CLAIMS,
+    "gate9_accepted": True,
+}
 
 
 def _error(path: str, code: str) -> str:
@@ -156,10 +160,12 @@ def _validate_impl(
         errors.append(_error("$audit.audit_version", "invalid"))
     if audit.get("stage") != "15" or audit.get("stage_id") != "NR-01":
         errors.append(_error("$audit.stage", "invalid"))
-    if audit.get("status") != "ready_for_explicit_owner_decision_not_approved":
-        errors.append(_error("$audit.status", "unapproved_readiness_required"))
-    if audit.get("next_gate") != "HG-RISK-DISPOSITION":
-        errors.append(_error("$audit.next_gate", "gate9_required"))
+    if audit.get("status") != (
+        "accepted_treatment_direction_risks_remain_open_blocked_unaccepted"
+    ):
+        errors.append(_error("$audit.status", "accepted_treatment_direction_required"))
+    if audit.get("next_gate") != "HG-PILOT-SCOPE":
+        errors.append(_error("$audit.next_gate", "gate10_required"))
     if audit.get("source_assets") != {
         "risk_register": str(RISK_REGISTER_PATH),
         "gate_proposals": str(PROPOSALS_PATH),
@@ -173,13 +179,15 @@ def _validate_impl(
         errors.append(_error("$audit.prerequisites", "gates7_and_8_required"))
     if audit.get("gate9_decision_boundary") != {
         "human_approver": "Tony",
-        "backup_and_escalation_contact": "Stone",
-        "gate_accepted": False,
-        "approval_state": "proposed_awaiting_explicit_owner_approval",
+        "overall_risk_owner": "Tony",
+        "independent_reviewer_and_escalation_contact": "Stone",
+        "gate_accepted": True,
+        "approval_state": "accepted",
         "disposition": "mitigate_and_remain_open_blocked_unaccepted",
         "risk_acceptance": False,
         "risk_closure": False,
         "production_action_allowed": False,
+        "decision_evidence": "Owner authorization / Issue #46",
     }:
         errors.append(_error("$audit.gate9_decision_boundary", "exact_boundary_required"))
 
@@ -205,11 +213,13 @@ def _validate_impl(
         expected_gate9_common = {
             "gate_id": "HG-RISK-DISPOSITION",
             "issue": "#46",
-            "accepted": False,
-            "state": "proposed_awaiting_explicit_owner_approval",
+            "accepted": True,
+            "state": "accepted",
             "scope_type": "risk_treatment_direction_without_acceptance",
             "human_approver": "Tony",
-            "backup_and_escalation_contact": "Stone",
+            "overall_risk_owner": "Tony",
+            "independent_reviewer_and_escalation_contact": "Stone",
+            "decision_evidence": "Owner authorization / Issue #46",
             "authority_ceiling": "needs_human_governance",
             "external_actions_allowed": False,
         }
@@ -278,6 +288,10 @@ def _validate_impl(
                 "severity": severity,
                 "human_treatment_owner": human_owner,
                 "technical_support_agents": technical_support,
+                "disposition": "mitigate_and_remain_open_blocked_unaccepted",
+                "treatment_authorized": True,
+                "risk_accepted": False,
+                "production_action_allowed": False,
             }
             if audit_risk != expected_audit:
                 errors.append(_error(f"{path}.audit", "exact_mapping_required"))
@@ -294,15 +308,15 @@ def _validate_impl(
         if (
             not isinstance(gate9_candidate, dict)
             or gate9_candidate.get("gate_id") != "HG-RISK-DISPOSITION"
-            or gate9_candidate.get("accepted") is not False
-            or gate9_candidate.get("state") != "proposed_awaiting_explicit_owner_approval"
+            or gate9_candidate.get("accepted") is not True
+            or gate9_candidate.get("state") != "accepted"
         ):
-            errors.append(_error("$candidate.gate_ledger[8]", "gate9_must_remain_unapproved"))
+            errors.append(_error("$candidate.gate_ledger[8]", "gate9_must_be_accepted"))
     if candidate.get("risk_posture") != {
         "stage10": "BLOCKED / NO-GO",
         "risk_count": 10,
         "risk_state": "open_blocked_unaccepted",
-        "treatment_ownership": "proposed_not_authorized",
+        "treatment_ownership": "authorized_for_treatment_evidence_only",
         "risk_acceptance": False,
     }:
         errors.append(_error("$candidate.risk_posture", "blocked_unaccepted_required"))
@@ -313,22 +327,26 @@ def _validate_impl(
         if candidate_decision.get("result") != "not_ready_pending_human_governance":
             errors.append(_error("$candidate.candidate_decision.result", "pending_required"))
         remaining = candidate_decision.get("remaining_human_gates")
-        if not isinstance(remaining, list) or not remaining or remaining[0] != "HG-RISK-DISPOSITION":
-            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate9_first_required"))
+        if not isinstance(remaining, list) or remaining != [
+            "HG-PILOT-SCOPE",
+            "HG-PILOT-EVIDENCE",
+            "HG-RELEASE",
+        ]:
+            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate10_first_required"))
 
     if audit.get("required_truth") != {
         "risk_count": 10,
         "every_risk_open_blocked_unaccepted": True,
         "every_risk_not_accepted": True,
         "every_production_action_disallowed": True,
-        "treatment_ownership_proposed_not_authorized": True,
+        "treatment_ownership_authorized_for_evidence_only": True,
         "stage10_posture": "BLOCKED / NO-GO",
     }:
         errors.append(_error("$audit.required_truth", "exact_truth_required"))
     claims = audit.get("claims")
     if (
         not isinstance(claims, dict)
-        or claims != FALSE_CLAIMS
+        or claims != ACCEPTED_CLAIMS
         or not all(type(value) is bool for value in claims.values())
     ):
         errors.append(_error("$audit.claims", "exact_false_claims_required"))
@@ -364,17 +382,19 @@ def evaluate_assets(
         return {
             "result": "denied",
             "reason_codes": [f"VALIDATION_ERROR:{error}" for error in errors],
-            "next_gate": "HG-RISK-DISPOSITION",
+            "next_gate": "HG-PILOT-SCOPE",
             "gate9_accepted": False,
             "claims": dict(FALSE_CLAIMS),
             "external_actions_performed": [],
         }
     return {
-        "result": "ready_for_explicit_owner_decision_not_approved",
-        "reason_codes": ["EXPLICIT_OWNER_DECISION_REQUIRED"],
-        "next_gate": "HG-RISK-DISPOSITION",
-        "gate9_accepted": False,
-        "claims": dict(FALSE_CLAIMS),
+        "result": (
+            "accepted_treatment_direction_risks_remain_open_blocked_unaccepted"
+        ),
+        "reason_codes": ["GATE9_ACCEPTED_RISKS_REMAIN_UNACCEPTED"],
+        "next_gate": "HG-PILOT-SCOPE",
+        "gate9_accepted": True,
+        "claims": dict(ACCEPTED_CLAIMS),
         "external_actions_performed": [],
     }
 
@@ -404,7 +424,7 @@ def main() -> int:
     print("AIOS Stage 15 Gate 9 risk-treatment readiness validation PASSED")
     print(f"result={result['result']}")
     print(f"next_gate={result['next_gate']}")
-    print("gate9_accepted=false")
+    print(f"gate9_accepted={str(result['gate9_accepted']).lower()}")
     print("external_actions_performed=[]")
     return 0
 

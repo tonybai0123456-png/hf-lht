@@ -61,7 +61,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
                 "proven_complete",
                 "proven_complete",
                 "proven_complete",
-                "pending_human_governance",
+                "proven_complete",
                 "pending_human_governance",
                 "pending_human_governance",
                 "partial_pending_human_gates",
@@ -73,7 +73,6 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
         )
         self.assertEqual(
             [
-                "HG-RISK-DISPOSITION",
                 "HG-PILOT-SCOPE",
                 "HG-PILOT-EVIDENCE",
             ],
@@ -122,7 +121,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
                     *before["requirement_ledger"][:5],
                     {
                         **before["requirement_ledger"][5],
-                        "state": "proven_complete",
+                        "state": "pending_human_governance",
                     },
                     *before["requirement_ledger"][6:],
                 ],
@@ -155,7 +154,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
             "pending_human_governance",
             "intentionally_withheld",
             "intentionally_excluded",
-            "Gate 9–11",
+            "Gate 10–11",
             "Issue #44",
             "Issue #49",
             "Stage 10",

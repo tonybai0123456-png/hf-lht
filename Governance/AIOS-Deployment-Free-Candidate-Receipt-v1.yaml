@@ -70,16 +70,16 @@ exact_head_ci:
   - {workflow: Validate AIOS Operational Resilience, run_number: 46, run_id: 30609596639, conclusion: success}
   - {workflow: Validate AIOS Non-production Readiness, run_number: 12, run_id: 30609596718, conclusion: success}
 risk_evidence_and_treatment_mapping:
-  - {risk_id: PR-RISK-001, evidence_ids: [EV-ENVIRONMENT], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-002, evidence_ids: [EV-IDENTITY], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-003, evidence_ids: [EV-DATA], human_treatment_owner: Tony, technical_support_agents: [Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-004, evidence_ids: [EV-DATA, EV-EVIDENCE], human_treatment_owner: Tony, technical_support_agents: [Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-005, evidence_ids: [EV-OBSERVATION, EV-EVIDENCE], human_treatment_owner: Stone, technical_support_agents: [Developer Agent, Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-006, evidence_ids: [EV-RECOVERY], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-007, evidence_ids: [EV-INCIDENT], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-008, evidence_ids: [EV-SUPPORT], human_treatment_owner: Stone, technical_support_agents: [CustomerService Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-009, evidence_ids: [EV-IDENTITY, EV-DATA], human_treatment_owner: Tony, technical_support_agents: [Data Agent, CEO Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
-  - {risk_id: PR-RISK-010, evidence_ids: [EV-ENVIRONMENT, EV-EVIDENCE], human_treatment_owner: Tony, technical_support_agents: [CEO Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: false}
+  - {risk_id: PR-RISK-001, evidence_ids: [EV-ENVIRONMENT], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-002, evidence_ids: [EV-IDENTITY], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-003, evidence_ids: [EV-DATA], human_treatment_owner: Tony, technical_support_agents: [Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-004, evidence_ids: [EV-DATA, EV-EVIDENCE], human_treatment_owner: Tony, technical_support_agents: [Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-005, evidence_ids: [EV-OBSERVATION, EV-EVIDENCE], human_treatment_owner: Stone, technical_support_agents: [Developer Agent, Data Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-006, evidence_ids: [EV-RECOVERY], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-007, evidence_ids: [EV-INCIDENT], human_treatment_owner: Stone, technical_support_agents: [Developer Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-008, evidence_ids: [EV-SUPPORT], human_treatment_owner: Stone, technical_support_agents: [CustomerService Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-009, evidence_ids: [EV-IDENTITY, EV-DATA], human_treatment_owner: Tony, technical_support_agents: [Data Agent, CEO Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
+  - {risk_id: PR-RISK-010, evidence_ids: [EV-ENVIRONMENT, EV-EVIDENCE], human_treatment_owner: Tony, technical_support_agents: [CEO Agent], disposition: mitigate_and_remain_open_blocked_unaccepted, risk_state: open_blocked_unaccepted, risk_accepted: false, treatment_authorized: true}
 synthetic_control_evidence:
   classification: repository_controlled_synthetic_only
   evidence_ids:
@@ -98,9 +98,11 @@ governance_overlay:
   accepted_gates:
     - HG-PRIVACY-DATA
     - HG-OPS-RECOVERY-INCIDENT-SUPPORT
+    - HG-RISK-DISPOSITION
   decision_evidence:
     - "Owner authorization / Issue #44"
     - "Owner authorization / Issue #45"
+    - "Owner authorization / Issue #46"
   allowed_data_classes:
     - synthetic_non_personal
     - synthetic_personal_like_clearly_fictitious_non_routable
@@ -115,11 +117,21 @@ governance_overlay:
     - CustomerService Agent
     - Data Agent
   operations_scope_type: synthetic_operations_recovery_incident_support_only
-  next_gate: HG-RISK-DISPOSITION
+  risk_treatment_human_approver: Tony
+  overall_risk_owner: Tony
+  independent_reviewer_and_escalation_contact: Stone
+  risk_treatment_technical_evidence_contributors:
+    - Developer Agent
+    - Data Agent
+    - CustomerService Agent
+    - CEO Agent
+  risk_treatment_disposition: mitigate_and_remain_open_blocked_unaccepted
+  treatment_ownership_authorized: true
+  next_gate: HG-PILOT-SCOPE
   real_data_authorized: false
   real_operations_authorized: false
   credentials_connectors_infrastructure_or_accounts_authorized: false
-  pilot_risk_merge_release_or_deployment_authorized: false
+  pilot_risk_acceptance_merge_release_or_deployment_authorized: false
   external_actions_performed: []
 withheld_authorities:
   - merge
@@ -137,7 +149,6 @@ candidate_decision:
   result: not_ready_pending_human_governance
   technically_verified_source: true
   remaining_human_gates:
-    - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE

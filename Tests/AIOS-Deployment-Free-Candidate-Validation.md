@@ -38,9 +38,13 @@ recovery, incident-tabletop and support-flow validation only. Stone is the
 human approver, Tony is backup and escalation, Developer Agent is technical
 owner, and CustomerService Agent plus Data Agent are evidence contributors.
 It authorizes no real monitoring, alerting, ticketing, incident, failover,
-restore, support operation or achieved RTO/RPO claim.
+restore, support operation or achieved RTO/RPO claim. Gate 9 is accepted under
+Issue #46 only for the named risk-treatment direction and evidence roles. Tony
+is the human approver and overall risk owner, Stone is the independent reviewer
+and escalation contact, and the mapped agents contribute technical evidence
+only. Every risk remains open, blocked and unaccepted.
 
-Gate 9–12 remain unaccepted. Issue #49 expressly withholds release while defining the
+Gate 10–12 remain unaccepted. Issue #49 expressly withholds release while defining the
 deployment-free evidence boundary.
 
 ## Evidence contract
@@ -64,8 +68,9 @@ The machine-readable record contains twelve evidence requirements:
 The separate controlled receipt verifies the exact source commit/tree,
 29-path manifest, clean-export replay, local tests and validators, exact-head
 CI, synthetic controls, dependency resolution, scan and Mandatory Return.
-Gate-ledger completion remains pending human governance. Risk treatment owners
-are verified as a proposed mapping only and remain unapproved.
+Gate-ledger completion remains pending human governance at Gate 10–12. Risk
+treatment direction and evidence ownership are authorized, but no risk is
+accepted or closed and no production action is authorized.
 
 ## Run locally
 

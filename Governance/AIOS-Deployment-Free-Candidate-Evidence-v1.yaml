@@ -28,7 +28,7 @@ gate_ledger:
   - {gate_id: HG-ARCH-SECURITY, accepted: true, state: accepted, decision_evidence: "Issue #43"}
   - {gate_id: HG-PRIVACY-DATA, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #44"}
   - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #45"}
-  - {gate_id: HG-RISK-DISPOSITION, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #46"}
+  - {gate_id: HG-RISK-DISPOSITION, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #46"}
   - {gate_id: HG-PILOT-SCOPE, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #47"}
   - {gate_id: HG-PILOT-EVIDENCE, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #48"}
   - {gate_id: HG-RELEASE, accepted: false, state: release_withheld_by_objective, decision_evidence: "Issue #49"}
@@ -74,11 +74,29 @@ operations_governance:
   real_operations_authorized: false
   external_actions_allowed: false
   decision_evidence: "Owner authorization / Issue #45"
+risk_treatment_governance:
+  status: authorized_by_human_governance
+  scope_type: risk_treatment_direction_without_acceptance
+  human_approver: Tony
+  overall_risk_owner: Tony
+  independent_reviewer_and_escalation_contact: Stone
+  technical_evidence_contributors:
+    - Developer Agent
+    - Data Agent
+    - CustomerService Agent
+    - CEO Agent
+  disposition: mitigate_and_remain_open_blocked_unaccepted
+  treatment_ownership_authorized: true
+  risk_acceptance: false
+  risk_closure: false
+  production_action_allowed: false
+  external_actions_allowed: false
+  decision_evidence: "Owner authorization / Issue #46"
 risk_posture:
   stage10: BLOCKED / NO-GO
   risk_count: 10
   risk_state: open_blocked_unaccepted
-  treatment_ownership: proposed_not_authorized
+  treatment_ownership: authorized_for_treatment_evidence_only
   risk_acceptance: false
 evidence_requirements:
   - {evidence_id: DFC-EV-01, requirement: exact_commit_and_tree, status: verified_external_capture}
@@ -87,7 +105,7 @@ evidence_requirements:
   - {evidence_id: DFC-EV-04, requirement: local_tests_validators_compile_and_diff, status: verified}
   - {evidence_id: DFC-EV-05, requirement: exact_head_ci, status: verified}
   - {evidence_id: DFC-EV-06, requirement: gate_ledger_1_through_11, status: incomplete_pending_human_gates}
-  - {evidence_id: DFC-EV-07, requirement: risk_map_and_treatment_owners, status: verified_unapproved_treatment_mapping}
+  - {evidence_id: DFC-EV-07, requirement: risk_map_and_treatment_owners, status: verified_authorized_treatment_mapping_risks_unaccepted}
   - {evidence_id: DFC-EV-08, requirement: synthetic_control_evidence, status: verified_synthetic_only}
   - {evidence_id: DFC-EV-09, requirement: dependency_manifest_and_install_instructions, status: complete}
   - {evidence_id: DFC-EV-10, requirement: scan_for_secrets_real_data_connectors_and_infrastructure_material, status: verified}
@@ -96,12 +114,10 @@ evidence_requirements:
 candidate_decision:
   result: not_ready_pending_human_governance
   reason_codes:
-    - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE-WITHHELD-BY-OBJECTIVE
   remaining_human_gates:
-    - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE

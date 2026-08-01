@@ -75,12 +75,12 @@ GATE_AUTHORIZATIONS = (
     True,
     True,
     True,
-    False,
+    True,
     False,
     False,
     False,
 )
-PENDING_GATE_IDS = GATE_IDS[8:]
+PENDING_GATE_IDS = GATE_IDS[9:]
 EXPECTED_REAL_OWNER = {
     "status": "assigned",
     "name": "Tony",
@@ -194,6 +194,30 @@ EXPECTED_OPERATIONS_RECOVERY_INCIDENT_SUPPORT_APPROVAL = {
     "decision_date": "2026-07-31",
     "decision_evidence": "Owner authorization / Issue #45",
 }
+EXPECTED_RISK_TREATMENT_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "risk_treatment_direction_without_acceptance",
+    "human_approver": "Tony",
+    "overall_risk_owner": "Tony",
+    "independent_reviewer_and_escalation_contact": "Stone",
+    "technical_evidence_contributors": [
+        "Developer Agent",
+        "Data Agent",
+        "CustomerService Agent",
+        "CEO Agent",
+    ],
+    "disposition": "mitigate_and_remain_open_blocked_unaccepted",
+    "treatment_ownership_authorized": True,
+    "risk_acceptance": False,
+    "risk_closure": False,
+    "production_action_allowed": False,
+    "real_data_authorized": False,
+    "credentials_connectors_or_infrastructure_authorized": False,
+    "pilot_merge_publication_release_or_deployment_authorized": False,
+    "external_actions_allowed": False,
+    "decision_date": "2026-08-01",
+    "decision_evidence": "Owner authorization / Issue #46",
+}
 ACCEPTANCE_IDS = (
     "AC-ENVIRONMENT",
     "AC-IDENTITY",
@@ -239,6 +263,7 @@ EXPECTED_ACCEPTANCE_TEST_IDS = {
         "test_gate6_records_architecture_security_approval_without_provisioning",
         "test_gate7_records_synthetic_data_approval_without_real_data_authority",
         "test_gate8_records_synthetic_operations_approval_without_real_operations",
+        "test_gate9_records_treatment_ownership_without_risk_acceptance",
         "test_valid_package_stops_at_human_governance_without_side_effects",
         "test_malformed_input_types_and_cycles_are_denied_without_exceptions",
     ),
@@ -439,6 +464,7 @@ def _validate_model_impl(model: Any) -> list[str]:
         "architecture_security_approval",
         "privacy_data_approval",
         "operations_recovery_incident_support_approval",
+        "risk_treatment_approval",
         "stage10_posture",
         "components",
         "risks",
@@ -483,6 +509,8 @@ def _validate_model_impl(model: Any) -> list[str]:
                 "invalid",
             )
         )
+    if model["risk_treatment_approval"] != EXPECTED_RISK_TREATMENT_APPROVAL:
+        errors.append(_error("$.risk_treatment_approval", "invalid"))
     if model["stage10_posture"] != "BLOCKED / NO-GO":
         errors.append(_error("$.stage10_posture", "invalid"))
 

@@ -62,12 +62,23 @@ Expected behavior:
   credential, connector, pilot, risk acceptance, merge, publication, release
   or deployment. CT-2 RTO 240 minutes and RPO 60 minutes are design targets
   only.
+- Gate 9 is recorded as accepted only by the owner authorization in Issue #46:
+  Tony is the human approver and overall risk owner, Stone is the independent
+  reviewer and escalation contact, and Developer Agent, Data Agent,
+  CustomerService Agent and CEO Agent contribute only the evidence assigned by
+  the controlled mapping. Gate 10 through Gate 12 remain unauthorized.
+- Gate 9 authorizes only
+  `mitigate_and_remain_open_blocked_unaccepted` treatment direction and
+  treatment-evidence ownership. Every `PR-RISK-001` through `PR-RISK-010`
+  record remains open, blocked and unaccepted; no risk acceptance, closure,
+  production action, real data, credential, connector, infrastructure, pilot,
+  merge, publication, release or deployment authority is granted.
 - Evaluation is deterministic, does not mutate inputs and performs no external
   action.
 - All repository regression tests and validators exit zero.
 
 A pass proves only repository-contained local synthetic behavior. It does not authorize deployment,
-accept a risk, assign an operational, support or risk-treatment owner, authorize
+accept a risk, assign a production operational or support owner, authorize
 a pilot, declare production readiness, authorize release, permit merge, publish
 or archive Stage 15, close Issue #40 or start Stage 16. The Gate 5 governance
 owner contract grants no automatic merge, credential, permission, risk
@@ -80,3 +91,5 @@ The Gate 7 privacy and data record grants only the two named synthetic data
 classes and performs no external action.
 The Gate 8 operations record grants only the named synthetic validation scope
 and performs no external action.
+The Gate 9 risk-treatment record grants only treatment direction and mapped
+evidence responsibility; it does not accept or close any risk.

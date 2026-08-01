@@ -27,7 +27,8 @@ The source head also completed 9/9 pull-request GitHub Actions successfully.
 The receipt joins every `PR-RISK-001` through `PR-RISK-010` entry to exact
 synthetic evidence IDs and the proposed Gate 9 treatment owner. Every risk
 remains `open_blocked_unaccepted`, `risk_accepted=false` and
-`treatment_authorized=false`.
+`treatment_authorized=true`. This authorizes mitigation evidence work only; it
+does not accept or close a risk and permits no production action.
 
 The eight control evidence IDs are repository-controlled and synthetic only.
 No real data, connector, credential, infrastructure or account material was
@@ -37,7 +38,8 @@ used.
 
 Gate 7 is accepted under Issue #44 for the two named synthetic data classes
 only. Gate 8 is accepted under Issue #45 for synthetic operations, recovery,
-incident-tabletop and support-flow validation only. Gate 9–11 remain pending
+incident-tabletop and support-flow validation only. Gate 9 is accepted under
+Issue #46 for the controlled treatment mapping only. Gate 10–11 remain pending
 explicit ordered human decisions. Gate 12
 remains withheld by Issue #49. Merge, publication, archive, real data, credentials and
 permissions, connectors, external infrastructure and accounts, real pilot,

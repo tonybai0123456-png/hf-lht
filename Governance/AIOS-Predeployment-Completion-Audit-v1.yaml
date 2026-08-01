@@ -52,7 +52,7 @@ requirement_ledger:
       - HG-OPS-RECOVERY-INCIDENT-SUPPORT
   - requirement_id: PREDEP-06
     requirement: risk_treatment_disposition_gate
-    state: pending_human_governance
+    state: proven_complete
     evidence:
       - Issue #46
       - HG-RISK-DISPOSITION
@@ -99,24 +99,17 @@ issue49_evidence_snapshot:
   - {evidence_id: DFC-EV-04, state: verified}
   - {evidence_id: DFC-EV-05, state: verified}
   - {evidence_id: DFC-EV-06, state: incomplete_pending_human_gates}
-  - {evidence_id: DFC-EV-07, state: verified_unapproved_treatment_mapping}
+  - {evidence_id: DFC-EV-07, state: verified_authorized_treatment_mapping_risks_unaccepted}
   - {evidence_id: DFC-EV-08, state: verified_synthetic_only}
   - {evidence_id: DFC-EV-09, state: complete}
   - {evidence_id: DFC-EV-10, state: verified}
   - {evidence_id: DFC-EV-11, state: complete}
   - {evidence_id: DFC-EV-12, state: complete}
 human_decision_queue:
-  - gate_id: HG-RISK-DISPOSITION
-    issue: "#46"
-    accepted: false
-    state: proposed_awaiting_explicit_owner_approval
-    human_approver: Tony
-    technical_owner: risk_treatment_evidence_by_mapped_agents
-    prerequisite: HG-OPS-RECOVERY-INCIDENT-SUPPORT
   - gate_id: HG-PILOT-SCOPE
     issue: "#47"
     accepted: false
-    state: blocked_by_prior_human_gate
+    state: proposed_awaiting_explicit_owner_approval
     human_approver: Tony
     technical_owner: Developer Agent
     prerequisite: HG-RISK-DISPOSITION
@@ -130,7 +123,6 @@ human_decision_queue:
 completion_decision:
   result: not_complete_pending_human_governance
   remaining_requirements:
-    - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
   stage10: BLOCKED / NO-GO
