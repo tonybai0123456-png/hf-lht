@@ -30,16 +30,20 @@ superseding technical-evidence snapshot is
 `36716abc76373d053c75e68352f46589f4ddc8f1`. The receipt is
 `verified_technical_evidence_pending_human_gates`; the candidate contract is
 `technical_evidence_verified_pending_human_gates`. Clean-export reproduction
-passed 127/127 tests, 10/10 validators and 9/9 exact-head CI. Gate 10 is now
-accepted only for the zero-participant synthetic rehearsal scope; Gate 11
-remains unapproved and Issue #49 keeps release expressly withheld.
+passed 127/127 tests, 10/10 validators and 9/9 exact-head CI. Gate 10 is
+accepted only for the zero-participant synthetic rehearsal scope. Gate 11 is
+now accepted only for the exact synthetic evidence package at
+`247ffe84f49517fbf74b4e2878f30ad594540cb0`; Issue #49 keeps release expressly
+withheld.
 
 Gate 11 evidence is technically confirmed as
 `ready_for_stone_human_evidence_decision_not_approved` in
 `Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Readiness-Audit-v1.yaml`.
 The controlled support-closure record uses only the fictitious actor
-`SYNTHETIC-HUMAN-ROLE-CS-001`; Stone remains the required human evidence
-approver. Gate 11 remains unaccepted and Gate 12 remains expressly withheld.
+`SYNTHETIC-HUMAN-ROLE-CS-001`. The superseding decision is recorded in
+`Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Decision-v1.yaml`;
+Stone remains the human evidence approver. Gate 11 is accepted within that
+narrow boundary and Gate 12 remains expressly withheld.
 
 ## Current Stage 15 decision overlay
 
@@ -49,11 +53,11 @@ approver. Gate 11 remains unaccepted and Gate 12 remains expressly withheld.
 | Gate 8 accepted | `Owner authorization / Issue #45`; only `synthetic_operations_recovery_incident_support_only` |
 | Gate 9 accepted | `Owner authorization / Issue #46`; only `mitigate_and_remain_open_blocked_unaccepted` treatment direction and evidence responsibility; all ten risks remain open, blocked and unaccepted |
 | Gate 10 accepted | `Owner authorization / Issue #47`; only `synthetic_rehearsal_only_no_real_pilot`, with zero real customers, employees or operators, stores, production or staging environments, and real cases, orders, accounts or messages |
-| Gate 11 evidence technically confirmed | `ready_for_stone_human_evidence_decision_not_approved`; exact source `d757768e3a06d5443cafec1934011711cb039766`; Stone remains the required human evidence approver; Gate 11 remains unaccepted |
-| Accountability | Gate 7: Tony human approver, Stone backup, Data Agent technical validation owner, Developer Agent implementation support. Gate 8: Stone human approver, Tony backup, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors. Gate 9: Tony human approver and overall risk owner, Stone independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent are mapped evidence contributors only. Gate 10: Tony human approver, Stone backup and escalation contact, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors |
+| Gate 11 accepted | Exact evidence package `247ffe84f49517fbf74b4e2878f30ad594540cb0`; only `synthetic_rehearsal_evidence_only`; all ten risks remain open, blocked and unaccepted |
+| Accountability | Gate 7: Tony human approver, Stone backup, Data Agent technical validation owner, Developer Agent implementation support. Gate 8: Stone human approver, Tony backup, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors. Gate 9: Tony human approver and overall risk owner, Stone independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent are mapped evidence contributors only. Gate 10: Tony human approver, Stone backup and escalation contact, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors. Gate 11: Stone human evidence approver, Tony backup and escalation contact, Data Agent technical evidence verification owner, Developer Agent and CustomerService Agent evidence contributors |
 | Design targets | CT-2; RTO 240 minutes and RPO 60 minutes are targets only, not achieved capability |
-| Ordered package | `gates7_through_10_accepted_gate11_pending`; Gate 11 is the only valid next decision |
-| Withheld boundary | Gates 11–12 remain unauthorized; no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real participant, real data, credential, connector, real pilot, risk acceptance, merge, publication, release or deployment authority |
+| Ordered package | `gates7_through_11_accepted_release_gate_withheld`; Gate 12 is the only valid next governance decision |
+| Withheld boundary | Gate 12 remains expressly withheld; no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real participant, real data, credential, connector, real pilot, risk acceptance, merge, publication, archive, release or deployment authority |
 
 ## Registry rules
 
@@ -112,3 +116,4 @@ approver. Gate 11 remains unaccepted and Gate 12 remains expressly withheld.
 | 2026-08-01 | Gate 9 accepted under `Owner authorization / Issue #46` for the exact PR-RISK-001 through PR-RISK-010 treatment-owner and evidence-contributor mapping. Tony is human approver and overall risk owner; Stone is independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent contribute only mapped evidence. Recorded `gates7_through_9_accepted_gates10_and_11_pending`; Gate 10 is the only valid next decision. All risks remain open, blocked and unaccepted; Gates 10–12 and every real-data, credential, connector, infrastructure, pilot, risk-acceptance, merge, publication, release and deployment authority remain withheld. | Owner / BUW AIOS Official Governance Thread / Issue #46 / Draft PR #41 |
 | 2026-08-02 | Gate 10 accepted under `Owner authorization / Issue #47` only for `synthetic_rehearsal_only_no_real_pilot`. Tony is human approver, Stone is backup and escalation contact, Developer Agent is technical owner, and CustomerService Agent plus Data Agent contribute evidence. All real participant and operating-surface counts are zero. Recorded `gates7_through_10_accepted_gate11_pending`; Gate 11 is the only valid next decision. No real pilot, real data, credential, connector, infrastructure, external action, risk acceptance, merge, publication, release or deployment authority was granted. | Owner / BUW AIOS Official Governance Thread / Issue #47 / Draft PR #41 |
 | 2026-08-02 | Gate 11 evidence technically confirmed through `Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Readiness-Audit-v1.yaml` as `ready_for_stone_human_evidence_decision_not_approved`. The package reconciles exact source `d757768e3a06d5443cafec1934011711cb039766`, 152/152 tests, 13/13 validators, 9/9 CI, eight synthetic evidence identifiers, ten open/blocked/unaccepted risks and the zero-real-participant support closure record `SYNTHETIC-HUMAN-ROLE-CS-001`. Stone remains the required human evidence approver; Gate 11 remains unaccepted and Gate 12 remains expressly withheld. | NR-01 Execution Task / Issues #48–#49 / Draft PR #41 |
+| 2026-08-02 | Gate 11 accepted through `Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Decision-v1.yaml` for exact evidence-package commit `247ffe84f49517fbf74b4e2878f30ad594540cb0` only. The latest overlay is `gates7_through_11_accepted_release_gate_withheld`; Gate 12 is the only valid next governance decision. Stone is the human evidence approver, Tony is backup and escalation contact, Data Agent is technical evidence verification owner, and Developer Agent plus CustomerService Agent are evidence contributors. The decision remains synthetic-only; all ten risks remain open, blocked and unaccepted. Gate 12 remains expressly withheld, with no real pilot, real participant, real data, credential, connector, infrastructure, external action, risk acceptance, merge, publication, archive, release or deployment authority. | Owner authorization / BUW AIOS Official Governance Thread / Issue #48 / Draft PR #41 |

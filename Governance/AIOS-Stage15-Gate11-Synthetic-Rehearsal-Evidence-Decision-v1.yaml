@@ -1,0 +1,99 @@
+decision_version: stage15_gate11_synthetic_rehearsal_evidence_decision/v1
+stage: "15"
+stage_id: NR-01
+status: accepted_synthetic_rehearsal_evidence_only_no_release_authority
+next_gate: HG-RELEASE
+approved_evidence_package:
+  commit: 247ffe84f49517fbf74b4e2878f30ad594540cb0
+  tree: 19ef0e6d7d51e020c264f70e3c261373cbe115e5
+  readiness_asset: Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Readiness-Audit-v1.yaml
+  source_evidence_commit: d757768e3a06d5443cafec1934011711cb039766
+  source_evidence_tree: 9fe8f4b199ca0c4c4d888e3fa7d910504e53eeef
+  tests_passed: 155
+  tests_total: 155
+  validators_passed: 14
+  validators_total: 14
+  exact_head_ci_passed: 9
+  exact_head_ci_total: 9
+  pull_request: "#41 / Draft / open / unmerged"
+approval_record:
+  decision_date: "2026-08-02"
+  decision_evidence: "Owner authorization / Issue #48 / BUW AIOS Official Governance Thread"
+  accepted_scope: synthetic_rehearsal_evidence_only
+  exact_commit_required: true
+  authority_expansion: false
+gate11_decision_boundary:
+  human_approver: Stone
+  backup_and_escalation_contact: Tony
+  technical_owner: Data Agent
+  contributors:
+    - Developer Agent
+    - CustomerService Agent
+  gate_accepted: true
+  approval_state: accepted
+  scope_type: synthetic_rehearsal_evidence_only
+  evidence_type: synthetic_rehearsal_only
+  authority_ceiling: needs_human_governance
+  release_authorized: false
+  external_actions_allowed: false
+scope_reconciliation:
+  company: 汇沣电商
+  brand: BUW
+  excluded_entities:
+    - PC
+    - 六合通
+  gate10_scope: synthetic_rehearsal_only_no_real_pilot
+  real_participant_count: 0
+  production_or_staging_environment_count: 0
+  real_case_order_account_or_message_count: 0
+synthetic_evidence_results:
+  - {evidence_id: EV-ENVIRONMENT, result: verified_synthetic}
+  - {evidence_id: EV-IDENTITY, result: verified_synthetic}
+  - {evidence_id: EV-DATA, result: verified_synthetic}
+  - {evidence_id: EV-EVIDENCE, result: verified_synthetic}
+  - {evidence_id: EV-OBSERVATION, result: verified_synthetic}
+  - {evidence_id: EV-RECOVERY, result: verified_synthetic}
+  - {evidence_id: EV-INCIDENT, result: verified_synthetic}
+  - {evidence_id: EV-SUPPORT, result: verified_synthetic}
+risk_evidence_reconciliation:
+  - {risk_id: PR-RISK-001, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-002, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-003, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-004, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-005, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-006, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-007, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-008, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-009, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-010, state: open_blocked_unaccepted, risk_accepted: false}
+synthetic_support_case_closure:
+  case_id: SYNTHETIC-CASE-001
+  record_type: synthetic_role_simulation_no_real_participant
+  synthetic_actor_id: SYNTHETIC-HUMAN-ROLE-CS-001
+  actor_is_real_person: false
+  case_disposition: stopped_withdrawn_and_closed
+  ticket_created: false
+  external_message_sent: false
+  human_closure_record_complete: true
+withheld_authorities:
+  - real_pilot
+  - real_participants
+  - real_data
+  - credentials_and_permissions
+  - connectors
+  - external_infrastructure_and_accounts
+  - risk_acceptance
+  - merge
+  - publication
+  - archive
+  - release
+  - deployment
+claims:
+  gate11_accepted: true
+  real_pilot_performed: false
+  pilot_authorized: false
+  risk_accepted: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+external_actions_performed: []

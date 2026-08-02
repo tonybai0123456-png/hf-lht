@@ -385,7 +385,6 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "Data Agent",
                 "Developer Agent",
                 "Gates 8–12 remain unauthorized",
-                "Gates 11–12 remain unauthorized",
             ):
                 self.assertIn(token, registry)
 
@@ -408,7 +407,6 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "RTO 240",
                 "RPO 60",
                 "Gates 9–12 and every real operations",
-                "Gates 11–12 remain unauthorized",
             ):
                 self.assertIn(token, registry)
 
@@ -430,7 +428,6 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "CustomerService Agent",
                 "CEO Agent",
                 "all ten risks remain open, blocked and unaccepted",
-                "Gates 11–12 remain unauthorized",
             ):
                 self.assertIn(token, registry)
 
@@ -449,7 +446,6 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "Stone is backup and escalation contact",
                 "Developer Agent is technical owner",
                 "CustomerService Agent plus Data Agent contribute evidence",
-                "Gates 11–12 remain unauthorized",
                 "No real pilot, real data, credential, connector, infrastructure, external action, risk acceptance, merge, publication, release or deployment authority was granted",
             ):
                 self.assertIn(token, registry)
