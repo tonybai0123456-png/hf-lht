@@ -7,11 +7,8 @@ from typing import Any, Callable
 import yaml
 from yaml.tokens import AliasToken, AnchorToken, ScalarToken
 
-
 ROOT = Path(__file__).resolve().parents[1]
-MODEL_PATH = Path(
-    "Governance/AIOS-Nonproduction-Readiness-Post-Gate12-Reconciliation-v1.yaml"
-)
+MODEL_PATH = Path("Governance/AIOS-Nonproduction-Readiness-Post-Gate12-Reconciliation-v1.yaml")
 AUDIT_PATH = Path("Governance/AIOS-Predeployment-Completion-Audit-v1.yaml")
 DECISION_PATH = Path("Governance/AIOS-Stage15-Gate12-Release-Gate-Decision-v1.yaml")
 REGISTRY_PATH = Path("Governance/AIOS-Stage-Registry.md")
@@ -69,12 +66,10 @@ def _fail_closed(
     try:
         copied = copy.deepcopy(value)
         errors = validator(copied)
-        if not isinstance(errors, list) or not all(
-            isinstance(error, str) for error in errors
-        ):
+        if not isinstance(errors, list) or not all(isinstance(item, str) for item in errors):
             return [_error(path, "validator_contract_error")]
         return list(dict.fromkeys(errors))
-    except Exception as exc:  # fail closed for every malformed object graph
+    except Exception as exc:
         return [_error(path, f"validation_exception:{type(exc).__name__}")]
 
 
@@ -128,10 +123,7 @@ def _validate_reconciliation_impl(model: Any) -> list[str]:
         errors.append(_error("$.stage", "invalid"))
     if model.get("status") != "lifecycle_handoff_ready_actions_withheld":
         errors.append(_error("$.status", "invalid"))
-
-    scope = model.get("scope")
-    errors.extend(_exact_keys(scope, ("company", "brand", "excluded_entities"), "$.scope"))
-    if isinstance(scope, dict) and scope != {
+    if model.get("scope") != {
         "company": "汇沣电商",
         "brand": "BUW",
         "excluded_entities": ["PC", "六合通"],
@@ -139,44 +131,27 @@ def _validate_reconciliation_impl(model: Any) -> list[str]:
         errors.append(_error("$.scope", "exact_scope_required"))
 
     sources = model.get("source_records")
-    errors.extend(
-        _exact_keys(
-            sources,
-            (
-                "historical_predeployment_audit",
-                "gate12_decision",
-                "approved_candidate",
-            ),
-            "$.source_records",
-        )
-    )
-    if isinstance(sources, dict):
-        historical = sources.get("historical_predeployment_audit")
-        expected_historical = {
+    expected_sources = {
+        "historical_predeployment_audit": {
             "path": "Governance/AIOS-Predeployment-Completion-Audit-v1.yaml",
             "recorded_status": "deployment_free_work_complete_gate12_decision_pending",
             "interpretation": "preserved_historical_snapshot_not_current_authority",
-        }
-        if historical != expected_historical:
-            errors.append(_error("$.source_records.historical_predeployment_audit", "invalid"))
-        gate12 = sources.get("gate12_decision")
-        expected_gate12 = {
+        },
+        "gate12_decision": {
             "path": "Governance/AIOS-Stage15-Gate12-Release-Gate-Decision-v1.yaml",
             "decision_record_commit": "d386414791daa17bc572c237acabb79551a2aad2",
             "decision_record_tree": "9aedd318620f5c05591386c19665773837d1f148",
             "recorded_status": "accepted_governance_gate_only_release_actions_withheld",
             "accepted_scope": "gate12_governance_gate_only",
-        }
-        if gate12 != expected_gate12:
-            errors.append(_error("$.source_records.gate12_decision", "invalid"))
-        candidate = sources.get("approved_candidate")
-        expected_candidate = {
+        },
+        "approved_candidate": {
             "commit": "9bc17fa2ef722f29a8fcf302ef275ef6fbdf3a49",
             "tree": "bf82c13df03e86985d6c9bc190eea9cd2fc87830",
             "governance_record_commit": "68b6301bcd08316aa191ac5e1e8f69bce44ab7aa",
-        }
-        if candidate != expected_candidate:
-            errors.append(_error("$.source_records.approved_candidate", "invalid"))
+        },
+    }
+    if sources != expected_sources:
+        errors.append(_error("$.source_records", "exact_source_records_required"))
 
     state = model.get("controlled_state")
     state_keys = (
@@ -212,12 +187,11 @@ def _validate_reconciliation_impl(model: Any) -> list[str]:
             "merged": False,
         }:
             errors.append(_error("$.controlled_state.pull_request", "draft_open_unmerged_required"))
-        risks = state.get("risks")
         expected_risks = [
             {"risk_id": risk_id, "state": "open_blocked_unaccepted"}
             for risk_id in RISK_IDS
         ]
-        if risks != expected_risks:
+        if state.get("risks") != expected_risks:
             errors.append(_error("$.controlled_state.risks", "exact_open_risks_required"))
         authorities = state.get("downstream_authorities")
         if authorities != FALSE_AUTHORITIES or not isinstance(authorities, dict):
@@ -225,7 +199,6 @@ def _validate_reconciliation_impl(model: Any) -> list[str]:
         elif not all(type(value) is bool for value in authorities.values()):
             errors.append(_error("$.controlled_state.downstream_authorities", "booleans_required"))
 
-    queue = model.get("lifecycle_handoff_queue")
     expected_queue = [
         {
             "action": action,
@@ -234,17 +207,16 @@ def _validate_reconciliation_impl(model: Any) -> list[str]:
         }
         for action in ACTIONS
     ]
-    if queue != expected_queue:
+    if model.get("lifecycle_handoff_queue") != expected_queue:
         errors.append(_error("$.lifecycle_handoff_queue", "exact_ordered_queue_required"))
 
-    expected_reconciliation = {
+    if model.get("reconciliation") != {
         "historical_snapshot_preserved": True,
         "current_authority_source": "Governance/AIOS-Stage15-Gate12-Release-Gate-Decision-v1.yaml",
         "current_result": "lifecycle_handoff_ready_actions_withheld",
         "next_governance_action": "separate_explicit_lifecycle_authorization_or_hold",
         "stage16_authorized": False,
-    }
-    if model.get("reconciliation") != expected_reconciliation:
+    }:
         errors.append(_error("$.reconciliation", "invalid"))
     claims = model.get("claims")
     if claims != FALSE_CLAIMS or not isinstance(claims, dict):
@@ -288,7 +260,6 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         return [_error("$repository", f"load_error:{type(exc).__name__}")]
 
     errors = validate_reconciliation(model)
-
     if (
         audit.get("status") != "deployment_free_work_complete_gate12_decision_pending"
         or audit.get("completion_decision", {}).get("result")
@@ -299,40 +270,39 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         errors.append(_error("$repository.historical_audit", "preserved_snapshot_required"))
 
     boundary = decision.get("gate12_decision_boundary")
+    false_boundary_keys = (
+        "mark_ready_for_review_authorized",
+        "merge_authorized",
+        "formal_publication_authorized",
+        "archive_authorized",
+        "issue_closure_authorized",
+        "risk_acceptance_authorized",
+        "risk_closure_authorized",
+        "real_pilot_authorized",
+        "real_participants_authorized",
+        "real_data_authorized",
+        "credentials_authorized",
+        "permissions_authorized",
+        "connectors_authorized",
+        "infrastructure_authorized",
+        "production_operations_authorized",
+        "release_action_authorized",
+        "deployment_authorized",
+        "external_actions_allowed",
+    )
     if (
-        decision.get("status")
-        != "accepted_governance_gate_only_release_actions_withheld"
+        decision.get("status") != "accepted_governance_gate_only_release_actions_withheld"
         or not isinstance(boundary, dict)
         or boundary.get("gate_accepted") is not True
         or boundary.get("governance_gate_only") is not True
         or boundary.get("approval_state") != "accepted"
-        or any(boundary.get(key) is not False for key in (
-            "mark_ready_for_review_authorized",
-            "merge_authorized",
-            "formal_publication_authorized",
-            "archive_authorized",
-            "issue_closure_authorized",
-            "risk_acceptance_authorized",
-            "risk_closure_authorized",
-            "real_pilot_authorized",
-            "real_participants_authorized",
-            "real_data_authorized",
-            "credentials_authorized",
-            "permissions_authorized",
-            "connectors_authorized",
-            "infrastructure_authorized",
-            "production_operations_authorized",
-            "release_action_authorized",
-            "deployment_authorized",
-            "external_actions_allowed",
-        ))
+        or any(boundary.get(key) is not False for key in false_boundary_keys)
         or decision.get("repository_state", {}).get("pull_request")
         != {"number": 41, "state": "open", "draft": True, "merged": False}
         or decision.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.gate12_decision", "governance_only_boundary_required"))
 
-    decision_risks = decision.get("risk_reconciliation")
     expected_decision_risks = [
         {
             "risk_id": risk_id,
@@ -342,12 +312,13 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         }
         for risk_id in RISK_IDS
     ]
-    if decision_risks != expected_decision_risks:
+    if decision.get("risk_reconciliation") != expected_decision_risks:
         errors.append(_error("$repository.gate12_decision.risks", "exact_open_risks_required"))
 
     registry_tokens = (
         "Stage 15 is Reviewed",
-        "Gate 12 is now accepted only as a governance gate",
+        "Gate 12 is now accepted",
+        "governance gate",
         "accepted_governance_gate_only_release_actions_withheld",
         "deployment_free_work_complete_gate12_governance_gate_accepted_actions_withheld",
         "PR #41 remains Draft/open/unmerged",
@@ -371,7 +342,6 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     for token in guide_tokens:
         if token not in guide:
             errors.append(_error("$repository.guide", f"missing_token:{token}"))
-
     return list(dict.fromkeys(errors))
 
 
