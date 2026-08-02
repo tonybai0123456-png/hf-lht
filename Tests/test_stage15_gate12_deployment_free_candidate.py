@@ -90,7 +90,7 @@ class Stage15Gate12DeploymentFreeCandidateTests(unittest.TestCase):
         self.assertFalse(audit["completion_decision"]["release_gate_authorized"])
         self.assertEqual([], audit["external_actions_performed"])
 
-    def test_current_registries_do_not_report_gate11_as_pending(self):
+    def test_current_registries_report_gate12_governance_acceptance_only(self):
         for path in (STAGE_REGISTRY, PROJECT_REGISTRY):
             text = path.read_text(encoding="utf-8")
             current_overlay = (
@@ -99,10 +99,16 @@ class Stage15Gate12DeploymentFreeCandidateTests(unittest.TestCase):
                 .split("## Registry rules", 1)[0]
             )
             self.assertIn("Gate 11 accepted", current_overlay)
-            self.assertIn("Gate 12", current_overlay)
-            self.assertIn("deployment_free_work_complete_gate12_decision_pending", current_overlay)
+            self.assertIn("Gate 12 accepted", current_overlay)
+            self.assertIn(
+                "deployment_free_work_complete_gate12_governance_gate_accepted_actions_withheld",
+                current_overlay,
+            )
             self.assertIn("AIOS-Stage15-Gate12-Deployment-Free-Decision-Packet-v1.yaml", current_overlay)
+            self.assertIn("AIOS-Stage15-Gate12-Release-Gate-Decision-v1.yaml", current_overlay)
             self.assertIn("9bc17fa2ef722f29a8fcf302ef275ef6fbdf3a49", current_overlay)
+            self.assertIn("68b6301bcd08316aa191ac5e1e8f69bce44ab7aa", current_overlay)
+            self.assertIn("separate explicit authorization", current_overlay)
             self.assertNotIn("Gate 11 remains unaccepted", current_overlay)
 
 
