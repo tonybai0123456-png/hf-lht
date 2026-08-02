@@ -454,6 +454,21 @@ class ProjectGovernanceValidation(unittest.TestCase):
             ):
                 self.assertIn(token, registry)
 
+    def test_stage15_gate11_evidence_readiness_is_registered_without_approval(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 11 evidence technically confirmed",
+                "ready_for_stone_human_evidence_decision_not_approved",
+                "AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Readiness-Audit-v1.yaml",
+                "Stone remains the required human evidence approver",
+                "SYNTHETIC-HUMAN-ROLE-CS-001",
+                "Gate 11 remains unaccepted",
+                "Gate 12 remains expressly withheld",
+            ):
+                self.assertIn(token, registry)
+
     def test_stage15_implementation_plan_is_complete_and_executable(self):
         if not STAGE15_PLAN.is_file():
             self.fail(f"missing Stage 15 implementation plan: {STAGE15_PLAN}")

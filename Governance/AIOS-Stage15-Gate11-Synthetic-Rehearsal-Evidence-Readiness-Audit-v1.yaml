@@ -1,0 +1,108 @@
+audit_version: stage15_gate11_synthetic_rehearsal_evidence_readiness/v1
+stage: "15"
+stage_id: NR-01
+status: ready_for_stone_human_evidence_decision_not_approved
+next_gate: HG-PILOT-EVIDENCE
+source_evidence:
+  source_commit: d757768e3a06d5443cafec1934011711cb039766
+  source_tree: 9fe8f4b199ca0c4c4d888e3fa7d910504e53eeef
+  pull_request: "#41 / Draft / open / unmerged"
+  changed_paths: 39
+  commits: 36
+  local_verification:
+    tests_passed: 152
+    tests_total: 152
+    validators_passed: 13
+    validators_total: 13
+    compilation: passed
+    diff_check: passed
+  exact_head_ci:
+    - {workflow: Validate AIOS Workflow Schema, run_number: 72, run_id: 30730693193, conclusion: success}
+    - {workflow: Validate AIOS Privacy and Data Governance, run_number: 64, run_id: 30730693183, conclusion: success}
+    - {workflow: Validate AIOS Operational Resilience, run_number: 57, run_id: 30730693190, conclusion: success}
+    - {workflow: Validate Runtime Orchestrator v1, run_number: 94, run_id: 30730693169, conclusion: success}
+    - {workflow: Validate AIOS Non-production Readiness, run_number: 23, run_id: 30730693180, conclusion: success}
+    - {workflow: Validate AIOS Architecture and Security Foundations, run_number: 73, run_id: 30730693191, conclusion: success}
+    - {workflow: Validate AIOS Project Governance, run_number: 85, run_id: 30730693174, conclusion: success}
+    - {workflow: Validate AIOS Support Controlled Pilot, run_number: 40, run_id: 30730693184, conclusion: success}
+    - {workflow: Validate AIOS Production Readiness Assessment, run_number: 81, run_id: 30730693182, conclusion: success}
+gate11_decision_boundary:
+  human_approver: Stone
+  backup_and_escalation_contact: Tony
+  technical_owner: Data Agent
+  contributors:
+    - Developer Agent
+    - CustomerService Agent
+  gate_accepted: false
+  approval_state: awaiting_explicit_stone_human_evidence_approval
+  scope_type: synthetic_rehearsal_evidence_only
+  evidence_type: synthetic_rehearsal_only
+  authority_ceiling: needs_human_governance
+  external_actions_allowed: false
+scope_reconciliation:
+  company: 汇沣电商
+  brand: BUW
+  excluded_entities:
+    - PC
+    - 六合通
+  gate10_scope: synthetic_rehearsal_only_no_real_pilot
+  real_participant_count: 0
+  production_or_staging_environment_count: 0
+  real_case_order_account_or_message_count: 0
+synthetic_evidence_results:
+  - {evidence_id: EV-ENVIRONMENT, result: verified_synthetic}
+  - {evidence_id: EV-IDENTITY, result: verified_synthetic}
+  - {evidence_id: EV-DATA, result: verified_synthetic}
+  - {evidence_id: EV-EVIDENCE, result: verified_synthetic}
+  - {evidence_id: EV-OBSERVATION, result: verified_synthetic}
+  - {evidence_id: EV-RECOVERY, result: verified_synthetic}
+  - {evidence_id: EV-INCIDENT, result: verified_synthetic}
+  - {evidence_id: EV-SUPPORT, result: verified_synthetic}
+risk_evidence_reconciliation:
+  - {risk_id: PR-RISK-001, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-002, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-003, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-004, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-005, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-006, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-007, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-008, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-009, state: open_blocked_unaccepted, risk_accepted: false}
+  - {risk_id: PR-RISK-010, state: open_blocked_unaccepted, risk_accepted: false}
+synthetic_support_case_closure:
+  case_id: SYNTHETIC-CASE-001
+  record_type: synthetic_role_simulation_no_real_participant
+  synthetic_actor_id: SYNTHETIC-HUMAN-ROLE-CS-001
+  actor_is_real_person: false
+  case_disposition: stopped_withdrawn_and_closed
+  ticket_created: false
+  external_message_sent: false
+  human_closure_record_complete: true
+metric_and_guardrail_reconciliation:
+  deterministic_results: true
+  stop_and_withdrawal_checks_passed: true
+  evidence_identifiers_complete_and_ordered: true
+  support_closure_is_synthetic_only: true
+  external_delivery_performed: false
+withheld_authorities:
+  - real_pilot
+  - real_participants
+  - real_data
+  - credentials_and_permissions
+  - connectors
+  - external_infrastructure_and_accounts
+  - risk_acceptance
+  - merge
+  - publication
+  - archive
+  - release
+  - deployment
+claims:
+  gate11_accepted: false
+  real_pilot_performed: false
+  pilot_authorized: false
+  risk_accepted: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+external_actions_performed: []
