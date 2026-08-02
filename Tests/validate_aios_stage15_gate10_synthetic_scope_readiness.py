@@ -45,6 +45,10 @@ FALSE_CLAIMS = {
     "release_authorized": False,
     "deployment_authorized": False,
 }
+ACCEPTED_CLAIMS = {
+    **FALSE_CLAIMS,
+    "gate10_accepted": True,
+}
 
 
 def _error(path: str, code: str) -> str:
@@ -135,11 +139,11 @@ def _validate_impl(
     if audit.get("stage") != "15" or audit.get("stage_id") != "NR-01":
         errors.append(_error("$audit.stage", "invalid"))
     if audit.get("status") != (
-        "ready_for_explicit_zero_participant_scope_decision_not_approved"
+        "accepted_zero_participant_synthetic_rehearsal_scope_no_real_pilot"
     ):
-        errors.append(_error("$audit.status", "decision_ready_not_approved_required"))
-    if audit.get("next_gate") != "HG-PILOT-SCOPE":
-        errors.append(_error("$audit.next_gate", "gate10_required"))
+        errors.append(_error("$audit.status", "accepted_zero_participant_scope_required"))
+    if audit.get("next_gate") != "HG-PILOT-EVIDENCE":
+        errors.append(_error("$audit.next_gate", "gate11_required"))
     if audit.get("source_assets") != {
         "gate9_readiness": str(GATE9_PATH),
         "gate_proposals": str(PROPOSALS_PATH),
@@ -160,10 +164,10 @@ def _validate_impl(
         "backup_and_escalation_contact": "Stone",
         "technical_owner": "Developer Agent",
         "contributors": ["CustomerService Agent", "Data Agent"],
-        "gate_accepted": False,
-        "approval_state": "proposed_awaiting_explicit_owner_approval",
+        "gate_accepted": True,
+        "approval_state": "accepted",
         "scope_type": "synthetic_rehearsal_only_no_real_pilot",
-        "decision_evidence": "Issue #47",
+        "decision_evidence": "Owner authorization / Issue #47",
         "real_pilot_authorized": False,
         "external_actions_allowed": False,
     }
@@ -235,12 +239,12 @@ def _validate_impl(
     if not isinstance(sequencing, dict):
         errors.append(_error("$proposals.sequencing", "mapping_required"))
     else:
-        if sequencing.get("accepted_gates") != list(GATE_ORDER[:9]):
-            errors.append(_error("$proposals.sequencing.accepted_gates", "gates1_through_9_required"))
+        if sequencing.get("accepted_gates") != list(GATE_ORDER[:10]):
+            errors.append(_error("$proposals.sequencing.accepted_gates", "gates1_through_10_required"))
         if sequencing.get("gate_order") != list(GATE_ORDER):
             errors.append(_error("$proposals.sequencing.gate_order", "exact_order_required"))
-        if sequencing.get("next_gate") != "HG-PILOT-SCOPE":
-            errors.append(_error("$proposals.sequencing.next_gate", "gate10_required"))
+        if sequencing.get("next_gate") != "HG-PILOT-EVIDENCE":
+            errors.append(_error("$proposals.sequencing.next_gate", "gate11_required"))
         if sequencing.get("release_gate_accepted") is not False:
             errors.append(_error("$proposals.sequencing.release_gate_accepted", "false_required"))
     gate10 = proposal_list[3] if isinstance(proposal_list, list) and len(proposal_list) > 3 else None
@@ -250,8 +254,8 @@ def _validate_impl(
         expected_gate10 = {
             "gate_id": "HG-PILOT-SCOPE",
             "issue": "#47",
-            "accepted": False,
-            "state": "proposed_awaiting_explicit_owner_approval",
+            "accepted": True,
+            "state": "accepted",
             "prerequisite_gates": list(GATE_ORDER[:9]),
             "scope_type": "synthetic_rehearsal_only_no_real_pilot",
             "human_approver": "Tony",
@@ -273,12 +277,13 @@ def _validate_impl(
                 "support_recovery_or_metric_failure",
                 "representation_as_real_pilot",
             ],
-            "approval_condition": "gates7_through_9_accepted_then_explicit_zero_participant_scope_approval",
+            "approval_condition": "satisfied_by_explicit_owner_approval",
+            "decision_evidence": "Owner authorization / Issue #47",
             "authority_ceiling": "needs_human_governance",
             "external_actions_allowed": False,
         }
         if gate10 != expected_gate10:
-            errors.append(_error("$proposals.gate10", "exact_pending_scope_required"))
+            errors.append(_error("$proposals.gate10", "exact_accepted_scope_required"))
 
     candidate_gates = candidate.get("gate_ledger")
     if not isinstance(candidate_gates, list) or len(candidate_gates) != 12:
@@ -289,13 +294,8 @@ def _validate_impl(
             if not isinstance(gate, dict) or gate.get("gate_id") != gate_id:
                 errors.append(_error(f"$candidate.gate_ledger[{index}]", "ordered_gate_required"))
                 continue
-            if index < 9 and (gate.get("accepted") is not True or gate.get("state") != "accepted"):
+            if index < 10 and (gate.get("accepted") is not True or gate.get("state") != "accepted"):
                 errors.append(_error(f"$candidate.gate_ledger[{index}]", "accepted_prerequisite_required"))
-            if index == 9 and (
-                gate.get("accepted") is not False
-                or gate.get("state") != "proposed_awaiting_explicit_owner_approval"
-            ):
-                errors.append(_error("$candidate.gate_ledger[9]", "gate10_must_remain_pending"))
             if index > 9 and gate.get("accepted") is not False:
                 errors.append(_error(f"$candidate.gate_ledger[{index}]", "later_gate_must_remain_unaccepted"))
     if candidate.get("risk_posture") != {
@@ -313,11 +313,10 @@ def _validate_impl(
         if candidate_decision.get("result") != "not_ready_pending_human_governance":
             errors.append(_error("$candidate.candidate_decision.result", "pending_required"))
         if candidate_decision.get("remaining_human_gates") != [
-            "HG-PILOT-SCOPE",
             "HG-PILOT-EVIDENCE",
             "HG-RELEASE",
         ]:
-            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate10_first_required"))
+            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate11_first_required"))
 
     if fixture.get("scope") != {"company": "汇沣电商", "brand": "BUW"}:
         errors.append(_error("$fixture.scope", "buw_only_required"))
@@ -344,11 +343,10 @@ def _validate_impl(
     elif any(value != "open_blocked_unaccepted" for value in risk_states.values()):
         errors.append(_error("$fixture.risk_states", "all_must_remain_open_blocked_unaccepted"))
     if fixture.get("required_human_gates") != [
-        "HG-PILOT-SCOPE",
         "HG-PILOT-EVIDENCE",
         "HG-RELEASE",
     ]:
-        errors.append(_error("$fixture.required_human_gates", "gate10_first_required"))
+        errors.append(_error("$fixture.required_human_gates", "gate11_first_required"))
     if fixture.get("requested_external_actions") != []:
         errors.append(_error("$fixture.requested_external_actions", "must_be_empty"))
     fixture_claims = fixture.get("claims")
@@ -392,7 +390,7 @@ def _validate_impl(
     claims = audit.get("claims")
     if (
         not isinstance(claims, dict)
-        or claims != FALSE_CLAIMS
+        or claims != ACCEPTED_CLAIMS
         or not all(type(value) is bool for value in claims.values())
     ):
         errors.append(_error("$audit.claims", "exact_false_claims_required"))
@@ -431,17 +429,17 @@ def evaluate_assets(
         return {
             "result": "denied",
             "reason_codes": [f"VALIDATION_ERROR:{error}" for error in errors],
-            "next_gate": "HG-PILOT-SCOPE",
+            "next_gate": "HG-PILOT-EVIDENCE",
             "gate10_accepted": False,
             "claims": dict(FALSE_CLAIMS),
             "external_actions_performed": [],
         }
     return {
-        "result": "ready_for_explicit_owner_decision_not_approved",
-        "reason_codes": ["EXPLICIT_ZERO_PARTICIPANT_SCOPE_APPROVAL_REQUIRED"],
-        "next_gate": "HG-PILOT-SCOPE",
-        "gate10_accepted": False,
-        "claims": dict(FALSE_CLAIMS),
+        "result": "accepted_zero_participant_synthetic_rehearsal_scope_no_real_pilot",
+        "reason_codes": ["GATE10_ACCEPTED_ZERO_REAL_PARTICIPANTS_NO_REAL_PILOT"],
+        "next_gate": "HG-PILOT-EVIDENCE",
+        "gate10_accepted": True,
+        "claims": dict(ACCEPTED_CLAIMS),
         "external_actions_performed": [],
     }
 
@@ -472,7 +470,7 @@ def main() -> int:
     print("AIOS Stage 15 Gate 10 synthetic-scope readiness validation PASSED")
     print(f"result={result['result']}")
     print(f"next_gate={result['next_gate']}")
-    print("gate10_accepted=false")
+    print(f"gate10_accepted={str(result['gate10_accepted']).lower()}")
     print("pilot_authorized=false")
     print("external_actions_performed=[]")
     return 0

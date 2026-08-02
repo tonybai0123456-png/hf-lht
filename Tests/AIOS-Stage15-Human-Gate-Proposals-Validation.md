@@ -2,18 +2,18 @@
 
 ## Purpose and truthful status
 
-This package records the Stage 15 Gate 7 through Gate 9 decisions and preserves
-the remaining Gate 10–11 packets as one closed, ordered and machine-verifiable
+This package records the Stage 15 Gate 7 through Gate 10 decisions and preserves
+the remaining Gate 11 packet as one closed, ordered and machine-verifiable
 contract. Its status is
-`gates7_through_9_accepted_gates10_and_11_pending`; a valid package
+`gates7_through_10_accepted_gate11_pending`; a valid package
 evaluates only to `not_ready_pending_human_governance`.
 
-Passing validation does not approve another gate. Gates 7 through 9 are
-accepted by the explicit owner decisions in Issues #44 through #46. Gates
-10–11 remain false until their
+Passing validation does not approve another gate. Gates 7 through 10 are
+accepted by the explicit owner decisions in Issues #44 through #47. Gate 11
+remains false until its
 named human approvers make separate decisions after all prerequisite gates have
 been accepted and verified.
-`accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION']`
+`accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE']`
 and
 `external_actions_performed=[]`.
 
@@ -37,7 +37,7 @@ and
    `mitigate_and_remain_open_blocked_unaccepted`; it is not risk acceptance.
    Developer Agent, Data Agent, CustomerService Agent and CEO Agent prepare
    evidence only.
-4. `HG-PILOT-SCOPE` — Issue #47. Tony is human scope approver, Stone has stop
+4. `HG-PILOT-SCOPE` — Issue #47, accepted. Tony is human scope approver, Stone has stop
    and escalation authority, and Developer Agent is technical owner. The scope
    is `synthetic_rehearsal_only_no_real_pilot`, with zero real customers,
    employees, stores, cases, systems or messages.
@@ -78,8 +78,8 @@ Expected validator output:
 ```text
 AIOS Stage 15 human-gate proposal validation PASSED
 result=not_ready_pending_human_governance
-next_gate=HG-PILOT-SCOPE
-accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION']
+next_gate=HG-PILOT-EVIDENCE
+accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE']
 external_actions_performed=[]
 ```
 

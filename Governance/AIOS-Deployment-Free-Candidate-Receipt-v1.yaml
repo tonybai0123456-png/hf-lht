@@ -99,10 +99,12 @@ governance_overlay:
     - HG-PRIVACY-DATA
     - HG-OPS-RECOVERY-INCIDENT-SUPPORT
     - HG-RISK-DISPOSITION
+    - HG-PILOT-SCOPE
   decision_evidence:
     - "Owner authorization / Issue #44"
     - "Owner authorization / Issue #45"
     - "Owner authorization / Issue #46"
+    - "Owner authorization / Issue #47"
   allowed_data_classes:
     - synthetic_non_personal
     - synthetic_personal_like_clearly_fictitious_non_routable
@@ -127,7 +129,21 @@ governance_overlay:
     - CEO Agent
   risk_treatment_disposition: mitigate_and_remain_open_blocked_unaccepted
   treatment_ownership_authorized: true
-  next_gate: HG-PILOT-SCOPE
+  rehearsal_scope_type: synthetic_rehearsal_only_no_real_pilot
+  rehearsal_human_approver: Tony
+  rehearsal_backup_and_escalation_contact: Stone
+  rehearsal_technical_owner: Developer Agent
+  rehearsal_evidence_contributors:
+    - CustomerService Agent
+    - Data Agent
+  rehearsal_zero_participants:
+    real_customers: 0
+    employees_or_real_operators: 0
+    stores: 0
+    production_or_staging_environments: 0
+    real_cases_orders_accounts_or_messages: 0
+  synthetic_rehearsal_scope_authorized: true
+  next_gate: HG-PILOT-EVIDENCE
   real_data_authorized: false
   real_operations_authorized: false
   credentials_connectors_infrastructure_or_accounts_authorized: false
@@ -149,7 +165,6 @@ candidate_decision:
   result: not_ready_pending_human_governance
   technically_verified_source: true
   remaining_human_gates:
-    - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE
   release_gate_authorized: false

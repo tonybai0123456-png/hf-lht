@@ -73,6 +73,15 @@ Expected behavior:
   record remains open, blocked and unaccepted; no risk acceptance, closure,
   production action, real data, credential, connector, infrastructure, pilot,
   merge, publication, release or deployment authority is granted.
+- Gate 10 is recorded as accepted only by the owner authorization in Issue #47:
+  Tony is the human approver, Stone is the backup, escalation and stop contact,
+  Developer Agent is the technical owner, and CustomerService Agent plus Data
+  Agent are evidence contributors. The scope is
+  `synthetic_rehearsal_only_no_real_pilot`; every real participant and real
+  operating-surface count is zero. Gates 11 through 12 remain unauthorized.
+- Gate 10 authorizes no real participant, real pilot, real data, credential,
+  connector, infrastructure, external action, risk acceptance, merge,
+  publication, release or deployment.
 - Evaluation is deterministic, does not mutate inputs and performs no external
   action.
 - All repository regression tests and validators exit zero.
@@ -93,3 +102,5 @@ The Gate 8 operations record grants only the named synthetic validation scope
 and performs no external action.
 The Gate 9 risk-treatment record grants only treatment direction and mapped
 evidence responsibility; it does not accept or close any risk.
+The Gate 10 scope record grants only a zero-participant synthetic rehearsal
+boundary and does not authorize a real pilot.

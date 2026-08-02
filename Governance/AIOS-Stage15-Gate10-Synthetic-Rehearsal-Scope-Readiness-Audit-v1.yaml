@@ -1,8 +1,8 @@
 audit_version: stage15_gate10_synthetic_rehearsal_scope_readiness/v1
 stage: "15"
 stage_id: NR-01
-status: ready_for_explicit_zero_participant_scope_decision_not_approved
-next_gate: HG-PILOT-SCOPE
+status: accepted_zero_participant_synthetic_rehearsal_scope_no_real_pilot
+next_gate: HG-PILOT-EVIDENCE
 source_assets:
   gate9_readiness: Governance/AIOS-Stage15-Gate9-Risk-Treatment-Readiness-Audit-v1.yaml
   gate_proposals: Governance/AIOS-Stage15-Human-Gate-Proposals-v1.yaml
@@ -20,10 +20,10 @@ gate10_decision_boundary:
   contributors:
     - CustomerService Agent
     - Data Agent
-  gate_accepted: false
-  approval_state: proposed_awaiting_explicit_owner_approval
+  gate_accepted: true
+  approval_state: accepted
   scope_type: synthetic_rehearsal_only_no_real_pilot
-  decision_evidence: "Issue #47"
+  decision_evidence: "Owner authorization / Issue #47"
   real_pilot_authorized: false
   external_actions_allowed: false
 zero_participant_boundary:
@@ -63,7 +63,7 @@ required_truth:
   production_ready: false
   release_authorized: false
 claims:
-  gate10_accepted: false
+  gate10_accepted: true
   real_pilot_performed: false
   pilot_authorized: false
   risk_accepted: false

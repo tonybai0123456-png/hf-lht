@@ -23,10 +23,10 @@ Gate 7 in Issue #44 is accepted for the exact synthetic-only data boundary.
 Gate 8 in Issue #45 is accepted for the exact synthetic operations, recovery,
 incident-tabletop and support boundary. Gate 9 in Issue #46 is accepted only
 for the exact risk-treatment direction and mapped evidence responsibilities;
-all ten risks remain open, blocked and unaccepted. The remaining ordered
-Gate 10–11 queue is defined in Issues #47–#48. Gate 10 is the only current decision
-point; later gates remain blocked by their prior
-gate. Issue #49 expressly withholds Gate 12 and defines the deployment-free
+all ten risks remain open, blocked and unaccepted. Gate 10 in Issue #47 is
+accepted only for a zero-participant synthetic rehearsal and no real pilot.
+Gate 11 in Issue #48 is the sole current human decision point. Issue #49
+expressly withholds Gate 12 and defines the deployment-free
 candidate evidence package.
 The technical portion of that package is now externally captured and verified
 through `Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml`; the audit

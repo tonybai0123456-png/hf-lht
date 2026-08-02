@@ -11,7 +11,7 @@
 | Lifecycle | Planned → Executing → Reported → Reviewed → Archived |
 | Roadmap | Stage 1 → Stage 15; Stage 15 is Reviewed at exact target `b27614ba2ebebb772888c3a4b1ff3d829b47532e` |
 | Publication status | Governance v2.2 published; Stages 1–14 archived; Stage 15 Reviewed but Draft/unmerged/unpublished/unarchived; no pilot or deployment authority |
-| Last updated | 2026-08-01 |
+| Last updated | 2026-08-02 |
 
 This registry is the Single Source of Truth for current BUW AIOS Stage assignment and lifecycle status. Evidence links document execution; they do not replace the registry or grant archival authority.
 
@@ -55,8 +55,8 @@ superseding technical receipt is
 `36716abc76373d053c75e68352f46589f4ddc8f1`. It is
 `verified_technical_evidence_pending_human_gates`; the candidate is
 `technical_evidence_verified_pending_human_gates`. Clean-export replay passed
-127/127 tests, 10/10 validators and 9/9 exact-head CI. Gate 9 is accepted only
-for treatment direction and evidence responsibility; Gates 10–11 remain
+127/127 tests, 10/10 validators and 9/9 exact-head CI. Gate 10 is accepted only
+for the zero-participant synthetic rehearsal scope; Gate 11 remains
 unapproved, Stage 10 remains `BLOCKED / NO-GO`, and Issue #49 keeps release
 expressly withheld.
 
@@ -67,10 +67,11 @@ expressly withheld.
 | Gate 7 accepted | `Owner authorization / Issue #44`; only `synthetic_non_personal` and `synthetic_personal_like_clearly_fictitious_non_routable` |
 | Gate 8 accepted | `Owner authorization / Issue #45`; only `synthetic_operations_recovery_incident_support_only` |
 | Gate 9 accepted | `Owner authorization / Issue #46`; only `mitigate_and_remain_open_blocked_unaccepted` treatment direction and evidence responsibility; all ten risks remain open, blocked and unaccepted |
-| Accountability | Gate 7: Tony human approver, Stone backup, Data Agent technical validation owner, Developer Agent implementation support. Gate 8: Stone human approver, Tony backup, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors. Gate 9: Tony human approver and overall risk owner, Stone independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent are mapped evidence contributors only |
+| Gate 10 accepted | `Owner authorization / Issue #47`; only `synthetic_rehearsal_only_no_real_pilot`, with zero real customers, employees or operators, stores, production or staging environments, and real cases, orders, accounts or messages |
+| Accountability | Gate 7: Tony human approver, Stone backup, Data Agent technical validation owner, Developer Agent implementation support. Gate 8: Stone human approver, Tony backup, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors. Gate 9: Tony human approver and overall risk owner, Stone independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent are mapped evidence contributors only. Gate 10: Tony human approver, Stone backup and escalation contact, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors |
 | Design targets | CT-2; RTO 240 minutes and RPO 60 minutes are targets only, not achieved capability |
-| Ordered package | `gates7_through_9_accepted_gates10_and_11_pending`; Gate 10 is the only valid next decision |
-| Withheld boundary | Gates 10–12 remain unauthorized; no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority |
+| Ordered package | `gates7_through_10_accepted_gate11_pending`; Gate 11 is the only valid next decision |
+| Withheld boundary | Gates 11–12 remain unauthorized; no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real participant, real data, credential, connector, real pilot, risk acceptance, merge, publication, release or deployment authority |
 
 ## Pre-freeze exception record
 
@@ -182,3 +183,4 @@ The dashboard is a governance summary. It does not replace this registry or GitH
 | 2026-07-31 | 2.2 / Stage 15 Gate 7 decision | Gate 7 accepted under `Owner authorization / Issue #44` for exactly two synthetic data classes. Recorded `gate7_accepted_gate8_through_11_pending`; Gate 8 is the only valid next decision. Gates 8–12 remain unauthorized and no real-world, pilot, risk, merge, publication, release or deployment authority is granted. | Owner / BUW AIOS Official Governance Thread / Issue #44 / Draft PR #41 |
 | 2026-07-31 | 2.2 / Stage 15 Gate 8 decision | Gate 8 accepted under `Owner authorization / Issue #45` for synthetic operations, recovery, incident-tabletop and support-flow validation only. Recorded `gates7_and_8_accepted_gate9_through_11_pending`; Gate 9 is the only valid next decision. CT-2 RTO 240/RPO 60 remain design targets; Gates 9–12 and every real operations, infrastructure, risk, pilot, merge, publication, release and deployment authority remain withheld. | Owner / BUW AIOS Official Governance Thread / Issue #45 / Draft PR #41 |
 | 2026-08-01 | 2.2 / Stage 15 Gate 9 decision | Gate 9 accepted under `Owner authorization / Issue #46` for the exact PR-RISK-001 through PR-RISK-010 treatment-owner and evidence-contributor mapping. Tony is human approver and overall risk owner; Stone is independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent contribute only mapped evidence. Recorded `gates7_through_9_accepted_gates10_and_11_pending`; Gate 10 is the only valid next decision. All risks remain open, blocked and unaccepted; Gates 10–12 and every real-data, credential, connector, infrastructure, pilot, risk-acceptance, merge, publication, release and deployment authority remain withheld. | Owner / BUW AIOS Official Governance Thread / Issue #46 / Draft PR #41 |
+| 2026-08-02 | 2.2 / Stage 15 Gate 10 decision | Gate 10 accepted under `Owner authorization / Issue #47` only for `synthetic_rehearsal_only_no_real_pilot`. Tony is human approver, Stone is backup and escalation contact, Developer Agent is technical owner, and CustomerService Agent plus Data Agent contribute evidence. All real participant and operating-surface counts are zero. Recorded `gates7_through_10_accepted_gate11_pending`; Gate 11 is the only valid next decision. No real pilot, real data, credential, connector, infrastructure, external action, risk acceptance, merge, publication, release or deployment authority was granted. | Owner / BUW AIOS Official Governance Thread / Issue #47 / Draft PR #41 |

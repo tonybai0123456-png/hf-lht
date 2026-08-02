@@ -58,7 +58,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
         )
         self.assertEqual(["PC", "六合通"], model["excluded_entities"])
         self.assertEqual(
-            [True] * 9 + [False] * 3,
+            [True] * 10 + [False] * 2,
             [gate["accepted"] for gate in model["gate_ledger"]],
         )
         self.assertEqual(
@@ -122,13 +122,13 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             {
                 **before,
                 "gate_ledger": [
-                    *before["gate_ledger"][:8],
+                    *before["gate_ledger"][:9],
                     {
-                        **before["gate_ledger"][8],
+                        **before["gate_ledger"][9],
                         "accepted": False,
                         "state": "proposed_awaiting_explicit_owner_approval",
                     },
-                    *before["gate_ledger"][9:],
+                    *before["gate_ledger"][10:],
                 ],
             },
             {**before, "claims": {**before["claims"], "real_data_used": True}},
@@ -163,7 +163,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             "Developer Agent",
             "Issue #44",
             "Issue #49",
-            "Gate 10–12",
+            "Gate 11–12",
             "external_actions_performed=[]",
             "不得解释为",
         ):
@@ -241,7 +241,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             [item["status"] for item in model["evidence_requirements"]],
         )
         self.assertEqual(
-            [True] * 9 + [False] * 3,
+            [True] * 10 + [False] * 2,
             [gate["accepted"] for gate in model["gate_ledger"]],
         )
         self.assertEqual(

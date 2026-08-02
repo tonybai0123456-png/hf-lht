@@ -29,7 +29,7 @@ gate_ledger:
   - {gate_id: HG-PRIVACY-DATA, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #44"}
   - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #45"}
   - {gate_id: HG-RISK-DISPOSITION, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #46"}
-  - {gate_id: HG-PILOT-SCOPE, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #47"}
+  - {gate_id: HG-PILOT-SCOPE, accepted: true, state: accepted, decision_evidence: "Owner authorization / Issue #47"}
   - {gate_id: HG-PILOT-EVIDENCE, accepted: false, state: proposed_awaiting_explicit_owner_approval, decision_evidence: "Issue #48"}
   - {gate_id: HG-RELEASE, accepted: false, state: release_withheld_by_objective, decision_evidence: "Issue #49"}
 data_governance:
@@ -92,6 +92,24 @@ risk_treatment_governance:
   production_action_allowed: false
   external_actions_allowed: false
   decision_evidence: "Owner authorization / Issue #46"
+synthetic_rehearsal_scope_governance:
+  status: authorized_by_human_governance
+  scope_type: synthetic_rehearsal_only_no_real_pilot
+  human_approver: Tony
+  backup_and_escalation_contact: Stone
+  technical_owner: Developer Agent
+  evidence_contributors:
+    - CustomerService Agent
+    - Data Agent
+  zero_participants:
+    real_customers: 0
+    employees_or_real_operators: 0
+    stores: 0
+    production_or_staging_environments: 0
+    real_cases_orders_accounts_or_messages: 0
+  real_pilot_authorized: false
+  external_actions_allowed: false
+  decision_evidence: "Owner authorization / Issue #47"
 risk_posture:
   stage10: BLOCKED / NO-GO
   risk_count: 10
@@ -114,11 +132,9 @@ evidence_requirements:
 candidate_decision:
   result: not_ready_pending_human_governance
   reason_codes:
-    - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE-WITHHELD-BY-OBJECTIVE
   remaining_human_gates:
-    - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE
   deployment_free_evidence_only: true

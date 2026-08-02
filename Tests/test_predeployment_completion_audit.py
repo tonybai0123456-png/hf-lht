@@ -62,7 +62,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
                 "proven_complete",
                 "proven_complete",
                 "proven_complete",
-                "pending_human_governance",
+                "proven_complete",
                 "pending_human_governance",
                 "partial_pending_human_gates",
                 "intentionally_withheld",
@@ -73,7 +73,6 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
         )
         self.assertEqual(
             [
-                "HG-PILOT-SCOPE",
                 "HG-PILOT-EVIDENCE",
             ],
             [item["gate_id"] for item in model["human_decision_queue"]],
@@ -118,12 +117,12 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
             {
                 **before,
                 "requirement_ledger": [
-                    *before["requirement_ledger"][:5],
+                    *before["requirement_ledger"][:6],
                     {
-                        **before["requirement_ledger"][5],
+                        **before["requirement_ledger"][6],
                         "state": "pending_human_governance",
                     },
-                    *before["requirement_ledger"][6:],
+                    *before["requirement_ledger"][7:],
                 ],
             },
             {**before, "claims": {**before["claims"], "production_ready": True}},
@@ -154,7 +153,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
             "pending_human_governance",
             "intentionally_withheld",
             "intentionally_excluded",
-            "Gate 10–11",
+            "Gate 11",
             "Issue #44",
             "Issue #49",
             "Stage 10",

@@ -385,7 +385,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "Data Agent",
                 "Developer Agent",
                 "Gates 8–12 remain unauthorized",
-                "no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority",
+                "Gates 11–12 remain unauthorized",
             ):
                 self.assertIn(token, registry)
 
@@ -408,7 +408,7 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "RTO 240",
                 "RPO 60",
                 "Gates 9–12 and every real operations",
-                "no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority",
+                "Gates 11–12 remain unauthorized",
             ):
                 self.assertIn(token, registry)
 
@@ -430,8 +430,27 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "CustomerService Agent",
                 "CEO Agent",
                 "all ten risks remain open, blocked and unaccepted",
-                "Gates 10–12 remain unauthorized",
-                "no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real data, credential, connector, pilot, risk acceptance, merge, publication, release or deployment authority",
+                "Gates 11–12 remain unauthorized",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_gate10_decision_overlay_is_registered_without_real_pilot(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 10 accepted",
+                "Owner authorization / Issue #47",
+                "gates7_through_10_accepted_gate11_pending",
+                "Gate 11 is the only valid next decision",
+                "synthetic_rehearsal_only_no_real_pilot",
+                "zero real customers, employees or operators, stores",
+                "Tony is human approver",
+                "Stone is backup and escalation contact",
+                "Developer Agent is technical owner",
+                "CustomerService Agent plus Data Agent contribute evidence",
+                "Gates 11–12 remain unauthorized",
+                "No real pilot, real data, credential, connector, infrastructure, external action, risk acceptance, merge, publication, release or deployment authority was granted",
             ):
                 self.assertIn(token, registry)
 

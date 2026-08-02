@@ -312,6 +312,14 @@ def _validate_impl(
             or gate9_candidate.get("state") != "accepted"
         ):
             errors.append(_error("$candidate.gate_ledger[8]", "gate9_must_be_accepted"))
+        gate10_candidate = candidate_gates[9]
+        if (
+            not isinstance(gate10_candidate, dict)
+            or gate10_candidate.get("gate_id") != "HG-PILOT-SCOPE"
+            or gate10_candidate.get("accepted") is not True
+            or gate10_candidate.get("state") != "accepted"
+        ):
+            errors.append(_error("$candidate.gate_ledger[9]", "gate10_current_state_required"))
     if candidate.get("risk_posture") != {
         "stage10": "BLOCKED / NO-GO",
         "risk_count": 10,
@@ -328,11 +336,10 @@ def _validate_impl(
             errors.append(_error("$candidate.candidate_decision.result", "pending_required"))
         remaining = candidate_decision.get("remaining_human_gates")
         if not isinstance(remaining, list) or remaining != [
-            "HG-PILOT-SCOPE",
             "HG-PILOT-EVIDENCE",
             "HG-RELEASE",
         ]:
-            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate10_first_required"))
+            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate11_first_required"))
 
     if audit.get("required_truth") != {
         "risk_count": 10,

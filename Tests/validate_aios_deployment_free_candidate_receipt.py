@@ -109,7 +109,6 @@ EVIDENCE_IDS = (
     "EV-SUPPORT",
 )
 PENDING_GATES = (
-    "HG-PILOT-SCOPE",
     "HG-PILOT-EVIDENCE",
     "HG-RELEASE",
 )
@@ -361,11 +360,13 @@ def _validate_candidate_receipt_impl(model: Any) -> list[str]:
             "HG-PRIVACY-DATA",
             "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
             "HG-RISK-DISPOSITION",
+            "HG-PILOT-SCOPE",
         ],
         "decision_evidence": [
             "Owner authorization / Issue #44",
             "Owner authorization / Issue #45",
             "Owner authorization / Issue #46",
+            "Owner authorization / Issue #47",
         ],
         "allowed_data_classes": [
             "synthetic_non_personal",
@@ -398,7 +399,23 @@ def _validate_candidate_receipt_impl(model: Any) -> list[str]:
             "mitigate_and_remain_open_blocked_unaccepted"
         ),
         "treatment_ownership_authorized": True,
-        "next_gate": "HG-PILOT-SCOPE",
+        "rehearsal_scope_type": "synthetic_rehearsal_only_no_real_pilot",
+        "rehearsal_human_approver": "Tony",
+        "rehearsal_backup_and_escalation_contact": "Stone",
+        "rehearsal_technical_owner": "Developer Agent",
+        "rehearsal_evidence_contributors": [
+            "CustomerService Agent",
+            "Data Agent",
+        ],
+        "rehearsal_zero_participants": {
+            "real_customers": 0,
+            "employees_or_real_operators": 0,
+            "stores": 0,
+            "production_or_staging_environments": 0,
+            "real_cases_orders_accounts_or_messages": 0,
+        },
+        "synthetic_rehearsal_scope_authorized": True,
+        "next_gate": "HG-PILOT-EVIDENCE",
         "real_data_authorized": False,
         "real_operations_authorized": False,
         "credentials_connectors_infrastructure_or_accounts_authorized": False,
@@ -483,7 +500,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     if (
         candidate.get("status")
         != "technical_evidence_verified_pending_human_gates"
-        or gate_truth != [True] * 9 + [False] * 3
+        or gate_truth != [True] * 10 + [False] * 2
         or candidate.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.candidate", "alignment_required"))
@@ -572,7 +589,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "requirements-dev.txt",
         "PyYAML 6.0.3",
         "open_blocked_unaccepted",
-        "Gate 10–11",
+        "Gate 11",
         "Issue #49",
         "external_actions_performed=[]",
         "不得解释为",

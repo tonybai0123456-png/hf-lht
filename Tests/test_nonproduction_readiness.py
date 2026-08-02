@@ -92,7 +92,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             [row["gate_id"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            [True] * 9 + [False] * 3,
+            [True] * 10 + [False] * 2,
             [row["authorized"] for row in model["human_gates"]],
         )
 
@@ -212,13 +212,13 @@ class NonproductionReadinessTests(unittest.TestCase):
         }
         self.assertIs(gate_states["HG-ARCH-SECURITY"], True)
         self.assertEqual(
-            list(validator.GATE_IDS[9:]),
+            list(validator.GATE_IDS[10:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[9:]),
+            list(validator.GATE_IDS[10:]),
             decision["required_human_gates"],
         )
         self.assertEqual(
@@ -279,17 +279,17 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["privacy_data_approval"],
         )
         self.assertEqual(
-            [True] * 9 + [False] * 3,
+            [True] * 10 + [False] * 2,
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            list(validator.GATE_IDS[9:]),
+            list(validator.GATE_IDS[10:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[9:]),
+            list(validator.GATE_IDS[10:]),
             decision["required_human_gates"],
         )
         self.assertEqual([], decision["external_actions_performed"])
@@ -339,17 +339,17 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["operations_recovery_incident_support_approval"],
         )
         self.assertEqual(
-            [True] * 9 + [False] * 3,
+            [True] * 10 + [False] * 2,
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            list(validator.GATE_IDS[9:]),
+            list(validator.GATE_IDS[10:]),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[9:]),
+            list(validator.GATE_IDS[10:]),
             decision["required_human_gates"],
         )
         self.assertEqual([], decision["external_actions_performed"])
@@ -385,7 +385,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["risk_treatment_approval"],
         )
         self.assertEqual(
-            [True] * 9 + [False] * 3,
+            [True] * 10 + [False] * 2,
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertTrue(
@@ -398,7 +398,7 @@ class NonproductionReadinessTests(unittest.TestCase):
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[9:]),
+            list(validator.GATE_IDS[10:]),
             decision["required_human_gates"],
         )
         self.assertEqual(
@@ -407,6 +407,56 @@ class NonproductionReadinessTests(unittest.TestCase):
         )
         self.assertEqual(validator.FALSE_CLAIMS, decision["claims"])
         self.assertEqual([], decision["external_actions_performed"])
+
+    def test_gate10_records_zero_participant_synthetic_scope_without_real_pilot(
+        self,
+    ):
+        validator, model, fixture = self._assets()
+        self.assertEqual(
+            {
+                "status": "authorized_by_human_governance",
+                "scope_type": "synthetic_rehearsal_only_no_real_pilot",
+                "human_approver": "Tony",
+                "backup_and_escalation_contact": "Stone",
+                "technical_owner": "Developer Agent",
+                "evidence_contributors": [
+                    "CustomerService Agent",
+                    "Data Agent",
+                ],
+                "zero_participants": {
+                    "real_customers": 0,
+                    "employees_or_real_operators": 0,
+                    "stores": 0,
+                    "production_or_staging_environments": 0,
+                    "real_cases_orders_accounts_or_messages": 0,
+                },
+                "real_pilot_authorized": False,
+                "real_data_authorized": False,
+                "credentials_connectors_or_infrastructure_authorized": False,
+                "merge_publication_release_or_deployment_authorized": False,
+                "external_actions_allowed": False,
+                "decision_date": "2026-08-02",
+                "decision_evidence": "Owner authorization / Issue #47",
+            },
+            model["synthetic_rehearsal_scope_approval"],
+        )
+        self.assertEqual(
+            [True] * 10 + [False] * 2,
+            [row["authorized"] for row in model["human_gates"]],
+        )
+        self.assertEqual(
+            list(validator.GATE_IDS[10:]),
+            fixture["required_human_gates"],
+        )
+        decision = validator.evaluate_nonproduction_readiness(model, fixture)
+        self.assertEqual("needs_human_governance", decision["result"])
+        self.assertEqual(
+            list(validator.GATE_IDS[10:]),
+            decision["required_human_gates"],
+        )
+        self.assertEqual([], decision["external_actions_performed"])
+        self.assertEqual(validator.FALSE_CLAIMS, decision["claims"])
+        self.assertTrue(all(value is False for value in decision["claims"].values()))
 
     def test_valid_package_stops_at_human_governance_without_side_effects(self):
         validator, model, fixture = self._assets()

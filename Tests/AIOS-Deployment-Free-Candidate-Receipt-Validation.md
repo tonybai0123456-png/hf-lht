@@ -39,8 +39,9 @@ used.
 Gate 7 is accepted under Issue #44 for the two named synthetic data classes
 only. Gate 8 is accepted under Issue #45 for synthetic operations, recovery,
 incident-tabletop and support-flow validation only. Gate 9 is accepted under
-Issue #46 for the controlled treatment mapping only. Gate 10–11 remain pending
-explicit ordered human decisions. Gate 12
+Issue #46 for the controlled treatment mapping only. Gate 10 is accepted under
+Issue #47 only for a zero-participant synthetic rehearsal scope and no real
+pilot. Gate 11 remains pending an explicit human decision. Gate 12
 remains withheld by Issue #49. Merge, publication, archive, real data, credentials and
 permissions, connectors, external infrastructure and accounts, real pilot,
 risk acceptance, release and deployment remain withheld or excluded.

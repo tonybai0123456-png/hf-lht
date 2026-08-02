@@ -47,13 +47,12 @@ GATE_STATES = (
     "accepted",
     "accepted",
     "accepted",
-    "proposed_awaiting_explicit_owner_approval",
+    "accepted",
     "proposed_awaiting_explicit_owner_approval",
     "release_withheld_by_objective",
 )
-PENDING_GATE_IDS = GATE_IDS[9:]
+PENDING_GATE_IDS = GATE_IDS[10:]
 REASON_CODES = (
-    "HG-PILOT-SCOPE",
     "HG-PILOT-EVIDENCE",
     "HG-RELEASE-WITHHELD-BY-OBJECTIVE",
 )
@@ -174,6 +173,24 @@ EXPECTED_RISK_TREATMENT_GOVERNANCE = {
     "external_actions_allowed": False,
     "decision_evidence": "Owner authorization / Issue #46",
 }
+EXPECTED_SYNTHETIC_REHEARSAL_SCOPE_GOVERNANCE = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "synthetic_rehearsal_only_no_real_pilot",
+    "human_approver": "Tony",
+    "backup_and_escalation_contact": "Stone",
+    "technical_owner": "Developer Agent",
+    "evidence_contributors": ["CustomerService Agent", "Data Agent"],
+    "zero_participants": {
+        "real_customers": 0,
+        "employees_or_real_operators": 0,
+        "stores": 0,
+        "production_or_staging_environments": 0,
+        "real_cases_orders_accounts_or_messages": 0,
+    },
+    "real_pilot_authorized": False,
+    "external_actions_allowed": False,
+    "decision_evidence": "Owner authorization / Issue #47",
+}
 
 
 def _error(path: str, code: str) -> str:
@@ -244,6 +261,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
         "data_governance",
         "operations_governance",
         "risk_treatment_governance",
+        "synthetic_rehearsal_scope_governance",
         "risk_posture",
         "evidence_requirements",
         "candidate_decision",
@@ -344,7 +362,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
             )
             if not isinstance(gate, dict):
                 continue
-            expected_accepted = index < 9
+            expected_accepted = index < 10
             if (
                 gate.get("gate_id") != gate_id
                 or type(gate.get("accepted")) is not bool
@@ -371,6 +389,16 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
             _error(
                 "$.risk_treatment_governance",
                 "controlled_risk_treatment_approval_required",
+            )
+        )
+    if (
+        model["synthetic_rehearsal_scope_governance"]
+        != EXPECTED_SYNTHETIC_REHEARSAL_SCOPE_GOVERNANCE
+    ):
+        errors.append(
+            _error(
+                "$.synthetic_rehearsal_scope_governance",
+                "controlled_zero_participant_scope_approval_required",
             )
         )
     risk_posture = model["risk_posture"]
@@ -489,7 +517,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         )
 
     integration_gates = integration.get("human_gates")
-    expected_gate_states = list(zip(GATE_IDS, [True] * 9 + [False] * 3))
+    expected_gate_states = list(zip(GATE_IDS, [True] * 10 + [False] * 2))
     actual_gate_states = (
         [
             (gate.get("gate_id"), gate.get("authorized"))
@@ -539,7 +567,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "Developer Agent",
         "Issue #44",
         "Issue #49",
-        "Gate 10–12",
+        "Gate 11–12",
         "external_actions_performed=[]",
         "不得解释为",
     )

@@ -76,11 +76,11 @@ GATE_AUTHORIZATIONS = (
     True,
     True,
     True,
-    False,
+    True,
     False,
     False,
 )
-PENDING_GATE_IDS = GATE_IDS[9:]
+PENDING_GATE_IDS = GATE_IDS[10:]
 EXPECTED_REAL_OWNER = {
     "status": "assigned",
     "name": "Tony",
@@ -218,6 +218,28 @@ EXPECTED_RISK_TREATMENT_APPROVAL = {
     "decision_date": "2026-08-01",
     "decision_evidence": "Owner authorization / Issue #46",
 }
+EXPECTED_SYNTHETIC_REHEARSAL_SCOPE_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "synthetic_rehearsal_only_no_real_pilot",
+    "human_approver": "Tony",
+    "backup_and_escalation_contact": "Stone",
+    "technical_owner": "Developer Agent",
+    "evidence_contributors": ["CustomerService Agent", "Data Agent"],
+    "zero_participants": {
+        "real_customers": 0,
+        "employees_or_real_operators": 0,
+        "stores": 0,
+        "production_or_staging_environments": 0,
+        "real_cases_orders_accounts_or_messages": 0,
+    },
+    "real_pilot_authorized": False,
+    "real_data_authorized": False,
+    "credentials_connectors_or_infrastructure_authorized": False,
+    "merge_publication_release_or_deployment_authorized": False,
+    "external_actions_allowed": False,
+    "decision_date": "2026-08-02",
+    "decision_evidence": "Owner authorization / Issue #47",
+}
 ACCEPTANCE_IDS = (
     "AC-ENVIRONMENT",
     "AC-IDENTITY",
@@ -264,6 +286,7 @@ EXPECTED_ACCEPTANCE_TEST_IDS = {
         "test_gate7_records_synthetic_data_approval_without_real_data_authority",
         "test_gate8_records_synthetic_operations_approval_without_real_operations",
         "test_gate9_records_treatment_ownership_without_risk_acceptance",
+        "test_gate10_records_zero_participant_synthetic_scope_without_real_pilot",
         "test_valid_package_stops_at_human_governance_without_side_effects",
         "test_malformed_input_types_and_cycles_are_denied_without_exceptions",
     ),
@@ -465,6 +488,7 @@ def _validate_model_impl(model: Any) -> list[str]:
         "privacy_data_approval",
         "operations_recovery_incident_support_approval",
         "risk_treatment_approval",
+        "synthetic_rehearsal_scope_approval",
         "stage10_posture",
         "components",
         "risks",
@@ -511,6 +535,11 @@ def _validate_model_impl(model: Any) -> list[str]:
         )
     if model["risk_treatment_approval"] != EXPECTED_RISK_TREATMENT_APPROVAL:
         errors.append(_error("$.risk_treatment_approval", "invalid"))
+    if (
+        model["synthetic_rehearsal_scope_approval"]
+        != EXPECTED_SYNTHETIC_REHEARSAL_SCOPE_APPROVAL
+    ):
+        errors.append(_error("$.synthetic_rehearsal_scope_approval", "invalid"))
     if model["stage10_posture"] != "BLOCKED / NO-GO":
         errors.append(_error("$.stage10_posture", "invalid"))
 
