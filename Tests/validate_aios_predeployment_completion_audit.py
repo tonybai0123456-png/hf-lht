@@ -30,33 +30,25 @@ REQUIREMENT_STATES = (
     "proven_complete",
     "proven_complete",
     "proven_complete",
-    "pending_human_governance",
-    "partial_pending_human_gates",
+    "proven_complete",
+    "proven_complete",
     "intentionally_withheld",
     "intentionally_excluded",
     "intentionally_excluded_or_withheld",
 )
-QUEUE_GATES = (
-    "HG-PILOT-EVIDENCE",
-)
-QUEUE_ISSUES = ("#48",)
-QUEUE_STATES = (
-    "proposed_awaiting_explicit_owner_approval",
-)
-QUEUE_APPROVERS = ("Stone",)
-QUEUE_TECHNICAL_OWNERS = (
-    "Data Agent",
-)
-QUEUE_PREREQUISITES = (
-    "HG-PILOT-SCOPE",
-)
+QUEUE_GATES: tuple[str, ...] = ()
+QUEUE_ISSUES: tuple[str, ...] = ()
+QUEUE_STATES: tuple[str, ...] = ()
+QUEUE_APPROVERS: tuple[str, ...] = ()
+QUEUE_TECHNICAL_OWNERS: tuple[str, ...] = ()
+QUEUE_PREREQUISITES: tuple[str, ...] = ()
 EVIDENCE_STATES = (
     "verified_external_capture",
     "verified",
     "verified",
     "verified",
     "verified",
-    "incomplete_pending_human_gates",
+    "verified",
     "verified_authorized_treatment_mapping_risks_unaccepted",
     "verified_synthetic_only",
     "complete",
@@ -155,8 +147,8 @@ def _validate_completion_audit_impl(model: Any) -> list[str]:
         errors.append(_error("$.audit_version", "invalid"))
     if model["stage"] != "15" or model["stage_id"] != "NR-01":
         errors.append(_error("$.stage", "invalid"))
-    if model["status"] != "incomplete_pending_ordered_human_governance":
-        errors.append(_error("$.status", "must_remain_incomplete"))
+    if model["status"] != "deployment_free_work_complete_gate12_decision_pending":
+        errors.append(_error("$.status", "deployment_free_completion_state_required"))
     if model["allowed_scope"] != {"company": "汇沣电商", "brand": "BUW"}:
         errors.append(_error("$.allowed_scope", "invalid"))
     if model["excluded_entities"] != ["PC", "六合通"]:
@@ -291,7 +283,7 @@ def _validate_completion_audit_impl(model: Any) -> list[str]:
                 errors.append(_error(path, "unapproved_ordered_gate_required"))
 
     expected_decision = {
-        "result": "not_complete_pending_human_governance",
+        "result": "deployment_free_work_complete_gate12_decision_pending",
         "remaining_requirements": list(QUEUE_GATES),
         "stage10": "BLOCKED / NO-GO",
         "release_gate_authorized": False,
@@ -299,7 +291,7 @@ def _validate_completion_audit_impl(model: Any) -> list[str]:
     }
     if model["completion_decision"] != expected_decision:
         errors.append(
-            _error("$.completion_decision", "incomplete_decision_required")
+            _error("$.completion_decision", "deployment_free_decision_required")
         )
     if (
         not isinstance(model["claims"], dict)
@@ -326,8 +318,8 @@ def evaluate_completion_audit(model: Any) -> dict[str, Any]:
             "external_actions_performed": [],
         }
     return {
-        "result": "not_complete_pending_human_governance",
-        "reason_codes": [*QUEUE_GATES, "FINAL-EXACT-HEAD-CAPTURE"],
+        "result": "deployment_free_work_complete_gate12_decision_pending",
+        "reason_codes": ["HG-RELEASE-WITHHELD-BY-OBJECTIVE"],
         "claims": dict(FALSE_CLAIMS),
         "external_actions_performed": [],
     }
@@ -355,8 +347,8 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     )
     if (
         candidate.get("status")
-        != "technical_evidence_verified_pending_human_gates"
-        or candidate_gate_truth != [True] * 10 + [False] * 2
+        != "deployment_free_candidate_ready_for_gate12_decision"
+        or candidate_gate_truth != [True] * 11 + [False]
         or candidate.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.candidate", "alignment_required"))
@@ -373,15 +365,15 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     )
     if (
         proposals.get("status")
-        != "gates7_through_10_accepted_gate11_pending"
-        or proposals.get("sequencing", {}).get("next_gate") != QUEUE_GATES[0]
+        != "gates7_through_11_accepted_release_gate_withheld"
+        or proposals.get("sequencing", {}).get("next_gate") != "HG-RELEASE"
         or proposal_truth
         != [
             ("HG-PRIVACY-DATA", True),
             ("HG-OPS-RECOVERY-INCIDENT-SUPPORT", True),
             ("HG-RISK-DISPOSITION", True),
             ("HG-PILOT-SCOPE", True),
-            *list(zip(QUEUE_GATES, [False])),
+            ("HG-PILOT-EVIDENCE", True),
         ]
         or proposals.get("external_actions_performed") != []
     ):
@@ -395,19 +387,18 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         else []
     )
     if (
-        integration_truth != [True] * 10 + [False] * 2
+        integration_truth != [True] * 11 + [False]
         or integration.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.integration", "alignment_required"))
 
     guide_tokens = (
-        "incomplete_pending_ordered_human_governance",
-        "not_complete_pending_human_governance",
+        "deployment_free_work_complete_gate12_decision_pending",
         "proven_complete",
-        "pending_human_governance",
         "intentionally_withheld",
         "intentionally_excluded",
-        "Gate 11",
+        "Gate 11 is accepted",
+        "Gate 12",
         "Issue #44",
         "Issue #49",
         "Stage 10",

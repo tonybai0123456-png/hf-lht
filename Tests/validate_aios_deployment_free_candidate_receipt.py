@@ -499,17 +499,17 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     )
     if (
         candidate.get("status")
-        != "technical_evidence_verified_pending_human_gates"
-        or gate_truth != [True] * 10 + [False] * 2
+        != "deployment_free_candidate_ready_for_gate12_decision"
+        or gate_truth != [True] * 11 + [False]
         or candidate.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.candidate", "alignment_required"))
 
     if (
         audit.get("status")
-        != "incomplete_pending_ordered_human_governance"
+        != "deployment_free_work_complete_gate12_decision_pending"
         or audit.get("completion_decision", {}).get("result")
-        != "not_complete_pending_human_governance"
+        != "deployment_free_work_complete_gate12_decision_pending"
         or audit.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.audit", "alignment_required"))

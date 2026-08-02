@@ -1,7 +1,7 @@
 audit_version: predeployment_completion_audit/v1
 stage: "15"
 stage_id: NR-01
-status: incomplete_pending_ordered_human_governance
+status: deployment_free_work_complete_gate12_decision_pending
 allowed_scope:
   company: 汇沣电商
   brand: BUW
@@ -64,13 +64,13 @@ requirement_ledger:
       - HG-PILOT-SCOPE
   - requirement_id: PREDEP-08
     requirement: synthetic_rehearsal_evidence_gate
-    state: pending_human_governance
+    state: proven_complete
     evidence:
       - Issue #48
-      - HG-PILOT-EVIDENCE
+      - Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Decision-v1.yaml
   - requirement_id: PREDEP-09
     requirement: deployment_free_candidate_evidence
-    state: partial_pending_human_gates
+    state: proven_complete
     evidence:
       - Issue #49
       - Governance/AIOS-Deployment-Free-Candidate-Evidence-v1.yaml
@@ -98,25 +98,17 @@ issue49_evidence_snapshot:
   - {evidence_id: DFC-EV-03, state: verified}
   - {evidence_id: DFC-EV-04, state: verified}
   - {evidence_id: DFC-EV-05, state: verified}
-  - {evidence_id: DFC-EV-06, state: incomplete_pending_human_gates}
+  - {evidence_id: DFC-EV-06, state: verified}
   - {evidence_id: DFC-EV-07, state: verified_authorized_treatment_mapping_risks_unaccepted}
   - {evidence_id: DFC-EV-08, state: verified_synthetic_only}
   - {evidence_id: DFC-EV-09, state: complete}
   - {evidence_id: DFC-EV-10, state: verified}
   - {evidence_id: DFC-EV-11, state: complete}
   - {evidence_id: DFC-EV-12, state: complete}
-human_decision_queue:
-  - gate_id: HG-PILOT-EVIDENCE
-    issue: "#48"
-    accepted: false
-    state: proposed_awaiting_explicit_owner_approval
-    human_approver: Stone
-    technical_owner: Data Agent
-    prerequisite: HG-PILOT-SCOPE
+human_decision_queue: []
 completion_decision:
-  result: not_complete_pending_human_governance
-  remaining_requirements:
-    - HG-PILOT-EVIDENCE
+  result: deployment_free_work_complete_gate12_decision_pending
+  remaining_requirements: []
   stage10: BLOCKED / NO-GO
   release_gate_authorized: false
   deployment_free_evidence_only: true

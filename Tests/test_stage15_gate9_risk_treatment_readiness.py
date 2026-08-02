@@ -67,7 +67,7 @@ class Stage15Gate9RiskTreatmentReadinessTests(unittest.TestCase):
             "Stone",
             gate9["independent_reviewer_and_escalation_contact"],
         )
-        self.assertEqual("HG-PILOT-EVIDENCE", proposals["sequencing"]["next_gate"])
+        self.assertEqual("HG-RELEASE", proposals["sequencing"]["next_gate"])
 
         self.assertEqual(
             {
@@ -84,7 +84,7 @@ class Stage15Gate9RiskTreatmentReadinessTests(unittest.TestCase):
         self.assertIs(True, candidate["gate_ledger"][9]["accepted"])
         self.assertEqual("accepted", candidate["gate_ledger"][9]["state"])
         self.assertEqual(
-            ["HG-PILOT-EVIDENCE", "HG-RELEASE"],
+            ["HG-RELEASE"],
             candidate["candidate_decision"]["remaining_human_gates"],
         )
 

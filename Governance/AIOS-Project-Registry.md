@@ -24,12 +24,14 @@ controlled project source chain.
 
 ### Current Stage 15 evidence overlay
 
-The Stage 15 row above preserves its earlier review snapshot. The current
-superseding technical-evidence snapshot is
+The Stage 15 row above preserves its earlier review snapshot. The historical
+technical-evidence snapshot is
 `Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml`, source commit
 `36716abc76373d053c75e68352f46589f4ddc8f1`. The receipt is
-`verified_technical_evidence_pending_human_gates`; the candidate contract is
-`technical_evidence_verified_pending_human_gates`. Clean-export reproduction
+`verified_technical_evidence_pending_human_gates`. After the Gate 11 decision,
+the current candidate contract is
+`deployment_free_candidate_ready_for_gate12_decision` and evaluates to
+`ready_for_gate12_decision_release_withheld`. The historical clean-export reproduction
 passed 127/127 tests, 10/10 validators and 9/9 exact-head CI. Gate 10 is
 accepted only for the zero-participant synthetic rehearsal scope. Gate 11 is
 now accepted only for the exact synthetic evidence package at
@@ -57,6 +59,7 @@ narrow boundary and Gate 12 remains expressly withheld.
 | Accountability | Gate 7: Tony human approver, Stone backup, Data Agent technical validation owner, Developer Agent implementation support. Gate 8: Stone human approver, Tony backup, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors. Gate 9: Tony human approver and overall risk owner, Stone independent reviewer and escalation contact; Developer Agent, Data Agent, CustomerService Agent and CEO Agent are mapped evidence contributors only. Gate 10: Tony human approver, Stone backup and escalation contact, Developer Agent technical owner, CustomerService Agent and Data Agent evidence contributors. Gate 11: Stone human evidence approver, Tony backup and escalation contact, Data Agent technical evidence verification owner, Developer Agent and CustomerService Agent evidence contributors |
 | Design targets | CT-2; RTO 240 minutes and RPO 60 minutes are targets only, not achieved capability |
 | Ordered package | `gates7_through_11_accepted_release_gate_withheld`; Gate 12 is the only valid next governance decision |
+| Deployment-free completion | `deployment_free_work_complete_gate12_decision_pending`; all work authorized before Gate 12 is complete, while release authority remains false |
 | Withheld boundary | Gate 12 remains expressly withheld; no real monitoring, alerting, ticketing, incident, failover, backup/restore, support commitment, cloud resource, real participant, real data, credential, connector, real pilot, risk acceptance, merge, publication, archive, release or deployment authority |
 
 ## Registry rules

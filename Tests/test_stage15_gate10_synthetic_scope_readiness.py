@@ -74,11 +74,11 @@ class Stage15Gate10SyntheticScopeReadinessTests(unittest.TestCase):
         self.assertIs(True, candidate["gate_ledger"][9]["accepted"])
         self.assertEqual("accepted", candidate["gate_ledger"][9]["state"])
         self.assertEqual(
-            ["HG-PILOT-EVIDENCE", "HG-RELEASE"],
+            ["HG-RELEASE"],
             candidate["candidate_decision"]["remaining_human_gates"],
         )
         self.assertEqual(
-            ["HG-PILOT-EVIDENCE", "HG-RELEASE"],
+            ["HG-RELEASE"],
             fixture["required_human_gates"],
         )
 

@@ -41,7 +41,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
         model = yaml.safe_load(MODEL.read_text(encoding="utf-8"))
         self.assertEqual([], validator.validate_proposals(model))
         self.assertEqual(
-            "gates7_through_10_accepted_gate11_pending",
+            "gates7_through_11_accepted_release_gate_withheld",
             model["status"],
         )
         self.assertEqual(
@@ -66,7 +66,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             [proposal["issue"] for proposal in proposals],
         )
         self.assertEqual(
-            [True, True, True, True, False],
+            [True, True, True, True, True],
             [proposal["accepted"] for proposal in proposals],
         )
         self.assertEqual(
@@ -137,7 +137,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             proposals[4]["truth_labels"],
         )
         self.assertEqual(
-            "HG-PILOT-EVIDENCE",
+            "HG-RELEASE",
             model["sequencing"]["next_gate"],
         )
         self.assertEqual([], model["external_actions_performed"])
@@ -151,11 +151,11 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
 
         self.assertEqual(before, model)
         self.assertEqual(
-            "not_ready_pending_human_governance",
+            "ready_for_gate12_decision_release_withheld",
             result["result"],
         )
         self.assertEqual(
-            "HG-PILOT-EVIDENCE", result["next_gate"]
+            "HG-RELEASE", result["next_gate"]
         )
         self.assertEqual(
             [
@@ -163,6 +163,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
                 "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
                 "HG-RISK-DISPOSITION",
                 "HG-PILOT-SCOPE",
+                "HG-PILOT-EVIDENCE",
             ],
             result["accepted_proposal_gates"],
         )
@@ -214,8 +215,8 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
 
         guide = GUIDE.read_text(encoding="utf-8")
         for token in (
-            "gates7_through_10_accepted_gate11_pending",
-            "not_ready_pending_human_governance",
+            "gates7_through_11_accepted_release_gate_withheld",
+            "ready_for_gate12_decision_release_withheld",
             "HG-PRIVACY-DATA",
             "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
             "HG-RISK-DISPOSITION",
@@ -237,7 +238,7 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             "synthetic_rehearsal_evidence_only",
             "Gate 12",
             "release expressly withheld",
-            "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE']",
+            "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE', 'HG-PILOT-EVIDENCE']",
             "external_actions_performed=[]",
         ):
             self.assertIn(token, guide)
@@ -271,14 +272,14 @@ class Stage15HumanGateProposalTests(unittest.TestCase):
             completed.stdout,
         )
         self.assertIn(
-            "result=not_ready_pending_human_governance",
+            "result=ready_for_gate12_decision_release_withheld",
             completed.stdout,
         )
         self.assertIn(
-            "next_gate=HG-PILOT-EVIDENCE", completed.stdout
+            "next_gate=HG-RELEASE", completed.stdout
         )
         self.assertIn(
-            "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE']",
+            "accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE', 'HG-PILOT-EVIDENCE']",
             completed.stdout,
         )
         self.assertIn("external_actions_performed=[]", completed.stdout)

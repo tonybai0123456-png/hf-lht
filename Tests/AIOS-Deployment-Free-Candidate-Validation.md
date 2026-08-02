@@ -5,8 +5,8 @@
 This validation package records the truthful, deployment-free preparation
 state for Stage 15 / NR-01. A successful schema validation means only that the
 record is internally consistent. The current status is
-`technical_evidence_verified_pending_human_gates`, and the only valid evaluation is
-`not_ready_pending_human_governance`.
+`deployment_free_candidate_ready_for_gate12_decision`, and the only valid
+evaluation is `ready_for_gate12_decision_release_withheld`.
 
 The result must not be interpreted as a merge, publication, archive, real
 pilot, production-readiness, release, deployment, risk acceptance, or
@@ -47,8 +47,9 @@ Issue #47 only for `synthetic_rehearsal_only_no_real_pilot`, with zero real
 customers, employees or operators, stores, production or staging environments,
 and real cases, orders, accounts or messages.
 
-Gate 11–12 remain unaccepted. Issue #49 expressly withholds release while defining the
-deployment-free evidence boundary.
+Gate 11 is accepted only for the exact synthetic evidence package recorded in
+Issue #48. Gate 12 remains unaccepted. Issue #49 expressly withholds release
+while defining the deployment-free evidence boundary.
 
 ## Evidence contract
 
@@ -71,7 +72,8 @@ The machine-readable record contains twelve evidence requirements:
 The separate controlled receipt verifies the exact source commit/tree,
 29-path manifest, clean-export replay, local tests and validators, exact-head
 CI, synthetic controls, dependency resolution, scan and Mandatory Return.
-Gate-ledger completion remains pending human governance at Gate 11–12. Risk
+Gate-ledger completion through Gate 11 is verified; Gate 12 remains a separate
+human release decision. Risk
 treatment direction and evidence ownership are authorized, but no risk is
 accepted or closed and no production action is authorized.
 
@@ -90,7 +92,7 @@ Expected validator output:
 
 ```text
 AIOS deployment-free candidate evidence validation PASSED
-result=not_ready_pending_human_governance
+result=ready_for_gate12_decision_release_withheld
 external_actions_performed=[]
 ```
 

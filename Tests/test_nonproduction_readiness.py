@@ -92,7 +92,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             [row["gate_id"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            [True] * 10 + [False] * 2,
+            [True] * 11 + [False],
             [row["authorized"] for row in model["human_gates"]],
         )
 
@@ -212,13 +212,13 @@ class NonproductionReadinessTests(unittest.TestCase):
         }
         self.assertIs(gate_states["HG-ARCH-SECURITY"], True)
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             decision["required_human_gates"],
         )
         self.assertEqual(
@@ -279,17 +279,17 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["privacy_data_approval"],
         )
         self.assertEqual(
-            [True] * 10 + [False] * 2,
+            [True] * 11 + [False],
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             decision["required_human_gates"],
         )
         self.assertEqual([], decision["external_actions_performed"])
@@ -339,17 +339,17 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["operations_recovery_incident_support_approval"],
         )
         self.assertEqual(
-            [True] * 10 + [False] * 2,
+            [True] * 11 + [False],
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             decision["required_human_gates"],
         )
         self.assertEqual([], decision["external_actions_performed"])
@@ -385,7 +385,7 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["risk_treatment_approval"],
         )
         self.assertEqual(
-            [True] * 10 + [False] * 2,
+            [True] * 11 + [False],
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertTrue(
@@ -398,7 +398,7 @@ class NonproductionReadinessTests(unittest.TestCase):
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             decision["required_human_gates"],
         )
         self.assertEqual(
@@ -441,17 +441,17 @@ class NonproductionReadinessTests(unittest.TestCase):
             model["synthetic_rehearsal_scope_approval"],
         )
         self.assertEqual(
-            [True] * 10 + [False] * 2,
+            [True] * 11 + [False],
             [row["authorized"] for row in model["human_gates"]],
         )
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             fixture["required_human_gates"],
         )
         decision = validator.evaluate_nonproduction_readiness(model, fixture)
         self.assertEqual("needs_human_governance", decision["result"])
         self.assertEqual(
-            list(validator.GATE_IDS[10:]),
+            list(validator.PENDING_GATE_IDS),
             decision["required_human_gates"],
         )
         self.assertEqual([], decision["external_actions_performed"])

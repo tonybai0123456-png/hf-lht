@@ -49,7 +49,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             model["candidate_evidence_version"],
         )
         self.assertEqual(
-            "technical_evidence_verified_pending_human_gates",
+            "deployment_free_candidate_ready_for_gate12_decision",
             model["status"],
         )
         self.assertEqual(
@@ -58,11 +58,11 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
         )
         self.assertEqual(["PC", "六合通"], model["excluded_entities"])
         self.assertEqual(
-            [True] * 10 + [False] * 2,
+            [True] * 11 + [False],
             [gate["accepted"] for gate in model["gate_ledger"]],
         )
         self.assertEqual(
-            "not_ready_pending_human_governance",
+            "ready_for_gate12_decision_release_withheld",
             model["candidate_decision"]["result"],
         )
         self.assertEqual(
@@ -91,7 +91,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
 
         self.assertEqual(before, model)
         self.assertEqual(
-            "not_ready_pending_human_governance",
+            "ready_for_gate12_decision_release_withheld",
             result["result"],
         )
         self.assertEqual(
@@ -122,13 +122,13 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             {
                 **before,
                 "gate_ledger": [
-                    *before["gate_ledger"][:9],
+                    *before["gate_ledger"][:10],
                     {
-                        **before["gate_ledger"][9],
+                        **before["gate_ledger"][10],
                         "accepted": False,
                         "state": "proposed_awaiting_explicit_owner_approval",
                     },
-                    *before["gate_ledger"][10:],
+                    *before["gate_ledger"][11:],
                 ],
             },
             {**before, "claims": {**before["claims"], "real_data_used": True}},
@@ -153,8 +153,8 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
 
         guide = GUIDE.read_text(encoding="utf-8")
         for token in (
-            "technical_evidence_verified_pending_human_gates",
-            "not_ready_pending_human_governance",
+            "deployment_free_candidate_ready_for_gate12_decision",
+            "ready_for_gate12_decision_release_withheld",
             "synthetic_non_personal",
             "synthetic_personal_like_clearly_fictitious_non_routable",
             "Tony",
@@ -163,7 +163,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             "Developer Agent",
             "Issue #44",
             "Issue #49",
-            "Gate 11–12",
+            "Gate 12",
             "external_actions_performed=[]",
             "不得解释为",
         ):
@@ -200,7 +200,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             completed.stdout,
         )
         self.assertIn(
-            "result=not_ready_pending_human_governance",
+            "result=ready_for_gate12_decision_release_withheld",
             completed.stdout,
         )
         self.assertIn("external_actions_performed=[]", completed.stdout)
@@ -209,7 +209,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
         model = yaml.safe_load(MODEL.read_text(encoding="utf-8"))
         receipt = yaml.safe_load(RECEIPT.read_text(encoding="utf-8"))
         self.assertEqual(
-            "technical_evidence_verified_pending_human_gates", model["status"]
+            "deployment_free_candidate_ready_for_gate12_decision", model["status"]
         )
         self.assertEqual(
             receipt["source_state"]["candidate_commit"],
@@ -230,7 +230,7 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
                 "verified",
                 "verified",
                 "verified",
-                "incomplete_pending_human_gates",
+                "verified",
                 "verified_authorized_treatment_mapping_risks_unaccepted",
                 "verified_synthetic_only",
                 "complete",
@@ -241,10 +241,10 @@ class DeploymentFreeCandidateEvidenceTests(unittest.TestCase):
             [item["status"] for item in model["evidence_requirements"]],
         )
         self.assertEqual(
-            [True] * 10 + [False] * 2,
+            [True] * 11 + [False],
             [gate["accepted"] for gate in model["gate_ledger"]],
         )
         self.assertEqual(
-            "not_ready_pending_human_governance",
+            "ready_for_gate12_decision_release_withheld",
             model["candidate_decision"]["result"],
         )

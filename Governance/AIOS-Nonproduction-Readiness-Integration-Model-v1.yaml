@@ -186,7 +186,7 @@ human_gates:
   - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, authorized: true}
   - {gate_id: HG-RISK-DISPOSITION, authorized: true}
   - {gate_id: HG-PILOT-SCOPE, authorized: true}
-  - {gate_id: HG-PILOT-EVIDENCE, authorized: false}
+  - {gate_id: HG-PILOT-EVIDENCE, authorized: true}
   - {gate_id: HG-RELEASE, authorized: false}
 claims:
   risk_accepted: false

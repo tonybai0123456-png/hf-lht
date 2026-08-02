@@ -2,18 +2,14 @@
 
 ## Purpose and truthful status
 
-This package records the Stage 15 Gate 7 through Gate 10 decisions and preserves
-the remaining Gate 11 packet as one closed, ordered and machine-verifiable
-contract. Its status is
-`gates7_through_10_accepted_gate11_pending`; a valid package
-evaluates only to `not_ready_pending_human_governance`.
+This package records the Stage 15 Gate 7 through Gate 11 decisions as one
+closed, ordered and machine-verifiable contract. Its status is
+`gates7_through_11_accepted_release_gate_withheld`; a valid package evaluates
+only to `ready_for_gate12_decision_release_withheld`.
 
-Passing validation does not approve another gate. Gates 7 through 10 are
-accepted by the explicit owner decisions in Issues #44 through #47. Gate 11
-remains false until its
-named human approvers make separate decisions after all prerequisite gates have
-been accepted and verified.
-`accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE']`
+Passing validation does not approve Gate 12. Gates 7 through 11 are accepted
+within their exact boundaries by the decisions in Issues #44 through #48.
+`accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE', 'HG-PILOT-EVIDENCE']`
 and
 `external_actions_performed=[]`.
 
@@ -41,7 +37,8 @@ and
    and escalation authority, and Developer Agent is technical owner. The scope
    is `synthetic_rehearsal_only_no_real_pilot`, with zero real customers,
    employees, stores, cases, systems or messages.
-5. `HG-PILOT-EVIDENCE` — Issue #48. Stone is the human evidence approver, Tony
+5. `HG-PILOT-EVIDENCE` — Issue #48, accepted for the exact synthetic evidence
+   package only. Stone is the human evidence approver, Tony
    is executive owner and escalation contact, and Data Agent is evidence
    reconciliation owner. Only `synthetic_rehearsal_evidence_only` may be
    accepted; Developer Agent and CustomerService Agent are contributors.
@@ -77,9 +74,9 @@ Expected validator output:
 
 ```text
 AIOS Stage 15 human-gate proposal validation PASSED
-result=not_ready_pending_human_governance
-next_gate=HG-PILOT-EVIDENCE
-accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE']
+result=ready_for_gate12_decision_release_withheld
+next_gate=HG-RELEASE
+accepted_proposal_gates=['HG-PRIVACY-DATA', 'HG-OPS-RECOVERY-INCIDENT-SUPPORT', 'HG-RISK-DISPOSITION', 'HG-PILOT-SCOPE', 'HG-PILOT-EVIDENCE']
 external_actions_performed=[]
 ```
 

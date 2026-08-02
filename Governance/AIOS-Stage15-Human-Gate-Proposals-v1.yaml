@@ -1,7 +1,7 @@
 proposal_version: stage15_human_gate_proposals/v1
 stage: "15"
 stage_id: NR-01
-status: gates7_through_10_accepted_gate11_pending
+status: gates7_through_11_accepted_release_gate_withheld
 allowed_scope:
   company: 汇沣电商
   brand: BUW
@@ -20,6 +20,7 @@ sequencing:
     - HG-OPS-RECOVERY-INCIDENT-SUPPORT
     - HG-RISK-DISPOSITION
     - HG-PILOT-SCOPE
+    - HG-PILOT-EVIDENCE
   gate_order:
     - HG-SPEC-APPROVAL
     - HG-PLAN-APPROVAL
@@ -33,7 +34,7 @@ sequencing:
     - HG-PILOT-SCOPE
     - HG-PILOT-EVIDENCE
     - HG-RELEASE
-  next_gate: HG-PILOT-EVIDENCE
+  next_gate: HG-RELEASE
   strict_dependency_order: true
   release_gate_accepted: false
 proposals:
@@ -194,8 +195,8 @@ proposals:
     external_actions_allowed: false
   - gate_id: HG-PILOT-EVIDENCE
     issue: "#48"
-    accepted: false
-    state: proposed_awaiting_explicit_owner_approval
+    accepted: true
+    state: accepted
     prerequisite_gates:
       - HG-SPEC-APPROVAL
       - HG-PLAN-APPROVAL
@@ -236,6 +237,7 @@ proposals:
       - invented_missing_duplicated_or_reordered_evidence_identifier
       - real_pilot_production_rto_rpo_sla_slo_or_risk_acceptance_claim
     approval_condition: gate10_accepted_then_exact_head_synthetic_evidence_human_approval
+    decision_evidence: "Owner authorization / Issue #48 / Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Decision-v1.yaml"
     authority_ceiling: needs_human_governance
     external_actions_allowed: false
 claims:

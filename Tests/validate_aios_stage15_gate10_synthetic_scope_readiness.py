@@ -239,12 +239,12 @@ def _validate_impl(
     if not isinstance(sequencing, dict):
         errors.append(_error("$proposals.sequencing", "mapping_required"))
     else:
-        if sequencing.get("accepted_gates") != list(GATE_ORDER[:10]):
-            errors.append(_error("$proposals.sequencing.accepted_gates", "gates1_through_10_required"))
+        if sequencing.get("accepted_gates") != list(GATE_ORDER[:11]):
+            errors.append(_error("$proposals.sequencing.accepted_gates", "gates1_through_11_required"))
         if sequencing.get("gate_order") != list(GATE_ORDER):
             errors.append(_error("$proposals.sequencing.gate_order", "exact_order_required"))
-        if sequencing.get("next_gate") != "HG-PILOT-EVIDENCE":
-            errors.append(_error("$proposals.sequencing.next_gate", "gate11_required"))
+        if sequencing.get("next_gate") != "HG-RELEASE":
+            errors.append(_error("$proposals.sequencing.next_gate", "gate12_required"))
         if sequencing.get("release_gate_accepted") is not False:
             errors.append(_error("$proposals.sequencing.release_gate_accepted", "false_required"))
     gate10 = proposal_list[3] if isinstance(proposal_list, list) and len(proposal_list) > 3 else None
@@ -294,9 +294,9 @@ def _validate_impl(
             if not isinstance(gate, dict) or gate.get("gate_id") != gate_id:
                 errors.append(_error(f"$candidate.gate_ledger[{index}]", "ordered_gate_required"))
                 continue
-            if index < 10 and (gate.get("accepted") is not True or gate.get("state") != "accepted"):
+            if index < 11 and (gate.get("accepted") is not True or gate.get("state") != "accepted"):
                 errors.append(_error(f"$candidate.gate_ledger[{index}]", "accepted_prerequisite_required"))
-            if index > 9 and gate.get("accepted") is not False:
+            if index > 10 and gate.get("accepted") is not False:
                 errors.append(_error(f"$candidate.gate_ledger[{index}]", "later_gate_must_remain_unaccepted"))
     if candidate.get("risk_posture") != {
         "stage10": "BLOCKED / NO-GO",
@@ -310,13 +310,10 @@ def _validate_impl(
     if not isinstance(candidate_decision, dict):
         errors.append(_error("$candidate.candidate_decision", "mapping_required"))
     else:
-        if candidate_decision.get("result") != "not_ready_pending_human_governance":
-            errors.append(_error("$candidate.candidate_decision.result", "pending_required"))
-        if candidate_decision.get("remaining_human_gates") != [
-            "HG-PILOT-EVIDENCE",
-            "HG-RELEASE",
-        ]:
-            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate11_first_required"))
+        if candidate_decision.get("result") != "ready_for_gate12_decision_release_withheld":
+            errors.append(_error("$candidate.candidate_decision.result", "gate12_boundary_required"))
+        if candidate_decision.get("remaining_human_gates") != ["HG-RELEASE"]:
+            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate12_only_required"))
 
     if fixture.get("scope") != {"company": "汇沣电商", "brand": "BUW"}:
         errors.append(_error("$fixture.scope", "buw_only_required"))
@@ -342,11 +339,8 @@ def _validate_impl(
         errors.append(_error("$fixture.risk_states", "ordered_ten_risks_required"))
     elif any(value != "open_blocked_unaccepted" for value in risk_states.values()):
         errors.append(_error("$fixture.risk_states", "all_must_remain_open_blocked_unaccepted"))
-    if fixture.get("required_human_gates") != [
-        "HG-PILOT-EVIDENCE",
-        "HG-RELEASE",
-    ]:
-        errors.append(_error("$fixture.required_human_gates", "gate11_first_required"))
+    if fixture.get("required_human_gates") != ["HG-RELEASE"]:
+        errors.append(_error("$fixture.required_human_gates", "gate12_only_required"))
     if fixture.get("requested_external_actions") != []:
         errors.append(_error("$fixture.requested_external_actions", "must_be_empty"))
     fixture_claims = fixture.get("claims")

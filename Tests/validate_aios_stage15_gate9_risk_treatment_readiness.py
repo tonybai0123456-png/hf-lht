@@ -332,14 +332,11 @@ def _validate_impl(
     if not isinstance(candidate_decision, dict):
         errors.append(_error("$candidate.candidate_decision", "mapping_required"))
     else:
-        if candidate_decision.get("result") != "not_ready_pending_human_governance":
-            errors.append(_error("$candidate.candidate_decision.result", "pending_required"))
+        if candidate_decision.get("result") != "ready_for_gate12_decision_release_withheld":
+            errors.append(_error("$candidate.candidate_decision.result", "gate12_boundary_required"))
         remaining = candidate_decision.get("remaining_human_gates")
-        if not isinstance(remaining, list) or remaining != [
-            "HG-PILOT-EVIDENCE",
-            "HG-RELEASE",
-        ]:
-            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate11_first_required"))
+        if not isinstance(remaining, list) or remaining != ["HG-RELEASE"]:
+            errors.append(_error("$candidate.candidate_decision.remaining_human_gates", "gate12_only_required"))
 
     if audit.get("required_truth") != {
         "risk_count": 10,

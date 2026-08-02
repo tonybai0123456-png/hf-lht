@@ -302,11 +302,11 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     proposal_records = proposals.get("proposals")
     gate11 = proposal_records[4] if isinstance(proposal_records, list) and len(proposal_records) == 5 else None
     if (
-        proposals.get("status") != "gates7_through_10_accepted_gate11_pending"
-        or proposals.get("sequencing", {}).get("next_gate") != "HG-PILOT-EVIDENCE"
+        proposals.get("status") != "gates7_through_11_accepted_release_gate_withheld"
+        or proposals.get("sequencing", {}).get("next_gate") != "HG-RELEASE"
         or not isinstance(gate11, dict)
         or gate11.get("gate_id") != "HG-PILOT-EVIDENCE"
-        or gate11.get("accepted") is not False
+        or gate11.get("accepted") is not True
         or gate11.get("human_approver") != "Stone"
         or gate11.get("scope_type") != "synthetic_rehearsal_evidence_only"
         or gate11.get("external_actions_allowed") is not False
@@ -327,16 +327,16 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         not isinstance(ledger, list)
         or len(ledger) != 12
         or ledger[9].get("accepted") is not True
-        or ledger[10].get("accepted") is not False
+        or ledger[10].get("accepted") is not True
         or candidate.get("candidate_decision", {}).get("remaining_human_gates")
-        != ["HG-PILOT-EVIDENCE", "HG-RELEASE"]
+        != ["HG-RELEASE"]
         or candidate.get("external_actions_performed") != []
     ):
         errors.append(_error("$repository.candidate", "gate11_pending_alignment_required"))
 
     if (
         fixture.get("required_human_gates")
-        != ["HG-PILOT-EVIDENCE", "HG-RELEASE"]
+        != ["HG-RELEASE"]
         or fixture.get("support_handoff", {}).get("case_id")
         != "SYNTHETIC-CASE-001"
         or fixture.get("support_handoff", {}).get("ticket_created") is not False

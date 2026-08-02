@@ -39,7 +39,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
 
         self.assertEqual([], validator.validate_completion_audit(model))
         self.assertEqual(
-            "incomplete_pending_ordered_human_governance", model["status"]
+            "deployment_free_work_complete_gate12_decision_pending", model["status"]
         )
         self.assertEqual(
             {"company": "汇沣电商", "brand": "BUW"},
@@ -63,8 +63,8 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
                 "proven_complete",
                 "proven_complete",
                 "proven_complete",
-                "pending_human_governance",
-                "partial_pending_human_gates",
+                "proven_complete",
+                "proven_complete",
                 "intentionally_withheld",
                 "intentionally_excluded",
                 "intentionally_excluded_or_withheld",
@@ -72,13 +72,11 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
             [item["state"] for item in model["requirement_ledger"]],
         )
         self.assertEqual(
-            [
-                "HG-PILOT-EVIDENCE",
-            ],
+            [],
             [item["gate_id"] for item in model["human_decision_queue"]],
         )
         self.assertEqual(
-            "not_complete_pending_human_governance",
+            "deployment_free_work_complete_gate12_decision_pending",
             model["completion_decision"]["result"],
         )
         self.assertFalse(model["completion_decision"]["release_gate_authorized"])
@@ -97,7 +95,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
 
         self.assertEqual(before, model)
         self.assertEqual(
-            "not_complete_pending_human_governance", result["result"]
+            "deployment_free_work_complete_gate12_decision_pending", result["result"]
         )
         self.assertEqual([], result["external_actions_performed"])
         self.assertTrue(all(value is False for value in result["claims"].values()))
@@ -110,8 +108,11 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
             {
                 **before,
                 "human_decision_queue": [
-                    {**before["human_decision_queue"][0], "accepted": True},
-                    *before["human_decision_queue"][1:],
+                    {
+                        "gate_id": "HG-PILOT-EVIDENCE",
+                        "issue": "#48",
+                        "accepted": False,
+                    },
                 ],
             },
             {
@@ -147,13 +148,12 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
 
         guide = GUIDE.read_text(encoding="utf-8")
         for token in (
-            "incomplete_pending_ordered_human_governance",
-            "not_complete_pending_human_governance",
+            "deployment_free_work_complete_gate12_decision_pending",
             "proven_complete",
-            "pending_human_governance",
             "intentionally_withheld",
             "intentionally_excluded",
-            "Gate 11",
+            "Gate 11 is accepted",
+            "Gate 12",
             "Issue #44",
             "Issue #49",
             "Stage 10",
@@ -194,7 +194,7 @@ class PredeploymentCompletionAuditTests(unittest.TestCase):
             completed.stdout,
         )
         self.assertIn(
-            "result=not_complete_pending_human_governance",
+            "result=deployment_free_work_complete_gate12_decision_pending",
             completed.stdout,
         )
         self.assertIn("external_actions_performed=[]", completed.stdout)

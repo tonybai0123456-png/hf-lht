@@ -77,10 +77,10 @@ GATE_AUTHORIZATIONS = (
     True,
     True,
     True,
-    False,
+    True,
     False,
 )
-PENDING_GATE_IDS = GATE_IDS[10:]
+PENDING_GATE_IDS = GATE_IDS[11:]
 EXPECTED_REAL_OWNER = {
     "status": "assigned",
     "name": "Tony",

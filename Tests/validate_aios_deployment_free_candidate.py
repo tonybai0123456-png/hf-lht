@@ -48,12 +48,11 @@ GATE_STATES = (
     "accepted",
     "accepted",
     "accepted",
-    "proposed_awaiting_explicit_owner_approval",
+    "accepted",
     "release_withheld_by_objective",
 )
-PENDING_GATE_IDS = GATE_IDS[10:]
+PENDING_GATE_IDS = GATE_IDS[11:]
 REASON_CODES = (
-    "HG-PILOT-EVIDENCE",
     "HG-RELEASE-WITHHELD-BY-OBJECTIVE",
 )
 EVIDENCE_IDS = tuple(f"DFC-EV-{number:02d}" for number in range(1, 13))
@@ -77,7 +76,7 @@ EVIDENCE_STATUSES = (
     "verified",
     "verified",
     "verified",
-    "incomplete_pending_human_gates",
+    "verified",
     "verified_authorized_treatment_mapping_risks_unaccepted",
     "verified_synthetic_only",
     "complete",
@@ -278,8 +277,8 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
         errors.append(_error("$.candidate_evidence_version", "invalid"))
     if model["stage"] != "15" or model["stage_id"] != "NR-01":
         errors.append(_error("$.stage", "invalid"))
-    if model["status"] != "technical_evidence_verified_pending_human_gates":
-        errors.append(_error("$.status", "must_remain_incomplete"))
+    if model["status"] != "deployment_free_candidate_ready_for_gate12_decision":
+        errors.append(_error("$.status", "gate12_candidate_state_required"))
     if model["allowed_scope"] != {"company": "汇沣电商", "brand": "BUW"}:
         errors.append(_error("$.allowed_scope", "invalid"))
     if model["excluded_entities"] != ["PC", "六合通"]:
@@ -362,7 +361,7 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
             )
             if not isinstance(gate, dict):
                 continue
-            expected_accepted = index < 10
+            expected_accepted = index < 11
             if (
                 gate.get("gate_id") != gate_id
                 or type(gate.get("accepted")) is not bool
@@ -442,13 +441,13 @@ def _validate_candidate_evidence_impl(model: Any) -> list[str]:
 
     decision = model["candidate_decision"]
     expected_decision = {
-        "result": "not_ready_pending_human_governance",
+        "result": "ready_for_gate12_decision_release_withheld",
         "reason_codes": list(REASON_CODES),
         "remaining_human_gates": list(PENDING_GATE_IDS),
         "deployment_free_evidence_only": True,
     }
     if decision != expected_decision:
-        errors.append(_error("$.candidate_decision", "incomplete_decision_required"))
+        errors.append(_error("$.candidate_decision", "gate12_decision_boundary_required"))
 
     claims = model["claims"]
     if (
@@ -480,7 +479,7 @@ def evaluate_candidate_evidence(model: Any) -> dict[str, Any]:
             "external_actions_performed": [],
         }
     return {
-        "result": "not_ready_pending_human_governance",
+        "result": "ready_for_gate12_decision_release_withheld",
         "reason_codes": list(REASON_CODES),
         "remaining_human_gates": list(PENDING_GATE_IDS),
         "data_governance": dict(EVALUATED_DATA_GOVERNANCE),
@@ -517,7 +516,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         )
 
     integration_gates = integration.get("human_gates")
-    expected_gate_states = list(zip(GATE_IDS, [True] * 10 + [False] * 2))
+    expected_gate_states = list(zip(GATE_IDS, [True] * 11 + [False]))
     actual_gate_states = (
         [
             (gate.get("gate_id"), gate.get("authorized"))
@@ -557,8 +556,8 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         )
 
     guide_tokens = (
-        "technical_evidence_verified_pending_human_gates",
-        "not_ready_pending_human_governance",
+        "deployment_free_candidate_ready_for_gate12_decision",
+        "ready_for_gate12_decision_release_withheld",
         "synthetic_non_personal",
         "synthetic_personal_like_clearly_fictitious_non_routable",
         "Tony",
@@ -567,7 +566,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "Developer Agent",
         "Issue #44",
         "Issue #49",
-        "Gate 11–12",
+        "Gate 12",
         "external_actions_performed=[]",
         "不得解释为",
     )

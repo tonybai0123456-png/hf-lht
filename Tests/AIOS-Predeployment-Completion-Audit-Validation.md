@@ -4,16 +4,15 @@
 
 This controlled audit answers one narrow question: what has been proven before
 deployment, what still requires a human decision, and what is intentionally
-outside the active objective. Its truthful status is
-`incomplete_pending_ordered_human_governance`; its maximum current result is
-`not_complete_pending_human_governance`.
+outside the active objective. Its truthful status and result are
+`deployment_free_work_complete_gate12_decision_pending`.
 
 ## Completion classes
 
 - `proven_complete` means repository-controlled implementation or evidence has
   passed its recorded validation boundary.
-- `pending_human_governance` means a complete proposal exists, but the named
-  human approver has not accepted the gate.
+- `proven_complete` for Gate 11 means only that the exact synthetic evidence
+  package was accepted; it grants no real-pilot or release authority.
 - `intentionally_withheld` means merge, publication, archive or release is
   deliberately not authorized by the current objective.
 - `intentionally_excluded` means real data, connectors, infrastructure,
@@ -25,13 +24,13 @@ incident-tabletop and support boundary. Gate 9 in Issue #46 is accepted only
 for the exact risk-treatment direction and mapped evidence responsibilities;
 all ten risks remain open, blocked and unaccepted. Gate 10 in Issue #47 is
 accepted only for a zero-participant synthetic rehearsal and no real pilot.
-Gate 11 in Issue #48 is the sole current human decision point. Issue #49
-expressly withholds Gate 12 and defines the deployment-free
+Gate 11 is accepted in Issue #48 only for its exact synthetic evidence package.
+Issue #49 expressly withholds Gate 12 and defines the deployment-free
 candidate evidence package.
 The technical portion of that package is now externally captured and verified
 through `Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml`; the audit
-remains incomplete only because the ordered human-gate requirements are not
-accepted.
+is complete for the authorized no-deployment scope. Gate 12 remains a separate
+human release decision and is not part of this completion claim.
 
 ## Truth boundary
 
