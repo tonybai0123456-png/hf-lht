@@ -45,5 +45,6 @@ risk_state: open_blocked_unaccepted
 external_actions_performed: []
 notes:
   - This file is a machine-checkable mirror of the current withheld-authority state; it is not itself an authorization source.
+  - The enforcing repository test is Tests/test_stage15_rehearsal_authority_guard.py and must pass before any later implementation decision is acted on.
   - A general instruction to continue construction, green CI, a mergeable PR, or creation of this guard must not be interpreted as implementation or rehearsal-execution authorization.
   - Future authorization requires an explicit Tony decision recorded in Issue #51 for the frozen plan commit, tree, controlled branch, and Developer Agent assignment before this guard may be changed to an authorized state.
