@@ -1,0 +1,49 @@
+authorization_guard_version: aios_stage15_rehearsal_authorization_guard/v1
+stage: "15"
+stage_id: NR-01
+scope: local_isolated_python_rehearsal_preimplementation_guard
+status: awaiting_explicit_owner_decision
+owner_decision_entry_point:
+  issue_number: 51
+  issue_url: https://github.com/tonybai0123456-png/hf-lht/issues/51
+  human_owner: Tony
+frozen_decision_target:
+  implementation_plan_commit: 2d3d186d1930d18bfd0a8d604240694f11e1af6c
+  implementation_plan_tree: 6b26f4f67907dcba68698949c6c303a4b8d9e5f0
+  controlled_branch: gov/aios-stage15-nonproduction-readiness-design
+implementation_authorized: false
+rehearsal_execution_authorized: false
+owner_decision_evidence:
+  decision: null
+  actor: null
+  issue_comment_url: null
+  recorded_at_utc: null
+required_implementation_assets:
+  - Governance/AIOS-Stage15-Local-Python-Rehearsal-Contract-v1.yaml
+  - Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-Schema-v1.yaml
+  - Runtime/stage15_local_python_rehearsal.py
+  - Tests/Fixtures/nonproduction-readiness/local-python-rehearsal-synthetic.yaml
+  - Tests/test_stage15_local_python_rehearsal.py
+  - Tests/validate_aios_stage15_local_python_rehearsal.py
+  - Tests/AIOS-Stage15-Local-Python-Rehearsal-Validation.md
+unauthorized_state_rule: all_required_implementation_assets_must_be_absent
+future_authorization_rule: explicit_tony_issue51_decision_required_before_any_required_implementation_asset_exists
+downstream_authority:
+  pr_ready_for_review_authorized: false
+  merge_authorized: false
+  risk_acceptance_authorized: false
+  real_pilot_authorized: false
+  real_data_authorized: false
+  credentials_or_permissions_authorized: false
+  connectors_or_external_endpoints_authorized: false
+  infrastructure_or_cloud_authorized: false
+  production_authorized: false
+  release_authorized: false
+  deployment_authorized: false
+stage10_state: BLOCKED / NO-GO
+risk_state: open_blocked_unaccepted
+external_actions_performed: []
+notes:
+  - This file is a machine-checkable mirror of the current withheld-authority state; it is not itself an authorization source.
+  - A general instruction to continue construction, green CI, a mergeable PR, or creation of this guard must not be interpreted as implementation or rehearsal-execution authorization.
+  - Future authorization requires an explicit Tony decision recorded in Issue #51 for the frozen plan commit, tree, controlled branch, and Developer Agent assignment before this guard may be changed to an authorized state.
