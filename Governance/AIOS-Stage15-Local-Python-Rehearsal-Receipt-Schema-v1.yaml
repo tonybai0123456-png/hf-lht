@@ -1,0 +1,75 @@
+schema_version: aios_stage15_local_python_rehearsal_receipt_schema/v1
+additional_properties: false
+required_keys:
+  - schema_version
+  - run_id
+  - started_at_utc
+  - finished_at_utc
+  - company
+  - brand
+  - stage
+  - mode
+  - result
+  - source_commit
+  - source_tree
+  - file_inventory_sha256
+  - python_runtime
+  - local_dependencies
+  - fixture_ids
+  - fixture_checksums
+  - ordered_checks
+  - smoke_result
+  - normalized_smoke_sha256
+  - network_guard
+  - material_scan
+  - cleanup
+  - risk_states
+  - stage10_state
+  - pr41_state
+  - cloud_capability_proven
+  - pilot_authorized
+  - production_ready
+  - release_authorized
+  - deployment_authorized
+  - risks_accepted
+  - external_actions_performed
+  - reason_codes
+  - evidence_refs
+  - required_human_decisions
+nested_required_keys:
+  python_runtime:
+    - implementation
+    - version
+    - executable_label
+    - user_site_enabled
+    - online_install_used
+  local_dependencies:
+    - PyYAML
+  network_guard:
+    - active
+    - attempted_operations
+  material_scan:
+    - credentials_found
+    - real_data_found
+    - external_endpoints_found
+    - nonempty_connectors_found
+    - infrastructure_material_found
+  cleanup:
+    - execution_directory_removed
+    - bytecode_directory_removed
+    - evidence_directory_preserved
+    - repository_unchanged
+constant_values:
+  schema_version: aios_stage15_local_python_rehearsal_receipt/v1
+  company: 汇沣电商
+  brand: BUW
+  stage: Stage 15 / NR-01
+  mode: local_isolated_python_synthetic_only
+  stage10_state: BLOCKED / NO-GO
+  pr41_state: draft_open_unmerged
+  cloud_capability_proven: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+  risks_accepted: false

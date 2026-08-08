@@ -4,13 +4,18 @@ on:
   pull_request:
     paths:
       - "Governance/AIOS-Nonproduction-Readiness-*"
+      - "Governance/AIOS-Stage15-Local-Python-Rehearsal-*"
       - "Governance/AIOS-Stage-Registry.md"
       - "Governance/AIOS-Project-Registry.md"
+      - "Runtime/stage15_local_python_rehearsal.py"
       - "Tests/Fixtures/nonproduction-readiness/**"
       - "Tests/AIOS-Nonproduction-Readiness-Validation.md"
+      - "Tests/AIOS-Stage15-Local-Python-Rehearsal-Validation.md"
       - "Tests/test_nonproduction_readiness.py"
+      - "Tests/test_stage15_local_python_rehearsal.py"
       - "Tests/test_project_governance.py"
       - "Tests/validate_aios_nonproduction_readiness.py"
+      - "Tests/validate_aios_stage15_local_python_rehearsal.py"
       - "docs/superpowers/specs/2026-07-23-nonproduction-readiness-remediation-integration-design.md"
       - "docs/superpowers/plans/2026-07-23-nonproduction-readiness-remediation-integration.md"
       - ".github/workflows/validate-aios-nonproduction-readiness.yml"
@@ -38,7 +43,9 @@ jobs:
           cache-dependency-path: requirements-dev.txt
       - run: python -m pip install --requirement requirements-dev.txt
       - run: python3 Tests/validate_aios_nonproduction_readiness.py
+      - run: python3 Tests/validate_aios_stage15_local_python_rehearsal.py
       - run: python3 -m unittest Tests.test_nonproduction_readiness -v
+      - run: python3 -m unittest Tests.test_stage15_local_python_rehearsal -v
       - run: python3 -m unittest Tests.test_project_governance -v
       - run: python3 -m unittest discover -s Tests -p 'test_*.py' -v
       - run: python3 Tests/validate_aios_workflow_schema.py

@@ -1,0 +1,18 @@
+metadata:
+  run_id: SYNTHETIC-LOCAL-REHEARSAL-0001
+  company: 汇沣电商
+  data_classification: synthetic
+  dry_run: true
+  allow_external_writes: false
+  trigger_event_id: SYNTHETIC-EVENT-STORE-ALERT-001
+  business_entity: BUW:SYNTHETIC-STORE-001
+  period: "2099-01-01"
+inputs:
+  brand: BUW
+  store_code: SYNTHETIC-STORE-001
+  period: "2099-01-01"
+  anomaly_type: synthetic_settlement_delay
+  evidence_links:
+    - synthetic://store/SYNTHETIC-STORE-001/alert/001
+  current_actions:
+    - synthetic repository fixture recorded

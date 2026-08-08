@@ -1,0 +1,131 @@
+record_version: aios_stage15_local_python_rehearsal_mandatory_return/v1
+stage: Stage 15 / NR-01
+status: reported_local_rehearsal_complete_not_cloud_proof
+scope:
+  company: 汇沣电商
+  brand: BUW
+  excluded_entities: [PC, 六合通]
+authorization:
+  issue: 51
+  plan_commit: 2d3d186d1930d18bfd0a8d604240694f11e1af6c
+  plan_tree: 6b26f4f67907dcba68698949c6c303a4b8d9e5f0
+  implementer: Developer Agent
+  evidence_reviewer: Data Agent
+  boundary_reviewer: Stone
+source_candidate:
+  commit: 33e2216976b73ebaff4368ca8b8d5dc206ebf894
+  tree: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
+  changed_file_count: 15
+  changed_files:
+    - .github/workflows/validate-aios-nonproduction-readiness.yml
+    - Governance/AIOS-Project-Registry.md
+    - Governance/AIOS-Stage-Registry.md
+    - Governance/AIOS-Stage15-Local-Python-Rehearsal-Contract-v1.yaml
+    - Governance/AIOS-Stage15-Local-Python-Rehearsal-Mandatory-Return-v1.yaml
+    - Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-Schema-v1.yaml
+    - Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-v1.json
+    - Runtime/stage15_local_python_rehearsal.py
+    - Tests/AIOS-Stage15-Local-Python-Rehearsal-Validation.md
+    - Tests/Fixtures/nonproduction-readiness/local-python-rehearsal-synthetic.yaml
+    - Tests/Fixtures/nonproduction-readiness/local-python-store-anomaly-input.yaml
+    - Tests/Fixtures/nonproduction-readiness/local-python-store-anomaly-workflow.yaml
+    - Tests/test_project_governance.py
+    - Tests/test_stage15_local_python_rehearsal.py
+    - Tests/validate_aios_stage15_local_python_rehearsal.py
+test_driven_development:
+  initial_red_observed: true
+  initial_red_result: one_expected_public_interface_failure_before_runner_existed
+  corrective_red_observed: true
+  corrective_red_coverage:
+    - remote_git_arguments
+    - caught_network_attempts
+    - computed_material_scan
+    - python_url_credential_private_key_detection
+  source_candidate_green:
+    focused_rehearsal: {passed: 16, total: 16}
+    project_governance: {passed: 26, total: 26}
+    repository: {passed: 188, total: 188}
+    validators: {passed: 19, total: 19}
+    python_compilation: passed
+    approved_baseline_diff_check: passed
+  final_evidence_record_green:
+    focused_rehearsal: {passed: 16, total: 16}
+    project_governance: {passed: 26, total: 26}
+    repository: {passed: 188, total: 188}
+    validators: {passed: 19, total: 19}
+    python_compilation: passed
+    approved_baseline_diff_check: passed
+rehearsal:
+  valid_run_count: 1
+  invalidated_preacceptance_attempts:
+    - commit: e87f7fdc7ae235d365afc8f44816c5854877f1b2
+      tree: 05038e24106a779bf42f3492e5d287f687a95a6a
+      disposition: stone_stopped_receipt_invalid_not_committed
+  run_id: STAGE15-LOCAL-33e2216976b7
+  result: local_python_test_deployment_rehearsal_passed_not_cloud_proof
+  source_commit: 33e2216976b73ebaff4368ca8b8d5dc206ebf894
+  source_tree: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
+  receipt_path: Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-v1.json
+  receipt_sha256: 2dae30bc8444d5ffb2b4b59e5df0c419921b40a5b4385d577c333c964f66b261
+  file_inventory_sha256: bfabad910aa9efe738732650dc7486de6ce35af37a2a00efa559a11b96a07c67
+  fixture_sha256: 4e4d00d15ead4a45e5dd1c1c6a56dba7a62f5053d431f962ae1842878e1bcaec
+  normalized_smoke_sha256: b6eed5c9d6c8e388bc4921a390a80d51d5702bf1f0ab57e326573b8afd1c1df6
+  python: CPython 3.9.6
+  local_dependencies: {PyYAML: 6.0.3}
+  online_install_used: false
+  network_guard_active: true
+  attempted_network_operations: []
+  external_actions_performed: []
+  material_scan:
+    credentials_found: false
+    real_data_found: false
+    external_endpoints_found: false
+    nonempty_connectors_found: false
+    infrastructure_material_found: false
+  cleanup:
+    execution_directory_removed: true
+    bytecode_directory_removed: true
+    repository_unchanged: true
+independent_reviews:
+  data_agent:
+    result: passed
+    conclusion: schema_inventory_fixture_smoke_material_network_cleanup_and_boundaries_match
+  stone:
+    result: passed
+    conclusion: post_rehearsal_boundary_review_passed_mandatory_return_allowed
+  review_exceptions: []
+risk_states:
+  PR-RISK-001: open_blocked_unaccepted
+  PR-RISK-002: open_blocked_unaccepted
+  PR-RISK-003: open_blocked_unaccepted
+  PR-RISK-004: open_blocked_unaccepted
+  PR-RISK-005: open_blocked_unaccepted
+  PR-RISK-006: open_blocked_unaccepted
+  PR-RISK-007: open_blocked_unaccepted
+  PR-RISK-008: open_blocked_unaccepted
+  PR-RISK-009: open_blocked_unaccepted
+  PR-RISK-010: open_blocked_unaccepted
+governance_state:
+  stage10: BLOCKED / NO-GO
+  stage15: Reviewed
+  pr41: draft_open_unmerged
+  issue51: open
+  exact_head_ci: pending_final_evidence_commit_push
+authority_claims:
+  cloud_capability_proven: false
+  ready_for_review_authorized: false
+  merge_authorized: false
+  formal_publication_authorized: false
+  archive_authorized: false
+  issue_closure_authorized: false
+  risk_acceptance_or_closure_authorized: false
+  real_pilot_authorized: false
+  production_ready: false
+  release_action_authorized: false
+  deployment_authorized: false
+limitations:
+  - no cloud or infrastructure capability was tested
+  - no real participant, real data, credential, permission or connector was used
+  - no staging, real pilot, production, release or formal deployment capability was tested
+  - a separate explicit authorization remains required for every withheld lifecycle or real-world action
+external_actions_performed: []

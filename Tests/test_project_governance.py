@@ -90,6 +90,55 @@ STAGE15_CANDIDATE_RECEIPT_GUIDE = (
 STAGE15_CANDIDATE_RECEIPT_VALIDATOR = (
     ROOT / "Tests" / "validate_aios_deployment_free_candidate_receipt.py"
 )
+STAGE15_LOCAL_REHEARSAL_CONTRACT = (
+    ROOT / "Governance" / "AIOS-Stage15-Local-Python-Rehearsal-Contract-v1.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_SCHEMA = (
+    ROOT
+    / "Governance"
+    / "AIOS-Stage15-Local-Python-Rehearsal-Receipt-Schema-v1.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_RECEIPT = (
+    ROOT / "Governance" / "AIOS-Stage15-Local-Python-Rehearsal-Receipt-v1.json"
+)
+STAGE15_LOCAL_REHEARSAL_MANDATORY_RETURN = (
+    ROOT
+    / "Governance"
+    / "AIOS-Stage15-Local-Python-Rehearsal-Mandatory-Return-v1.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_RUNNER = (
+    ROOT / "Runtime" / "stage15_local_python_rehearsal.py"
+)
+STAGE15_LOCAL_REHEARSAL_FIXTURE = (
+    ROOT
+    / "Tests"
+    / "Fixtures"
+    / "nonproduction-readiness"
+    / "local-python-rehearsal-synthetic.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_SYNTHETIC_WORKFLOW = (
+    ROOT
+    / "Tests"
+    / "Fixtures"
+    / "nonproduction-readiness"
+    / "local-python-store-anomaly-workflow.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_SYNTHETIC_INPUT = (
+    ROOT
+    / "Tests"
+    / "Fixtures"
+    / "nonproduction-readiness"
+    / "local-python-store-anomaly-input.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_TEST = (
+    ROOT / "Tests" / "test_stage15_local_python_rehearsal.py"
+)
+STAGE15_LOCAL_REHEARSAL_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_stage15_local_python_rehearsal.py"
+)
+STAGE15_LOCAL_REHEARSAL_GUIDE = (
+    ROOT / "Tests" / "AIOS-Stage15-Local-Python-Rehearsal-Validation.md"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -711,6 +760,52 @@ class ProjectGovernanceValidation(unittest.TestCase):
                 "9/9",
                 "Gates 7–11",
                 "release expressly withheld",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_local_python_rehearsal_assets_preserve_the_authority_ceiling(self):
+        assets = (
+            STAGE15_LOCAL_REHEARSAL_CONTRACT,
+            STAGE15_LOCAL_REHEARSAL_SCHEMA,
+            STAGE15_LOCAL_REHEARSAL_RECEIPT,
+            STAGE15_LOCAL_REHEARSAL_MANDATORY_RETURN,
+            STAGE15_LOCAL_REHEARSAL_RUNNER,
+            STAGE15_LOCAL_REHEARSAL_FIXTURE,
+            STAGE15_LOCAL_REHEARSAL_SYNTHETIC_WORKFLOW,
+            STAGE15_LOCAL_REHEARSAL_SYNTHETIC_INPUT,
+            STAGE15_LOCAL_REHEARSAL_TEST,
+            STAGE15_LOCAL_REHEARSAL_VALIDATOR,
+            STAGE15_LOCAL_REHEARSAL_GUIDE,
+        )
+        for asset in assets:
+            self.assertTrue(asset.is_file(), asset)
+            self.assertGreater(asset.stat().st_size, 100, asset)
+
+        contract = STAGE15_LOCAL_REHEARSAL_CONTRACT.read_text(encoding="utf-8")
+        schema = STAGE15_LOCAL_REHEARSAL_SCHEMA.read_text(encoding="utf-8")
+        workflow = STAGE15_WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "local_python_test_deployment_rehearsal_passed_not_cloud_proof",
+            "cloud_capability_proven: false",
+            "pilot_authorized: false",
+            "production_ready: false",
+            "release_authorized: false",
+            "deployment_authorized: false",
+            "risks_accepted: false",
+            "external_actions_performed: []",
+        ):
+            self.assertIn(token, contract)
+        self.assertIn("additional_properties: false", schema)
+        self.assertIn("test_stage15_local_python_rehearsal", workflow)
+        self.assertIn("validate_aios_stage15_local_python_rehearsal.py", workflow)
+        for registry in (self.project_registry, self.stage_registry):
+            for token in (
+                "Issue #51",
+                "2d3d186d1930d18bfd0a8d604240694f11e1af6c",
+                "local isolated Python rehearsal",
+                "PR #41 remains Draft/open/unmerged",
+                "Stage 10 remains `BLOCKED / NO-GO`",
+                "no cloud, real-pilot or production capability",
             ):
                 self.assertIn(token, registry)
 
