@@ -15,6 +15,8 @@ authorization:
 source_candidate:
   commit: 33e2216976b73ebaff4368ca8b8d5dc206ebf894
   tree: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
+  remote_branch_head: 81ff4db681fdc91543aecf72825540aab994e299
+  remote_branch_tree: c54b730a421d5d92c75dc936fce510cbba6ed4aa
   changed_file_count: 15
   changed_files:
     - .github/workflows/validate-aios-nonproduction-readiness.yml
@@ -110,7 +112,18 @@ governance_state:
   stage15: Reviewed
   pr41: draft_open_unmerged
   issue51: open
-  exact_head_ci: pending_final_evidence_commit_push
+  exact_head_ci: 9_of_9_success
+  exact_head_commit: 81ff4db681fdc91543aecf72825540aab994e299
+  exact_head_workflows:
+    - {workflow: Validate AIOS Production Readiness Assessment, run_id: 31236597746, conclusion: success}
+    - {workflow: Validate Runtime Orchestrator v1, run_id: 31236597755, conclusion: success}
+    - {workflow: Validate AIOS Workflow Schema, run_id: 31236597751, conclusion: success}
+    - {workflow: Validate AIOS Privacy and Data Governance, run_id: 31236597723, conclusion: success}
+    - {workflow: Validate AIOS Architecture and Security Foundations, run_id: 31236597732, conclusion: success}
+    - {workflow: Validate AIOS Project Governance, run_id: 31236597728, conclusion: success}
+    - {workflow: Validate AIOS Support Controlled Pilot, run_id: 31236597736, conclusion: success}
+    - {workflow: Validate AIOS Non-production Readiness, run_id: 31236597724, conclusion: success}
+    - {workflow: Validate AIOS Operational Resilience, run_id: 31236597725, conclusion: success}
 authority_claims:
   cloud_capability_proven: false
   ready_for_review_authorized: false
