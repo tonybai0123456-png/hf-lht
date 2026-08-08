@@ -1,0 +1,83 @@
+fixture_version: nonproduction_readiness_fixture/v1
+scenario_id: NR-SYNTHETIC-LOCAL-001
+scope:
+  company: 汇沣电商
+  brand: BUW
+environment:
+  mode: local_synthetic_disposable
+  external_endpoints: []
+  connectors: []
+  credentials: []
+identity:
+  principal_id: synthetic-principal-nr-001
+  simulated: true
+  permissions:
+    - read_synthetic_fixture
+    - write_task_local_evidence
+data_contract:
+  provenance: synthetic
+  classification: synthetic_non_personal
+  retention: task_local_until_cleanup
+  deletion: deterministic_cleanup_required
+component_results:
+  - {component_id: CMP-ENVIRONMENT, status: passed, evidence_id: EV-ENVIRONMENT}
+  - {component_id: CMP-IDENTITY, status: passed, evidence_id: EV-IDENTITY}
+  - {component_id: CMP-DATA, status: passed, evidence_id: EV-DATA}
+  - {component_id: CMP-EVIDENCE, status: passed, evidence_id: EV-EVIDENCE}
+  - {component_id: CMP-OBSERVATION, status: passed, evidence_id: EV-OBSERVATION}
+  - {component_id: CMP-RECOVERY, status: passed, evidence_id: EV-RECOVERY}
+  - {component_id: CMP-INCIDENT, status: passed, evidence_id: EV-INCIDENT}
+  - {component_id: CMP-SUPPORT, status: passed, evidence_id: EV-SUPPORT}
+risk_states:
+  PR-RISK-001: open_blocked_unaccepted
+  PR-RISK-002: open_blocked_unaccepted
+  PR-RISK-003: open_blocked_unaccepted
+  PR-RISK-004: open_blocked_unaccepted
+  PR-RISK-005: open_blocked_unaccepted
+  PR-RISK-006: open_blocked_unaccepted
+  PR-RISK-007: open_blocked_unaccepted
+  PR-RISK-008: open_blocked_unaccepted
+  PR-RISK-009: open_blocked_unaccepted
+  PR-RISK-010: open_blocked_unaccepted
+required_human_gates:
+  - HG-RELEASE
+requested_external_actions: []
+claims:
+  risk_accepted: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+evidence_store:
+  mode: task_local_append_only
+  records:
+    - {sequence: 1, record_id: AUDIT-001, evidence_id: EV-ENVIRONMENT, checksum: ba5285161ba6eed0085fb13784ce5c92f70ebc268b94fd66aa1d68a32884204d}
+    - {sequence: 2, record_id: AUDIT-002, evidence_id: EV-EVIDENCE, checksum: ee8250fb76e094b34b471f13a73dbbe51d1ae142e9df59d7c0d31ec20f0a0a8e}
+    - {sequence: 3, record_id: AUDIT-003, evidence_id: EV-OBSERVATION, checksum: 772c6953848bf5b19aedf9a34ccb066f31eacca29bdbfcb1b9821765f1060149}
+observation:
+  mode: local_decision_only
+  metric_ids:
+    - METRIC-LOCAL-VALIDATION
+    - METRIC-LOCAL-DENIAL
+  alert_decision: synthetic_no_external_delivery
+  paging: false
+  ticket_created: false
+  external_delivery: false
+recovery:
+  snapshot_id: SYNTHETIC-SNAPSHOT-001
+  rollback_trigger: synthetic_validation_failure
+  pre_restore_checksum: b88066f8d3d5af004ad275383907fc900bdda75f6ef21e32864eddcc01c4dc18
+  post_restore_checksum: b88066f8d3d5af004ad275383907fc900bdda75f6ef21e32864eddcc01c4dc18
+  restore_verified: true
+  cleanup_verified: true
+incident_tabletop:
+  scenario_id: SYNTHETIC-INCIDENT-001
+  severity: synthetic_sev2
+  containment: local_fixture_isolation
+  communications: none_external
+  real_incident_declared: false
+support_handoff:
+  case_id: SYNTHETIC-CASE-001
+  owner: unassigned / governance decision required
+  route: abstract_support_role
+  ticket_created: false
+  sla_committed: false

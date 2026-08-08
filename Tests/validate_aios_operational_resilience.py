@@ -665,10 +665,11 @@ def validate_current_registry_lifecycle(
     stage_registry: str,
     project_registry: str,
 ) -> list[str]:
-    """Validate exact Stage 13 and Stage 14 archive evidence."""
+    """Validate frozen Stage 13-14 archives and the bounded Stage 15 review."""
     errors: list[str] = []
     stage13 = next((line for line in stage_registry.splitlines() if line.startswith("| 13 |")), "")
     stage14 = next((line for line in stage_registry.splitlines() if line.startswith("| 14 |")), "")
+    stage15 = next((line for line in stage_registry.splitlines() if line.startswith("| 15 |")), "")
     project = next((line for line in project_registry.splitlines() if line.startswith("| BUW-AIOS |")), "")
 
     stage13_required = (
@@ -705,29 +706,58 @@ def validate_current_registry_lifecycle(
         if forbidden in stage14:
             errors.append(f"Stage 14 exceeds Archived authority: {forbidden}")
 
+    stage15_required = (
+        "Issue #40", "019fb137-f0bc-7e60-b8ad-efe1a8e250b1",
+        "gov/aios-stage15-nonproduction-readiness-design", "PR #41",
+        "| Reviewed |", "9812105be0478d6e192db13c596b11a461de1a18",
+        "6c5083ae30c3a398e049f5b665b8147f7c868d3d",
+        "b27614ba2ebebb772888c3a4b1ff3d829b47532e",
+        "d3fec0a73e1f5b90d3c5829b387095da1e2ff5e4",
+        "11/11 focused", "14/14 Project Governance", "108/108 repository",
+        "9/9 exact-head CI", "Mandatory Return accepted",
+        "needs_human_governance", "Human Governance Thread review passed",
+        "implementation-evidence gate accepted",
+        "not merged, published, archived or deployed",
+        "Issue #43", "Gate 6", "platform-neutral", "synthetic data",
+        "isolated non-production", "Stone", "Developer Agent",
+        "gates 7–12 remain unauthorized", "no cloud resource",
+    )
+    if not all(token in stage15 for token in stage15_required):
+        errors.append("Stage 15 must preserve the exact bounded Reviewed evidence")
+
     project_required = (
-        "Stage 13 Archived / Stage 14 Archived", "no active execution Stage",
-        "Issue #36",
-        "7184d91797128788decc734ef80f9d07114fcc84", "PR #37",
+        "Stage 13 Archived / Stage 14 Archived / Stage 15 Reviewed",
+        "published through PR #37",
         "142804f22396dc6f094327a0dffefb7da7593168",
-        "8d6e2aff171e28e4a789454e677da234bc0f49fb",
-        "published through PR #37", "post-merge",
-        "Mandatory Return accepted", "needs_human_governance",
-        "Human Governance Thread archive decision passed", "no pilot authority",
+        "Issue #40", "019fb137-f0bc-7e60-b8ad-efe1a8e250b1", "PR #41",
+        "9812105be0478d6e192db13c596b11a461de1a18",
+        "6c5083ae30c3a398e049f5b665b8147f7c868d3d",
+        "b27614ba2ebebb772888c3a4b1ff3d829b47532e",
+        "d3fec0a73e1f5b90d3c5829b387095da1e2ff5e4",
+        "11/11 focused", "14/14 Project Governance", "108/108 repository",
+        "9/9 exact-head CI", "Mandatory Return submitted",
+        "needs_human_governance", "Human Governance Thread review passed",
+        "implementation-evidence gate accepted",
+        "Reviewed is not merged, published, archived or deployed",
+        "Issue #43", "Gate 6", "platform-neutral", "synthetic data",
+        "isolated non-production", "Stone", "Developer Agent",
+        "gates 7–12 remain unauthorized", "no cloud resource",
     )
     if not all(token in project for token in project_required):
         errors.append(
             "Project Registry must preserve Stage 14 Archived and "
-            "the no-active-execution-Stage boundary"
+            "the bounded Stage 15 Reviewed evidence"
         )
 
     for forbidden in (
         "Stage 14 Reported", "Stage 14 Reviewed", "pilot authority granted",
         "pilot authorized", "pilot_authorized: true", "release authorized",
-        "self-approved", "ready for pilot",
+        "self-approved", "ready for pilot", "Stage 15 Reported",
+        "Stage 15 Archived", "deployment authorized", "production ready",
+        "risk accepted",
     ):
         if forbidden in project:
-            errors.append(f"Project Registry exceeds Archived authority: {forbidden}")
+            errors.append(f"Project Registry exceeds current authority: {forbidden}")
     return errors
 
 

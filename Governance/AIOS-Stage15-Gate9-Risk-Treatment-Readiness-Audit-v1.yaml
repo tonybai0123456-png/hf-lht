@@ -1,0 +1,130 @@
+audit_version: stage15_gate9_risk_treatment_readiness/v1
+stage: "15"
+stage_id: NR-01
+status: accepted_treatment_direction_risks_remain_open_blocked_unaccepted
+next_gate: HG-PILOT-SCOPE
+source_assets:
+  risk_register: Governance/AIOS-Production-Readiness-Risk-Register-v1.yaml
+  gate_proposals: Governance/AIOS-Stage15-Human-Gate-Proposals-v1.yaml
+  candidate_evidence: Governance/AIOS-Deployment-Free-Candidate-Evidence-v1.yaml
+prerequisites:
+  HG-PRIVACY-DATA: accepted
+  HG-OPS-RECOVERY-INCIDENT-SUPPORT: accepted
+gate9_decision_boundary:
+  human_approver: Tony
+  overall_risk_owner: Tony
+  independent_reviewer_and_escalation_contact: Stone
+  gate_accepted: true
+  approval_state: accepted
+  disposition: mitigate_and_remain_open_blocked_unaccepted
+  risk_acceptance: false
+  risk_closure: false
+  production_action_allowed: false
+  decision_evidence: "Owner authorization / Issue #46"
+risk_treatment_readiness:
+  - risk_id: PR-RISK-001
+    category: architecture
+    severity: critical
+    human_treatment_owner: Stone
+    technical_support_agents: [Developer Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-002
+    category: security
+    severity: critical
+    human_treatment_owner: Stone
+    technical_support_agents: [Developer Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-003
+    category: privacy
+    severity: critical
+    human_treatment_owner: Tony
+    technical_support_agents: [Data Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-004
+    category: data
+    severity: high
+    human_treatment_owner: Tony
+    technical_support_agents: [Data Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-005
+    category: observability
+    severity: high
+    human_treatment_owner: Stone
+    technical_support_agents: [Developer Agent, Data Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-006
+    category: rollback
+    severity: critical
+    human_treatment_owner: Stone
+    technical_support_agents: [Developer Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-007
+    category: incident_response
+    severity: high
+    human_treatment_owner: Stone
+    technical_support_agents: [Developer Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-008
+    category: support
+    severity: high
+    human_treatment_owner: Stone
+    technical_support_agents: [CustomerService Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-009
+    category: business_boundary
+    severity: critical
+    human_treatment_owner: Tony
+    technical_support_agents: [Data Agent, CEO Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+  - risk_id: PR-RISK-010
+    category: release_governance
+    severity: critical
+    human_treatment_owner: Tony
+    technical_support_agents: [CEO Agent]
+    disposition: mitigate_and_remain_open_blocked_unaccepted
+    treatment_authorized: true
+    risk_accepted: false
+    production_action_allowed: false
+required_truth:
+  risk_count: 10
+  every_risk_open_blocked_unaccepted: true
+  every_risk_not_accepted: true
+  every_production_action_disallowed: true
+  treatment_ownership_authorized_for_evidence_only: true
+  stage10_posture: BLOCKED / NO-GO
+claims:
+  gate9_accepted: true
+  risk_accepted: false
+  risk_closed: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+external_actions_performed: []

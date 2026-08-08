@@ -1,0 +1,92 @@
+decision_version: stage15_gate12_hg_release_decision/v1
+stage: "15"
+stage_id: NR-01
+status: accepted_governance_gate_only_release_actions_withheld
+approved_decision_material:
+  candidate_commit: 9bc17fa2ef722f29a8fcf302ef275ef6fbdf3a49
+  candidate_tree: bf82c13df03e86985d6c9bc190eea9cd2fc87830
+  governance_record_commit: 68b6301bcd08316aa191ac5e1e8f69bce44ab7aa
+  governance_record_tree: fa5397b5fabf1eae6ddb8034da9b1d0f076f1bee
+  decision_packet: Governance/AIOS-Stage15-Gate12-Deployment-Free-Decision-Packet-v1.yaml
+  pull_request: "#41 / Draft / open / unmerged"
+approval_record:
+  decision_date: "2026-08-02"
+  decision_evidence: "Owner authorization / Issue #49 / BUW AIOS Official Governance Thread"
+  accepted_gate: HG-RELEASE
+  accepted_scope: gate12_governance_gate_only
+  exact_material_required: true
+  authority_expansion: false
+gate12_decision_boundary:
+  gate_accepted: true
+  governance_gate_only: true
+  approval_state: accepted
+  mark_ready_for_review_authorized: false
+  merge_authorized: false
+  formal_publication_authorized: false
+  archive_authorized: false
+  issue_closure_authorized: false
+  risk_acceptance_authorized: false
+  risk_closure_authorized: false
+  real_pilot_authorized: false
+  real_participants_authorized: false
+  real_data_authorized: false
+  credentials_authorized: false
+  permissions_authorized: false
+  connectors_authorized: false
+  infrastructure_authorized: false
+  production_operations_authorized: false
+  release_action_authorized: false
+  deployment_authorized: false
+  external_actions_allowed: false
+scope_reconciliation:
+  company: 汇沣电商
+  brand: BUW
+  excluded_entities:
+    - PC
+    - 六合通
+  evidence_scope: synthetic_and_isolated_nonproduction_only
+  stage10: BLOCKED / NO-GO
+repository_state:
+  pull_request: {number: 41, state: open, draft: true, merged: false}
+  open_issues: [40, 44, 45, 46, 47, 48, 49]
+  closed_issues: []
+risk_reconciliation:
+  - {risk_id: PR-RISK-001, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-002, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-003, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-004, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-005, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-006, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-007, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-008, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-009, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+  - {risk_id: PR-RISK-010, state: open_blocked_unaccepted, risk_accepted: false, risk_closed: false}
+next_required_authorization:
+  state: separate_explicit_authorization_required
+  actions:
+    - mark_ready_for_review
+    - merge
+    - formal_publication
+    - archive
+    - issue_closure
+    - risk_acceptance_or_closure
+    - real_pilot
+    - real_data_or_credentials
+    - permissions_connectors_or_infrastructure
+    - production_operations
+    - release_action
+    - deployment
+claims:
+  gate12_accepted: true
+  ready_for_review_authorized: false
+  risk_accepted: false
+  real_pilot_performed: false
+  pilot_authorized: false
+  production_ready: false
+  release_action_authorized: false
+  deployment_authorized: false
+  real_data_used: false
+  connector_used: false
+  infrastructure_provisioned: false
+  credentials_used: false
+external_actions_performed: []

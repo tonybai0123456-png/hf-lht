@@ -1,0 +1,193 @@
+packet_version: stage15_gate12_deployment_free_decision_packet/v1
+stage: "15"
+stage_id: NR-01
+status: ready_for_gate12_decision_release_withheld
+allowed_scope:
+  company: 汇沣电商
+  brand: BUW
+excluded_entities:
+  - PC
+  - 六合通
+candidate_source:
+  baseline_commit: fe41981b29dd36bc43d7e514ece4b28d1e17b2ff
+  candidate_commit: 9bc17fa2ef722f29a8fcf302ef275ef6fbdf3a49
+  candidate_tree: bf82c13df03e86985d6c9bc190eea9cd2fc87830
+  base_commit: 403f97ea56678185398ee52fff2b35eeff7a700f
+  pull_request: "#41 / Draft / open / unmerged"
+  candidate_changed_paths: 46
+changed_file_manifest:
+  count: 46
+  paths:
+    - .github/workflows/validate-aios-nonproduction-readiness.yml
+    - .gitignore
+    - Governance/AIOS-Deployment-Free-Candidate-Evidence-v1.yaml
+    - Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml
+    - Governance/AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml
+    - Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml
+    - Governance/AIOS-Nonproduction-Readiness-Integration-v1.md
+    - Governance/AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml
+    - Governance/AIOS-Predeployment-Completion-Audit-v1.yaml
+    - Governance/AIOS-Project-Registry.md
+    - Governance/AIOS-Stage-Registry.md
+    - Governance/AIOS-Stage15-Gate10-Synthetic-Rehearsal-Scope-Readiness-Audit-v1.yaml
+    - Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Decision-v1.yaml
+    - Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Readiness-Audit-v1.yaml
+    - Governance/AIOS-Stage15-Gate9-Risk-Treatment-Readiness-Audit-v1.yaml
+    - Governance/AIOS-Stage15-Human-Gate-Proposals-v1.yaml
+    - Tests/AIOS-Deployment-Free-Candidate-Receipt-Validation.md
+    - Tests/AIOS-Deployment-Free-Candidate-Validation.md
+    - Tests/AIOS-Nonproduction-Readiness-Validation.md
+    - Tests/AIOS-Predeployment-Completion-Audit-Validation.md
+    - Tests/AIOS-Stage15-Human-Gate-Proposals-Validation.md
+    - Tests/Fixtures/nonproduction-readiness/synthetic-local-integration.yaml
+    - Tests/test_deployment_free_candidate.py
+    - Tests/test_deployment_free_candidate_receipt.py
+    - Tests/test_nonproduction_readiness.py
+    - Tests/test_operational_resilience.py
+    - Tests/test_predeployment_completion_audit.py
+    - Tests/test_project_governance.py
+    - Tests/test_stage15_gate10_synthetic_scope_readiness.py
+    - Tests/test_stage15_gate11_synthetic_evidence_decision.py
+    - Tests/test_stage15_gate11_synthetic_evidence_readiness.py
+    - Tests/test_stage15_gate12_deployment_free_candidate.py
+    - Tests/test_stage15_gate9_risk_treatment_readiness.py
+    - Tests/test_stage15_human_gate_proposals.py
+    - Tests/validate_aios_deployment_free_candidate.py
+    - Tests/validate_aios_deployment_free_candidate_receipt.py
+    - Tests/validate_aios_nonproduction_readiness.py
+    - Tests/validate_aios_operational_resilience.py
+    - Tests/validate_aios_predeployment_completion_audit.py
+    - Tests/validate_aios_stage15_gate10_synthetic_scope_readiness.py
+    - Tests/validate_aios_stage15_gate11_synthetic_evidence_decision.py
+    - Tests/validate_aios_stage15_gate11_synthetic_evidence_readiness.py
+    - Tests/validate_aios_stage15_gate9_risk_treatment_readiness.py
+    - Tests/validate_aios_stage15_human_gate_proposals.py
+    - docs/superpowers/plans/2026-07-23-nonproduction-readiness-remediation-integration.md
+    - docs/superpowers/specs/2026-07-23-nonproduction-readiness-remediation-integration-design.md
+governance_assets:
+  - Governance/AIOS-Deployment-Free-Candidate-Evidence-v1.yaml
+  - Governance/AIOS-Deployment-Free-Candidate-Receipt-v1.yaml
+  - Governance/AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml
+  - Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml
+  - Governance/AIOS-Nonproduction-Readiness-Integration-v1.md
+  - Governance/AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml
+  - Governance/AIOS-Predeployment-Completion-Audit-v1.yaml
+  - Governance/AIOS-Project-Registry.md
+  - Governance/AIOS-Stage-Registry.md
+  - Governance/AIOS-Stage15-Gate9-Risk-Treatment-Readiness-Audit-v1.yaml
+  - Governance/AIOS-Stage15-Gate10-Synthetic-Rehearsal-Scope-Readiness-Audit-v1.yaml
+  - Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Readiness-Audit-v1.yaml
+  - Governance/AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Decision-v1.yaml
+  - Governance/AIOS-Stage15-Human-Gate-Proposals-v1.yaml
+verification:
+  performed_date: "2026-08-02"
+  repository_tests: {passed: 161, total: 161}
+  controlled_validators: {passed: 15, total: 15}
+  python_compilation: passed
+  diff_check: passed
+  clean_reproduction:
+    source_method: git_archive_clean_export
+    source_command: git archive 9bc17fa2ef722f29a8fcf302ef275ef6fbdf3a49
+    dependency_manifest: requirements-dev.txt
+    dependency_resolution: PyYAML 6.0.3
+    tests: 161/161
+    validators: 15/15
+    compilation: passed
+  material_scans:
+    credential_and_secret_material: passed_no_material
+    real_contactable_fixture_values: passed_no_material
+    connector_endpoint_and_infrastructure_material: passed_no_material
+exact_head_ci:
+  - {workflow: Validate AIOS Non-production Readiness, run_number: 26, run_id: 30744416471, conclusion: success}
+  - {workflow: Validate AIOS Project Governance, run_number: 88, run_id: 30744416442, conclusion: success}
+  - {workflow: Validate AIOS Workflow Schema, run_number: 75, run_id: 30744416434, conclusion: success}
+  - {workflow: Validate Runtime Orchestrator v1, run_number: 97, run_id: 30744416424, conclusion: success}
+  - {workflow: Validate AIOS Production Readiness Assessment, run_number: 84, run_id: 30744416436, conclusion: success}
+  - {workflow: Validate AIOS Operational Resilience, run_number: 60, run_id: 30744416443, conclusion: success}
+  - {workflow: Validate AIOS Support Controlled Pilot, run_number: 43, run_id: 30744416432, conclusion: success}
+  - {workflow: Validate AIOS Architecture and Security Foundations, run_number: 76, run_id: 30744416433, conclusion: success}
+  - {workflow: Validate AIOS Privacy and Data Governance, run_number: 67, run_id: 30744416430, conclusion: success}
+gate_ledger:
+  - {gate_id: HG-SPEC-APPROVAL, accepted: true}
+  - {gate_id: HG-PLAN-APPROVAL, accepted: true}
+  - {gate_id: HG-EXECUTION-ASSIGNMENT, accepted: true}
+  - {gate_id: HG-IMPLEMENTATION-EVIDENCE, accepted: true}
+  - {gate_id: HG-NAMED-OWNER, accepted: true}
+  - {gate_id: HG-ARCH-SECURITY, accepted: true}
+  - {gate_id: HG-PRIVACY-DATA, accepted: true}
+  - {gate_id: HG-OPS-RECOVERY-INCIDENT-SUPPORT, accepted: true}
+  - {gate_id: HG-RISK-DISPOSITION, accepted: true}
+  - {gate_id: HG-PILOT-SCOPE, accepted: true}
+  - {gate_id: HG-PILOT-EVIDENCE, accepted: true}
+  - {gate_id: HG-RELEASE, accepted: false}
+risk_evidence_mapping:
+  - {risk_id: PR-RISK-001, evidence_ids: [EV-ENVIRONMENT], human_treatment_owner: Stone, technical_evidence_contributors: [Developer Agent]}
+  - {risk_id: PR-RISK-002, evidence_ids: [EV-IDENTITY], human_treatment_owner: Stone, technical_evidence_contributors: [Developer Agent]}
+  - {risk_id: PR-RISK-003, evidence_ids: [EV-DATA], human_treatment_owner: Tony, technical_evidence_contributors: [Data Agent]}
+  - {risk_id: PR-RISK-004, evidence_ids: [EV-DATA, EV-EVIDENCE], human_treatment_owner: Tony, technical_evidence_contributors: [Data Agent]}
+  - {risk_id: PR-RISK-005, evidence_ids: [EV-OBSERVATION, EV-EVIDENCE], human_treatment_owner: Stone, technical_evidence_contributors: [Developer Agent, Data Agent]}
+  - {risk_id: PR-RISK-006, evidence_ids: [EV-RECOVERY], human_treatment_owner: Stone, technical_evidence_contributors: [Developer Agent]}
+  - {risk_id: PR-RISK-007, evidence_ids: [EV-INCIDENT], human_treatment_owner: Stone, technical_evidence_contributors: [Developer Agent]}
+  - {risk_id: PR-RISK-008, evidence_ids: [EV-SUPPORT], human_treatment_owner: Stone, technical_evidence_contributors: [CustomerService Agent]}
+  - {risk_id: PR-RISK-009, evidence_ids: [EV-IDENTITY, EV-DATA], human_treatment_owner: Tony, technical_evidence_contributors: [Data Agent, CEO Agent]}
+  - {risk_id: PR-RISK-010, evidence_ids: [EV-ENVIRONMENT, EV-EVIDENCE], human_treatment_owner: Tony, technical_evidence_contributors: [CEO Agent]}
+risk_state:
+  count: 10
+  disposition: mitigate_and_remain_open_blocked_unaccepted
+  state: open_blocked_unaccepted
+  accepted: false
+  closed: false
+repository_state:
+  pull_request: {number: 41, state: open, draft: true, merged: false}
+  open_issues: [40, 44, 45, 46, 47, 48, 49]
+  closed_issues: []
+  stage10: BLOCKED / NO-GO
+withheld_authorities:
+  - mark_ready_for_review
+  - merge
+  - formal_publication
+  - archive
+  - issue_closure
+  - real_pilot_or_participants
+  - real_data
+  - credentials_or_permissions
+  - connectors
+  - infrastructure_or_accounts
+  - external_messages
+  - risk_acceptance_or_closure
+  - release
+  - deployment
+gate12_decision_material:
+  decision_required: HG-RELEASE
+  current_state: unapproved
+  candidate_to_review:
+    commit: 9bc17fa2ef722f29a8fcf302ef275ef6fbdf3a49
+    tree: bf82c13df03e86985d6c9bc190eea9cd2fc87830
+  approve_effect: authorize_gate12_only_subject_to_separate_merge_release_and_deployment_actions
+  withhold_effect: keep_candidate_draft_open_unmerged_and_undeployed
+mandatory_return:
+  result: deployment_free_work_complete_gate12_decision_pending
+  exact_candidate_commit: 9bc17fa2ef722f29a8fcf302ef275ef6fbdf3a49
+  exact_candidate_tree: bf82c13df03e86985d6c9bc190eea9cd2fc87830
+  changed_paths: 46
+  tests: 161/161
+  validators: 15/15
+  ci: 9/9
+  current_risk_state: open_blocked_unaccepted
+  current_pr_state: Draft / open / unmerged
+  current_issue_state: "#40 and #44-#49 open"
+  gate12_pending: true
+  external_actions_performed: []
+claims:
+  gate12_accepted: false
+  risk_accepted: false
+  real_pilot_performed: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+  real_data_used: false
+  connector_used: false
+  infrastructure_provisioned: false
+  credentials_used: false
+external_actions_performed: []

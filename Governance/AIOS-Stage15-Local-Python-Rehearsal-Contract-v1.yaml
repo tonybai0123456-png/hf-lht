@@ -1,0 +1,119 @@
+contract_version: aios_stage15_local_python_rehearsal_contract/v1
+stage: Stage 15 / NR-01
+mode: local_isolated_python_synthetic_only
+scope:
+  company: 汇沣电商
+  brand: BUW
+  excluded_entities:
+    - PC
+    - 六合通
+allowed_results:
+  - local_python_test_deployment_rehearsal_passed_not_cloud_proof
+  - local_python_test_deployment_rehearsal_denied
+  - local_python_test_deployment_rehearsal_blocked
+reason_codes:
+  - SOURCE_COMMIT_INVALID
+  - SOURCE_HEAD_CHANGED
+  - SOURCE_TREE_MISMATCH
+  - SOURCE_WORKTREE_DIRTY
+  - ARCHIVE_MEMBER_UNSAFE
+  - FILE_INVENTORY_MISMATCH
+  - LOCAL_PYTHON_UNAVAILABLE
+  - LOCAL_DEPENDENCY_UNAVAILABLE
+  - CREDENTIAL_LIKE_ENVIRONMENT_PRESENT
+  - ENVIRONMENT_NOT_ALLOWLISTED
+  - NETWORK_OPERATION_ATTEMPTED
+  - INFRASTRUCTURE_MATERIAL_DENIED
+  - COMMAND_NOT_ALLOWLISTED
+  - COMMAND_TIMEOUT
+  - COMPANY_SCOPE_DENIED
+  - BRAND_SCOPE_DENIED
+  - NON_SYNTHETIC_DATA_DENIED
+  - CAPABILITY_FIELD_NONEMPTY
+  - CAPABILITY_FIELD_MISPLACED
+  - SECRET_LIKE_MATERIAL_DENIED
+  - EXTERNAL_LOCATOR_DENIED
+  - AUTHORITY_CLAIM_DENIED
+  - SMOKE_OUTPUT_NONDETERMINISTIC
+  - RECEIPT_SCHEMA_INVALID
+  - CLEANUP_TARGET_UNSAFE
+  - CLEANUP_NOT_VERIFIED
+  - REPOSITORY_CHANGED
+  - MALFORMED_INPUT
+  - UNEXPECTED_RUNTIME_FAILURE
+environment:
+  allowed_child_names:
+    - PATH
+    - LANG
+    - LC_ALL
+    - TMPDIR
+    - PYTHONNOUSERSITE
+    - PYTHONDONTWRITEBYTECODE
+    - PYTHONPATH
+    - AIOS_NETWORK_GUARD_LOG
+  forbidden_parent_name_fragments:
+    - TOKEN
+    - SECRET
+    - PASSWORD
+    - PASSWD
+    - API_KEY
+    - APIKEY
+    - CREDENTIAL
+    - AUTH
+    - COOKIE
+    - SESSION
+    - DATABASE_URL
+    - DB_URL
+    - WEBHOOK
+    - AWS_
+    - AZURE_
+    - GOOGLE_APPLICATION_CREDENTIALS
+    - GITHUB_TOKEN
+    - OPENAI_
+    - SHOPIFY_
+    - META_
+    - FACEBOOK_
+    - SLACK_
+allowed_empty_capability_paths:
+  - $.environment.external_endpoints
+  - $.environment.connectors
+  - $.environment.credentials
+fixture_ids:
+  - NR-LOCAL-PYTHON-REHEARSAL-001
+allowed_commands:
+  exact_git_argv_templates:
+    - [git, status, --porcelain, --untracked-files=all]
+    - [git, rev-parse, --verify, "COMMIT^{commit}"]
+    - [git, rev-parse, "COMMIT^{tree}"]
+    - [git, archive, --format=tar, COMMIT]
+  exact_python_modules:
+    - [-m, unittest, Tests.test_stage15_local_python_rehearsal, -v]
+    - [-m, compileall, -q, Runtime, Tests]
+  exact_python_scripts:
+    - [Runtime/controlled_orchestrator.py, --workflow, Tests/Fixtures/nonproduction-readiness/local-python-store-anomaly-workflow.yaml, --input, Tests/Fixtures/nonproduction-readiness/local-python-store-anomaly-input.yaml]
+    - [Tests/validate_aios_stage15_local_python_rehearsal.py]
+risk_states:
+  PR-RISK-001: open_blocked_unaccepted
+  PR-RISK-002: open_blocked_unaccepted
+  PR-RISK-003: open_blocked_unaccepted
+  PR-RISK-004: open_blocked_unaccepted
+  PR-RISK-005: open_blocked_unaccepted
+  PR-RISK-006: open_blocked_unaccepted
+  PR-RISK-007: open_blocked_unaccepted
+  PR-RISK-008: open_blocked_unaccepted
+  PR-RISK-009: open_blocked_unaccepted
+  PR-RISK-010: open_blocked_unaccepted
+stage10_state: BLOCKED / NO-GO
+pr41_state: draft_open_unmerged
+authority_claims:
+  cloud_capability_proven: false
+  pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+  risks_accepted: false
+maximum_claim: local_python_test_deployment_rehearsal_passed_not_cloud_proof
+required_human_decisions:
+  - Stone independent boundary and evidence review
+  - Tony decision on any later PR lifecycle, risk, pilot, release or deployment action
+external_actions_performed: []

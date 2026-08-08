@@ -1,0 +1,31 @@
+fixture_version: aios_stage15_local_python_rehearsal_fixture/v1
+scenario_id: NR-LOCAL-PYTHON-REHEARSAL-001
+scope:
+  company: 汇沣电商
+  brand: BUW
+environment:
+  mode: local_isolated_python_synthetic_only
+  external_endpoints: []
+  connectors: []
+  credentials: []
+data_contract:
+  provenance: repository_controlled_synthetic_fixture
+  classification: synthetic_non_personal
+  personal_like_data: none
+  contactable: false
+  routable: false
+  retention: task_local_until_verified_cleanup
+  deletion: deterministic_cleanup_required
+workflow:
+  workflow_path: Tests/Fixtures/nonproduction-readiness/local-python-store-anomaly-workflow.yaml
+  input_path: Tests/Fixtures/nonproduction-readiness/local-python-store-anomaly-input.yaml
+  dry_run: true
+  allow_external_writes: false
+expected:
+  accountable_agent: Retail
+  status: needs_approval
+  pending_step: assign_supervisor_response
+  approval_status: pending
+  synthetic_only: true
+  external_writes_performed: false
+requested_external_actions: []

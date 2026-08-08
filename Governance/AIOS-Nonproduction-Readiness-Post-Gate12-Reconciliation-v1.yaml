@@ -1,0 +1,97 @@
+record_version: stage15_post_gate12_reconciliation/v1
+stage: "15"
+stage_id: NR-01
+status: lifecycle_handoff_ready_actions_withheld
+scope:
+  company: 汇沣电商
+  brand: BUW
+  excluded_entities:
+    - PC
+    - 六合通
+source_records:
+  historical_predeployment_audit:
+    path: Governance/AIOS-Predeployment-Completion-Audit-v1.yaml
+    recorded_status: deployment_free_work_complete_gate12_decision_pending
+    interpretation: preserved_historical_snapshot_not_current_authority
+  gate12_decision:
+    path: Governance/AIOS-Stage15-Gate12-Release-Gate-Decision-v1.yaml
+    decision_record_commit: d386414791daa17bc572c237acabb79551a2aad2
+    decision_record_tree: 9aedd318620f5c05591386c19665773837d1f148
+    recorded_status: accepted_governance_gate_only_release_actions_withheld
+    accepted_scope: gate12_governance_gate_only
+  approved_candidate:
+    commit: 9bc17fa2ef722f29a8fcf302ef275ef6fbdf3a49
+    tree: bf82c13df03e86985d6c9bc190eea9cd2fc87830
+    governance_record_commit: 68b6301bcd08316aa191ac5e1e8f69bce44ab7aa
+controlled_state:
+  lifecycle_status: Reviewed
+  pull_request:
+    number: 41
+    state: open
+    draft: true
+    merged: false
+  parent_issue: 40
+  release_boundary_issue: 49
+  reconciliation_issue: 50
+  stage10: BLOCKED / NO-GO
+  gate12_accepted: true
+  governance_gate_only: true
+  risks:
+    - {risk_id: PR-RISK-001, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-002, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-003, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-004, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-005, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-006, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-007, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-008, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-009, state: open_blocked_unaccepted}
+    - {risk_id: PR-RISK-010, state: open_blocked_unaccepted}
+  downstream_authorities:
+    ready_for_review: false
+    merge: false
+    formal_publication: false
+    archive: false
+    issue_closure: false
+    risk_acceptance_or_closure: false
+    real_pilot_or_participants: false
+    real_data_or_credentials: false
+    permissions_connectors_or_infrastructure: false
+    production_operations: false
+    release_action: false
+    deployment: false
+lifecycle_handoff_queue:
+  - {action: ready_for_review, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: merge, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: formal_publication, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: archive, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: issue_closure, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: risk_acceptance_or_closure, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: real_pilot_or_participants, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: real_data_or_credentials, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: permissions_connectors_or_infrastructure, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: production_operations, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: release_action, authorized: false, prerequisite: separate_explicit_governance_authorization}
+  - {action: deployment, authorized: false, prerequisite: separate_explicit_governance_authorization}
+reconciliation:
+  historical_snapshot_preserved: true
+  current_authority_source: Governance/AIOS-Stage15-Gate12-Release-Gate-Decision-v1.yaml
+  current_result: lifecycle_handoff_ready_actions_withheld
+  next_governance_action: separate_explicit_lifecycle_authorization_or_hold
+  stage16_authorized: false
+claims:
+  ready_for_review_authorized: false
+  merge_authorized: false
+  archive_authorized: false
+  issue_closure_authorized: false
+  risk_accepted: false
+  real_pilot_performed: false
+  pilot_authorized: false
+  production_ready: false
+  release_action_authorized: false
+  deployment_authorized: false
+  real_data_used: false
+  connector_used: false
+  infrastructure_provisioned: false
+  credentials_used: false
+external_actions_performed: []

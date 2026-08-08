@@ -1,0 +1,1203 @@
+from __future__ import annotations
+
+import copy
+import hashlib
+from pathlib import Path
+from typing import Any, Callable
+
+import yaml
+from yaml.tokens import AliasToken, AnchorToken, ScalarToken
+
+
+ROOT = Path(__file__).resolve().parents[1]
+MODEL_PATH = Path(
+    "Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml"
+)
+MAPPING_PATH = Path(
+    "Governance/AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml"
+)
+MATRIX_PATH = Path(
+    "Governance/AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml"
+)
+FIXTURE_PATH = Path(
+    "Tests/Fixtures/nonproduction-readiness/synthetic-local-integration.yaml"
+)
+POLICY_PATH = Path("Governance/AIOS-Nonproduction-Readiness-Integration-v1.md")
+GUIDE_PATH = Path("Tests/AIOS-Nonproduction-Readiness-Validation.md")
+WORKFLOW_PATH = Path(".github/workflows/validate-aios-nonproduction-readiness.yml")
+STAGE_REGISTRY_PATH = Path("Governance/AIOS-Stage-Registry.md")
+PROJECT_REGISTRY_PATH = Path("Governance/AIOS-Project-Registry.md")
+
+ALLOWED_YAML_PATHS = frozenset(
+    {MODEL_PATH, MAPPING_PATH, MATRIX_PATH, FIXTURE_PATH}
+)
+RISK_IDS = tuple(f"PR-RISK-{number:03d}" for number in range(1, 11))
+COMPONENT_IDS = (
+    "CMP-ENVIRONMENT",
+    "CMP-IDENTITY",
+    "CMP-DATA",
+    "CMP-EVIDENCE",
+    "CMP-OBSERVATION",
+    "CMP-RECOVERY",
+    "CMP-INCIDENT",
+    "CMP-SUPPORT",
+)
+EVIDENCE_IDS = (
+    "EV-ENVIRONMENT",
+    "EV-IDENTITY",
+    "EV-DATA",
+    "EV-EVIDENCE",
+    "EV-OBSERVATION",
+    "EV-RECOVERY",
+    "EV-INCIDENT",
+    "EV-SUPPORT",
+)
+GATE_IDS = (
+    "HG-SPEC-APPROVAL",
+    "HG-PLAN-APPROVAL",
+    "HG-EXECUTION-ASSIGNMENT",
+    "HG-IMPLEMENTATION-EVIDENCE",
+    "HG-NAMED-OWNER",
+    "HG-ARCH-SECURITY",
+    "HG-PRIVACY-DATA",
+    "HG-OPS-RECOVERY-INCIDENT-SUPPORT",
+    "HG-RISK-DISPOSITION",
+    "HG-PILOT-SCOPE",
+    "HG-PILOT-EVIDENCE",
+    "HG-RELEASE",
+)
+GATE_AUTHORIZATIONS = (
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    False,
+)
+PENDING_GATE_IDS = GATE_IDS[11:]
+EXPECTED_REAL_OWNER = {
+    "status": "assigned",
+    "name": "Tony",
+    "github_identity": "tonybai0123456-png",
+    "business_role": "汇沣电商董事长 and BUW AIOS executive owner",
+    "backup_and_escalation_contact": "Stone",
+    "responsibilities": [
+        "own_stage15_gate_ledger_and_evidence_completeness",
+        "coordinate_remaining_human_governance_gates",
+        "ensure_risks_receive_named_treatment_owners_before_disposition",
+        "stop_when_authority_evidence_or_scope_is_ambiguous",
+        "preserve_汇沣电商_BUW_only_boundary",
+    ],
+    "decision_mode": (
+        "recommend_and_approve_only_by_explicit_written_governance_decision"
+    ),
+    "automatic_authority_granted": False,
+    "withheld_authorities": [
+        "credentials_and_permissions",
+        "merge_publication_and_archive",
+        "risk_acceptance",
+        "pilot",
+        "release",
+        "deployment",
+    ],
+    "accepted": True,
+    "decision_date": "2026-07-31",
+    "decision_evidence": "Owner authorization / Issue #42",
+}
+EXPECTED_ARCHITECTURE_SECURITY_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "approach": "platform_neutral_synthetic_isolated_nonproduction",
+    "human_approver": "Stone",
+    "technical_accountable_responsible": "Developer Agent",
+    "approved_scope": [
+        "repository_controlled_architecture_and_security_design",
+        "deterministic_synthetic_validation",
+        "isolated_local_and_pull_request_ci",
+        "fail_closed_boundary_and_threat_control_evidence",
+    ],
+    "provisioned_resources": False,
+    "external_network_access": False,
+    "real_credentials_or_permissions": False,
+    "real_connectors_or_data": False,
+    "production_security_accepted": False,
+    "risk_accepted": False,
+    "withheld_authorities": [
+        "cloud_and_infrastructure_provisioning",
+        "credentials_secrets_and_permissions",
+        "real_connectors_and_data",
+        "pilot",
+        "merge_publication_and_archive",
+        "release",
+        "deployment",
+    ],
+    "decision_date": "2026-07-31",
+    "decision_evidence": "Owner authorization / Issue #43",
+}
+EXPECTED_PRIVACY_DATA_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "allowed_data_classes": [
+        "synthetic_non_personal",
+        "synthetic_personal_like_clearly_fictitious_non_routable",
+    ],
+    "human_approver": "Tony",
+    "backup_and_escalation_contact": "Stone",
+    "technical_validation_owner": "Data Agent",
+    "implementation_support": "Developer Agent",
+    "real_data_authorized": False,
+    "credentials_or_permission_material_authorized": False,
+    "connectors_or_endpoints_authorized": False,
+    "infrastructure_or_accounts_authorized": False,
+    "pilot_authorized": False,
+    "risk_accepted": False,
+    "merge_publication_or_deployment_authorized": False,
+    "external_actions_allowed": False,
+    "decision_date": "2026-07-31",
+    "decision_evidence": "Owner authorization / Issue #44",
+}
+EXPECTED_OPERATIONS_RECOVERY_INCIDENT_SUPPORT_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "synthetic_operations_recovery_incident_support_only",
+    "human_approver": "Stone",
+    "backup_and_escalation_contact": "Tony",
+    "technical_owner": "Developer Agent",
+    "evidence_contributors": [
+        "CustomerService Agent",
+        "Data Agent",
+    ],
+    "allowed_scope_details": [
+        "deterministic_stage13_prepare_only_runbook_validation",
+        "synthetic_dependency_degradation_and_incident_tabletop",
+        "task_local_snapshot_checksum_restore_cleanup_evidence",
+        "synthetic_support_intake_triage_handoff_stop_withdrawal_closure",
+        "exact_ordered_escalation_functions_no_external_delivery",
+    ],
+    "prohibited_scope_details": [
+        "real_monitoring_alerting_paging_ticket_or_external_message",
+        "infrastructure_failover_backup_restore_or_rollback",
+        "real_incident_support_case_or_sla_slo_claim",
+        "production_staging_cloud_credential_connector_or_real_data",
+    ],
+    "design_targets": {
+        "service_class": "CT-2",
+        "rto_minutes": 240,
+        "rpo_minutes": 60,
+        "achieved_capability_claim": False,
+        "sla_slo_committed": False,
+    },
+    "external_actions_allowed": False,
+    "decision_date": "2026-07-31",
+    "decision_evidence": "Owner authorization / Issue #45",
+}
+EXPECTED_RISK_TREATMENT_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "risk_treatment_direction_without_acceptance",
+    "human_approver": "Tony",
+    "overall_risk_owner": "Tony",
+    "independent_reviewer_and_escalation_contact": "Stone",
+    "technical_evidence_contributors": [
+        "Developer Agent",
+        "Data Agent",
+        "CustomerService Agent",
+        "CEO Agent",
+    ],
+    "disposition": "mitigate_and_remain_open_blocked_unaccepted",
+    "treatment_ownership_authorized": True,
+    "risk_acceptance": False,
+    "risk_closure": False,
+    "production_action_allowed": False,
+    "real_data_authorized": False,
+    "credentials_connectors_or_infrastructure_authorized": False,
+    "pilot_merge_publication_release_or_deployment_authorized": False,
+    "external_actions_allowed": False,
+    "decision_date": "2026-08-01",
+    "decision_evidence": "Owner authorization / Issue #46",
+}
+EXPECTED_SYNTHETIC_REHEARSAL_SCOPE_APPROVAL = {
+    "status": "authorized_by_human_governance",
+    "scope_type": "synthetic_rehearsal_only_no_real_pilot",
+    "human_approver": "Tony",
+    "backup_and_escalation_contact": "Stone",
+    "technical_owner": "Developer Agent",
+    "evidence_contributors": ["CustomerService Agent", "Data Agent"],
+    "zero_participants": {
+        "real_customers": 0,
+        "employees_or_real_operators": 0,
+        "stores": 0,
+        "production_or_staging_environments": 0,
+        "real_cases_orders_accounts_or_messages": 0,
+    },
+    "real_pilot_authorized": False,
+    "real_data_authorized": False,
+    "credentials_connectors_or_infrastructure_authorized": False,
+    "merge_publication_release_or_deployment_authorized": False,
+    "external_actions_allowed": False,
+    "decision_date": "2026-08-02",
+    "decision_evidence": "Owner authorization / Issue #47",
+}
+ACCEPTANCE_IDS = (
+    "AC-ENVIRONMENT",
+    "AC-IDENTITY",
+    "AC-DATA",
+    "AC-EVIDENCE",
+    "AC-OBSERVATION",
+    "AC-RECOVERY",
+    "AC-INCIDENT",
+    "AC-SUPPORT",
+    "AC-RISK-MAPPING",
+    "AC-AUTHORITY",
+)
+EXPECTED_ACCEPTANCE_TEST_IDS = {
+    "AC-ENVIRONMENT": (
+        "test_empty_capability_fields_are_allowed_only_at_canonical_paths",
+    ),
+    "AC-IDENTITY": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-DATA": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-EVIDENCE": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-OBSERVATION": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-RECOVERY": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-INCIDENT": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-SUPPORT": (
+        "test_business_data_evidence_and_authority_attacks_are_denied",
+    ),
+    "AC-RISK-MAPPING": (
+        "test_repository_mapping_matrix_policy_and_guide_are_complete",
+    ),
+    "AC-AUTHORITY": (
+        "test_gate5_records_one_owner_without_extending_operating_authority",
+        "test_gate6_records_architecture_security_approval_without_provisioning",
+        "test_gate7_records_synthetic_data_approval_without_real_data_authority",
+        "test_gate8_records_synthetic_operations_approval_without_real_operations",
+        "test_gate9_records_treatment_ownership_without_risk_acceptance",
+        "test_gate10_records_zero_participant_synthetic_scope_without_real_pilot",
+        "test_valid_package_stops_at_human_governance_without_side_effects",
+        "test_malformed_input_types_and_cycles_are_denied_without_exceptions",
+    ),
+}
+EXPECTED_ACCEPTANCE_EVIDENCE_IDS = {
+    "AC-ENVIRONMENT": ("EV-ENVIRONMENT",),
+    "AC-IDENTITY": ("EV-IDENTITY",),
+    "AC-DATA": ("EV-DATA",),
+    "AC-EVIDENCE": ("EV-EVIDENCE",),
+    "AC-OBSERVATION": ("EV-OBSERVATION",),
+    "AC-RECOVERY": ("EV-RECOVERY",),
+    "AC-INCIDENT": ("EV-INCIDENT",),
+    "AC-SUPPORT": ("EV-SUPPORT",),
+    "AC-RISK-MAPPING": EVIDENCE_IDS,
+    "AC-AUTHORITY": (),
+}
+FALSE_CLAIMS = {
+    "risk_accepted": False,
+    "pilot_authorized": False,
+    "production_ready": False,
+    "release_authorized": False,
+}
+ALLOWED_EMPTY_CAPABILITY_PATHS = frozenset(
+    {
+        "$.environment.external_endpoints",
+        "$.environment.connectors",
+        "$.environment.credentials",
+    }
+)
+CAPABILITY_KEYS = frozenset(
+    {
+        "api_key",
+        "api_keys",
+        "connector",
+        "connectors",
+        "credential",
+        "credentials",
+        "database",
+        "databases",
+        "endpoint",
+        "endpoints",
+        "external_endpoint",
+        "external_endpoints",
+        "password",
+        "passwords",
+        "secret",
+        "secrets",
+        "token",
+        "tokens",
+        "webhook",
+        "webhooks",
+    }
+)
+AUTHORITY_LIKE_VALUES = frozenset(
+    {
+        "accepted",
+        "approved",
+        "eligible",
+        "go",
+        "pilot_authorized",
+        "pilot_ready",
+        "proceed",
+        "production_ready",
+        "ready",
+        "released",
+    }
+)
+
+
+def _error(path: str, code: str) -> str:
+    return f"{path}:{code}"
+
+
+def _exact_keys(value: Any, expected: tuple[str, ...], path: str) -> list[str]:
+    if not isinstance(value, dict):
+        return [_error(path, "mapping_required")]
+    if tuple(value.keys()) != expected:
+        return [_error(path, "exact_keys_required")]
+    return []
+
+
+def _ordered_ids(
+    records: Any,
+    key: str,
+    expected: tuple[str, ...],
+    path: str,
+) -> list[str]:
+    if not isinstance(records, list):
+        return [_error(path, "list_required")]
+    identifiers = [
+        record.get(key) if isinstance(record, dict) else None for record in records
+    ]
+    if tuple(identifiers) != expected or len(set(identifiers)) != len(identifiers):
+        return [_error(path, "ordered_unique_ids_required")]
+    return []
+
+
+def _is_exact_bool(value: Any, expected: bool) -> bool:
+    return type(value) is bool and value is expected
+
+
+def _scan_capabilities(
+    value: Any,
+    path: str = "$",
+    active: set[int] | None = None,
+) -> list[str]:
+    active = set() if active is None else active
+    if isinstance(value, (dict, list)):
+        identity = id(value)
+        if identity in active:
+            return [_error(path, "cyclic_structure")]
+        active.add(identity)
+
+    errors: list[str] = []
+    try:
+        if isinstance(value, dict):
+            for key, child in value.items():
+                key_text = str(key)
+                child_path = f"{path}.{key_text}"
+                normalized = key_text.strip().lower()
+                if normalized in CAPABILITY_KEYS:
+                    if (
+                        child_path in ALLOWED_EMPTY_CAPABILITY_PATHS
+                        and type(child) is list
+                        and child == []
+                    ):
+                        continue
+                    errors.append(_error(child_path, "forbidden_capability"))
+                errors.extend(_scan_capabilities(child, child_path, active))
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                errors.extend(
+                    _scan_capabilities(child, f"{path}[{index}]", active)
+                )
+        elif isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in AUTHORITY_LIKE_VALUES:
+                errors.append(_error(path, "authority_like_value"))
+            if normalized.startswith(
+                (
+                    "http://",
+                    "https://",
+                    "mysql://",
+                    "postgres://",
+                    "redis://",
+                )
+            ):
+                errors.append(_error(path, "external_locator"))
+    finally:
+        if isinstance(value, (dict, list)):
+            active.discard(id(value))
+    return errors
+
+
+def load_controlled_yaml_text(path: Path, text: str) -> dict[str, Any]:
+    try:
+        for token in yaml.scan(text):
+            if isinstance(token, (AnchorToken, AliasToken)):
+                raise ValueError(f"{path}: YAML anchors and aliases are not allowed")
+            if isinstance(token, ScalarToken) and token.value == "<<":
+                raise ValueError(f"{path}: YAML merge keys are not allowed")
+        loaded = yaml.safe_load(text)
+    except yaml.YAMLError as exc:
+        raise ValueError(f"{path}: invalid YAML") from exc
+    if not isinstance(loaded, dict):
+        raise ValueError(f"{path}: controlled YAML must be a mapping")
+    return loaded
+
+
+def load_repository_yaml(
+    root: Path,
+    relative_path: Path,
+) -> dict[str, Any]:
+    if relative_path.is_absolute() or relative_path not in ALLOWED_YAML_PATHS:
+        raise ValueError("path is not allowlisted")
+    resolved_root = root.resolve()
+    candidate = resolved_root / relative_path
+    if candidate.is_symlink():
+        raise ValueError("symlink is not allowed")
+    resolved = candidate.resolve()
+    if resolved_root not in resolved.parents:
+        raise ValueError("path escapes repository")
+    text = candidate.read_text(encoding="utf-8")
+    return load_controlled_yaml_text(relative_path, text)
+
+
+def _validate_model_impl(model: Any) -> list[str]:
+    expected_keys = (
+        "model_version",
+        "stage",
+        "stage_id",
+        "allowed_scope",
+        "excluded_entities",
+        "environment_mode",
+        "allowed_results",
+        "authority_ceiling",
+        "real_owner",
+        "architecture_security_approval",
+        "privacy_data_approval",
+        "operations_recovery_incident_support_approval",
+        "risk_treatment_approval",
+        "synthetic_rehearsal_scope_approval",
+        "stage10_posture",
+        "components",
+        "risks",
+        "human_gates",
+        "claims",
+        "external_actions_performed",
+    )
+    errors = _exact_keys(model, expected_keys, "$")
+    if errors:
+        return errors
+
+    if model["model_version"] != "nonproduction_readiness_integration/v1":
+        errors.append(_error("$.model_version", "invalid"))
+    if model["stage"] != "15" or model["stage_id"] != "NR-01":
+        errors.append(_error("$.stage", "invalid"))
+    if model["allowed_scope"] != {"company": "汇沣电商", "brand": "BUW"}:
+        errors.append(_error("$.allowed_scope", "invalid"))
+    if model["excluded_entities"] != ["PC", "六合通"]:
+        errors.append(_error("$.excluded_entities", "invalid"))
+    if model["environment_mode"] != "local_synthetic_disposable":
+        errors.append(_error("$.environment_mode", "invalid"))
+    if model["allowed_results"] != ["denied", "needs_human_governance"]:
+        errors.append(_error("$.allowed_results", "invalid"))
+    if model["authority_ceiling"] != "needs_human_governance":
+        errors.append(_error("$.authority_ceiling", "invalid"))
+    if model["real_owner"] != EXPECTED_REAL_OWNER:
+        errors.append(_error("$.real_owner", "invalid"))
+    if (
+        model["architecture_security_approval"]
+        != EXPECTED_ARCHITECTURE_SECURITY_APPROVAL
+    ):
+        errors.append(_error("$.architecture_security_approval", "invalid"))
+    if model["privacy_data_approval"] != EXPECTED_PRIVACY_DATA_APPROVAL:
+        errors.append(_error("$.privacy_data_approval", "invalid"))
+    if (
+        model["operations_recovery_incident_support_approval"]
+        != EXPECTED_OPERATIONS_RECOVERY_INCIDENT_SUPPORT_APPROVAL
+    ):
+        errors.append(
+            _error(
+                "$.operations_recovery_incident_support_approval",
+                "invalid",
+            )
+        )
+    if model["risk_treatment_approval"] != EXPECTED_RISK_TREATMENT_APPROVAL:
+        errors.append(_error("$.risk_treatment_approval", "invalid"))
+    if (
+        model["synthetic_rehearsal_scope_approval"]
+        != EXPECTED_SYNTHETIC_REHEARSAL_SCOPE_APPROVAL
+    ):
+        errors.append(_error("$.synthetic_rehearsal_scope_approval", "invalid"))
+    if model["stage10_posture"] != "BLOCKED / NO-GO":
+        errors.append(_error("$.stage10_posture", "invalid"))
+
+    components = model["components"]
+    errors.extend(
+        _ordered_ids(components, "component_id", COMPONENT_IDS, "$.components")
+    )
+    if isinstance(components, list):
+        expected_pairs = list(zip(COMPONENT_IDS, EVIDENCE_IDS))
+        actual_pairs = [
+            (
+                record.get("component_id"),
+                record.get("evidence_id"),
+            )
+            if isinstance(record, dict)
+            else (None, None)
+            for record in components
+        ]
+        if actual_pairs != expected_pairs:
+            errors.append(_error("$.components", "evidence_alignment_required"))
+        for index, record in enumerate(components):
+            if (
+                not isinstance(record, dict)
+                or tuple(record.keys()) != ("component_id", "evidence_id")
+            ):
+                errors.append(
+                    _error(
+                        f"$.components[{index}]",
+                        "closed_component_record_required",
+                    )
+                )
+
+    risks = model["risks"]
+    errors.extend(_ordered_ids(risks, "risk_id", RISK_IDS, "$.risks"))
+    if isinstance(risks, list):
+        for index, risk in enumerate(risks):
+            if (
+                not isinstance(risk, dict)
+                or tuple(risk.keys()) != ("risk_id", "state", "owner")
+            ):
+                errors.append(
+                    _error(f"$.risks[{index}]", "closed_risk_record_required")
+                )
+            elif (
+                risk["state"] != "open_blocked_unaccepted"
+                or risk["owner"] != "unassigned / governance decision required"
+            ):
+                errors.append(
+                    _error(f"$.risks[{index}]", "risk_must_remain_blocked")
+                )
+
+    gates = model["human_gates"]
+    errors.extend(_ordered_ids(gates, "gate_id", GATE_IDS, "$.human_gates"))
+    if isinstance(gates, list):
+        for index, (gate, expected_authorized) in enumerate(
+            zip(gates, GATE_AUTHORIZATIONS)
+        ):
+            if (
+                not isinstance(gate, dict)
+                or tuple(gate.keys()) != ("gate_id", "authorized")
+                or not _is_exact_bool(
+                    gate.get("authorized"),
+                    expected_authorized,
+                )
+            ):
+                errors.append(
+                    _error(
+                        f"$.human_gates[{index}]",
+                        "recorded_gate_state_required",
+                    )
+                )
+
+    claims = model["claims"]
+    if claims != FALSE_CLAIMS or not all(
+        type(value) is bool for value in claims.values()
+    ):
+        errors.append(_error("$.claims", "exact_false_claims_required"))
+    if model["external_actions_performed"] != []:
+        errors.append(_error("$.external_actions_performed", "must_be_empty"))
+    errors.extend(_scan_capabilities(model))
+    return list(dict.fromkeys(errors))
+
+
+def _validate_fixture_impl(fixture: Any) -> list[str]:
+    expected_keys = (
+        "fixture_version",
+        "scenario_id",
+        "scope",
+        "environment",
+        "identity",
+        "data_contract",
+        "component_results",
+        "risk_states",
+        "required_human_gates",
+        "requested_external_actions",
+        "claims",
+        "evidence_store",
+        "observation",
+        "recovery",
+        "incident_tabletop",
+        "support_handoff",
+    )
+    errors = _exact_keys(fixture, expected_keys, "$")
+    if errors:
+        return errors
+
+    if fixture["fixture_version"] != "nonproduction_readiness_fixture/v1":
+        errors.append(_error("$.fixture_version", "invalid"))
+    if fixture["scenario_id"] != "NR-SYNTHETIC-LOCAL-001":
+        errors.append(_error("$.scenario_id", "invalid"))
+    if fixture["scope"] != {"company": "汇沣电商", "brand": "BUW"}:
+        errors.append(_error("$.scope", "invalid"))
+    if fixture["environment"] != {
+        "mode": "local_synthetic_disposable",
+        "external_endpoints": [],
+        "connectors": [],
+        "credentials": [],
+    }:
+        errors.append(_error("$.environment", "invalid"))
+    if fixture["identity"] != {
+        "principal_id": "synthetic-principal-nr-001",
+        "simulated": True,
+        "permissions": [
+            "read_synthetic_fixture",
+            "write_task_local_evidence",
+        ],
+    }:
+        errors.append(_error("$.identity", "invalid"))
+    if fixture["data_contract"] != {
+        "provenance": "synthetic",
+        "classification": "synthetic_non_personal",
+        "retention": "task_local_until_cleanup",
+        "deletion": "deterministic_cleanup_required",
+    }:
+        errors.append(_error("$.data_contract", "invalid"))
+
+    component_results = fixture["component_results"]
+    errors.extend(
+        _ordered_ids(
+            component_results,
+            "component_id",
+            COMPONENT_IDS,
+            "$.component_results",
+        )
+    )
+    if isinstance(component_results, list):
+        expected_pairs = list(zip(COMPONENT_IDS, EVIDENCE_IDS))
+        actual_pairs = [
+            (
+                record.get("component_id"),
+                record.get("evidence_id"),
+            )
+            if isinstance(record, dict)
+            else (None, None)
+            for record in component_results
+        ]
+        if actual_pairs != expected_pairs:
+            errors.append(
+                _error("$.component_results", "evidence_alignment_required")
+            )
+        for index, record in enumerate(component_results):
+            if (
+                not isinstance(record, dict)
+                or tuple(record.keys())
+                != ("component_id", "status", "evidence_id")
+                or record.get("status") != "passed"
+            ):
+                errors.append(
+                    _error(
+                        f"$.component_results[{index}]",
+                        "closed_pass_record_required",
+                    )
+                )
+
+    risk_states = fixture["risk_states"]
+    if (
+        not isinstance(risk_states, dict)
+        or tuple(risk_states.keys()) != RISK_IDS
+        or tuple(risk_states.values())
+        != tuple("open_blocked_unaccepted" for _ in RISK_IDS)
+    ):
+        errors.append(_error("$.risk_states", "blocked_risks_required"))
+    if fixture["required_human_gates"] != list(PENDING_GATE_IDS):
+        errors.append(_error("$.required_human_gates", "ordered_gates_required"))
+    if fixture["requested_external_actions"] != []:
+        errors.append(_error("$.requested_external_actions", "must_be_empty"))
+    claims = fixture["claims"]
+    if (
+        not isinstance(claims, dict)
+        or claims != FALSE_CLAIMS
+        or not all(type(value) is bool for value in claims.values())
+    ):
+        errors.append(_error("$.claims", "exact_false_claims_required"))
+
+    store = fixture["evidence_store"]
+    if (
+        not isinstance(store, dict)
+        or tuple(store.keys()) != ("mode", "records")
+        or store.get("mode") != "task_local_append_only"
+    ):
+        errors.append(_error("$.evidence_store", "invalid"))
+    else:
+        records = store.get("records")
+        if not isinstance(records, list):
+            errors.append(_error("$.evidence_store.records", "list_required"))
+        else:
+            expected_payloads = ("environment", "evidence", "observation")
+            expected_record_ids = ("AUDIT-001", "AUDIT-002", "AUDIT-003")
+            expected_evidence = (
+                "EV-ENVIRONMENT",
+                "EV-EVIDENCE",
+                "EV-OBSERVATION",
+            )
+            if [record.get("sequence") if isinstance(record, dict) else None
+                for record in records] != [1, 2, 3]:
+                errors.append(
+                    _error(
+                        "$.evidence_store.records",
+                        "append_only_sequence_required",
+                    )
+                )
+            for index, payload in enumerate(expected_payloads):
+                if index >= len(records) or not isinstance(records[index], dict):
+                    errors.append(
+                        _error(
+                            f"$.evidence_store.records[{index}]",
+                            "closed_record_required",
+                        )
+                    )
+                    continue
+                record = records[index]
+                expected_checksum = hashlib.sha256(
+                    payload.encode("utf-8")
+                ).hexdigest()
+                if (
+                    tuple(record.keys())
+                    != ("sequence", "record_id", "evidence_id", "checksum")
+                    or record["record_id"] != expected_record_ids[index]
+                    or record["evidence_id"] != expected_evidence[index]
+                    or record["checksum"] != expected_checksum
+                ):
+                    errors.append(
+                        _error(
+                            f"$.evidence_store.records[{index}]",
+                            "invalid",
+                        )
+                    )
+            if len(records) != 3:
+                errors.append(
+                    _error("$.evidence_store.records", "exact_length_required")
+                )
+
+    if fixture["observation"] != {
+        "mode": "local_decision_only",
+        "metric_ids": [
+            "METRIC-LOCAL-VALIDATION",
+            "METRIC-LOCAL-DENIAL",
+        ],
+        "alert_decision": "synthetic_no_external_delivery",
+        "paging": False,
+        "ticket_created": False,
+        "external_delivery": False,
+    }:
+        errors.append(_error("$.observation", "invalid"))
+
+    expected_state = hashlib.sha256(b"synthetic-state").hexdigest()
+    if fixture["recovery"] != {
+        "snapshot_id": "SYNTHETIC-SNAPSHOT-001",
+        "rollback_trigger": "synthetic_validation_failure",
+        "pre_restore_checksum": expected_state,
+        "post_restore_checksum": expected_state,
+        "restore_verified": True,
+        "cleanup_verified": True,
+    }:
+        errors.append(_error("$.recovery", "invalid"))
+    if fixture["incident_tabletop"] != {
+        "scenario_id": "SYNTHETIC-INCIDENT-001",
+        "severity": "synthetic_sev2",
+        "containment": "local_fixture_isolation",
+        "communications": "none_external",
+        "real_incident_declared": False,
+    }:
+        errors.append(_error("$.incident_tabletop", "invalid"))
+    if fixture["support_handoff"] != {
+        "case_id": "SYNTHETIC-CASE-001",
+        "owner": "unassigned / governance decision required",
+        "route": "abstract_support_role",
+        "ticket_created": False,
+        "sla_committed": False,
+    }:
+        errors.append(_error("$.support_handoff", "invalid"))
+    errors.extend(_scan_capabilities(fixture))
+    return list(dict.fromkeys(errors))
+
+
+def _fail_closed(
+    validator: Callable[[Any], list[str]],
+    value: Any,
+    path: str,
+) -> list[str]:
+    try:
+        copied = copy.deepcopy(value)
+        errors = validator(copied)
+        if not isinstance(errors, list) or not all(
+            isinstance(error, str) for error in errors
+        ):
+            return [_error(path, "validator_contract_error")]
+        return errors
+    except Exception as exc:
+        return [_error(path, f"validation_exception:{type(exc).__name__}")]
+
+
+def validate_model(model: Any) -> list[str]:
+    return _fail_closed(_validate_model_impl, model, "$model")
+
+
+def validate_fixture(fixture: Any) -> list[str]:
+    return _fail_closed(_validate_fixture_impl, fixture, "$fixture")
+
+
+def evaluate_nonproduction_readiness(
+    model: Any,
+    fixture: Any,
+) -> dict[str, Any]:
+    errors = list(
+        dict.fromkeys(
+            [
+                *validate_model(model),
+                *validate_fixture(fixture),
+            ]
+        )
+    )
+    denied = bool(errors)
+    return {
+        "result": "denied" if denied else "needs_human_governance",
+        "reason_codes": (
+            [f"VALIDATION_ERROR:{error}" for error in errors] if denied else []
+        ),
+        "evidence_refs": [] if denied else list(EVIDENCE_IDS),
+        "required_human_gates": list(PENDING_GATE_IDS),
+        "risk_states": {
+            risk_id: "open_blocked_unaccepted" for risk_id in RISK_IDS
+        },
+        "external_actions_performed": [],
+        "claims": dict(FALSE_CLAIMS),
+    }
+
+
+def _validate_mapping(mapping: Any) -> list[str]:
+    errors = _exact_keys(
+        mapping,
+        (
+            "mapping_version",
+            "stage10_posture",
+            "risk_mappings",
+            "archived_dependencies",
+        ),
+        "$mapping",
+    )
+    if errors:
+        return errors
+    if (
+        mapping["mapping_version"]
+        != "nonproduction_readiness_stage10_14_mapping/v1"
+        or mapping["stage10_posture"] != "BLOCKED / NO-GO"
+    ):
+        errors.append(_error("$mapping", "header_invalid"))
+    risk_mappings = mapping["risk_mappings"]
+    errors.extend(
+        _ordered_ids(
+            risk_mappings,
+            "risk_id",
+            RISK_IDS,
+            "$mapping.risk_mappings",
+        )
+    )
+    if isinstance(risk_mappings, list):
+        for index, record in enumerate(risk_mappings):
+            if (
+                not isinstance(record, dict)
+                or tuple(record.keys()) != ("risk_id", "evidence_ids", "state")
+                or record.get("state") != "open_blocked_unaccepted"
+                or not isinstance(record.get("evidence_ids"), list)
+                or not record.get("evidence_ids")
+                or any(
+                    evidence_id not in EVIDENCE_IDS
+                    for evidence_id in record.get("evidence_ids", [])
+                )
+            ):
+                errors.append(
+                    _error(
+                        f"$mapping.risk_mappings[{index}]",
+                        "closed_blocked_record_required",
+                    )
+                )
+    expected_dependencies = [
+        {
+            "stage": number,
+            "status": "Archived",
+            "interpretation": "design_evidence_only",
+        }
+        for number in range(11, 15)
+    ]
+    if mapping["archived_dependencies"] != expected_dependencies:
+        errors.append(_error("$mapping.archived_dependencies", "invalid"))
+    errors.extend(_scan_capabilities(mapping, "$mapping"))
+    return list(dict.fromkeys(errors))
+
+
+def _validate_matrix(matrix: Any) -> list[str]:
+    errors = _exact_keys(
+        matrix,
+        ("matrix_version", "requirements", "authority_claims"),
+        "$matrix",
+    )
+    if errors:
+        return errors
+    if matrix["matrix_version"] != "nonproduction_readiness_acceptance/v1":
+        errors.append(_error("$matrix.matrix_version", "invalid"))
+    requirements = matrix["requirements"]
+    errors.extend(
+        _ordered_ids(
+            requirements,
+            "requirement_id",
+            ACCEPTANCE_IDS,
+            "$matrix.requirements",
+        )
+    )
+    if isinstance(requirements, list):
+        for index, record in enumerate(requirements):
+            requirement_id = (
+                record.get("requirement_id")
+                if isinstance(record, dict)
+                else None
+            )
+            if (
+                not isinstance(record, dict)
+                or tuple(record.keys())
+                != (
+                    "requirement_id",
+                    "test_ids",
+                    "evidence_ids",
+                    "local_synthetic_proof",
+                    "real_world_authority",
+                )
+                or not isinstance(record.get("test_ids"), list)
+                or not isinstance(record.get("evidence_ids"), list)
+                or tuple(record.get("test_ids", ()))
+                != EXPECTED_ACCEPTANCE_TEST_IDS.get(requirement_id)
+                or tuple(record.get("evidence_ids", ()))
+                != EXPECTED_ACCEPTANCE_EVIDENCE_IDS.get(requirement_id)
+                or not _is_exact_bool(record.get("local_synthetic_proof"), True)
+                or not _is_exact_bool(record.get("real_world_authority"), False)
+            ):
+                errors.append(
+                    _error(
+                        f"$matrix.requirements[{index}]",
+                        "closed_requirement_record_required",
+                    )
+                )
+    if matrix["authority_claims"] != FALSE_CLAIMS:
+        errors.append(
+            _error("$matrix.authority_claims", "exact_false_claims_required")
+        )
+    errors.extend(_scan_capabilities(matrix, "$matrix"))
+    return list(dict.fromkeys(errors))
+
+
+def _load_repository_asset(
+    root: Path,
+    relative_path: Path,
+    label: str,
+) -> tuple[dict[str, Any] | None, list[str]]:
+    try:
+        return load_repository_yaml(root, relative_path), []
+    except Exception as exc:
+        return None, [_error(label, f"load_error:{type(exc).__name__}")]
+
+
+def validate_repository(root: Path) -> list[str]:
+    model, model_load_errors = _load_repository_asset(
+        root, MODEL_PATH, "$repository.model"
+    )
+    fixture, fixture_load_errors = _load_repository_asset(
+        root, FIXTURE_PATH, "$repository.fixture"
+    )
+    mapping, mapping_load_errors = _load_repository_asset(
+        root, MAPPING_PATH, "$repository.mapping"
+    )
+    matrix, matrix_load_errors = _load_repository_asset(
+        root, MATRIX_PATH, "$repository.matrix"
+    )
+    errors = [
+        *model_load_errors,
+        *fixture_load_errors,
+        *mapping_load_errors,
+        *matrix_load_errors,
+    ]
+    if model is not None:
+        errors.extend(validate_model(model))
+    if fixture is not None:
+        errors.extend(validate_fixture(fixture))
+    if mapping is not None:
+        errors.extend(_fail_closed(_validate_mapping, mapping, "$mapping"))
+    if matrix is not None:
+        errors.extend(_fail_closed(_validate_matrix, matrix, "$matrix"))
+
+    if model is not None and fixture is not None:
+        model_evidence = [
+            record.get("evidence_id")
+            for record in model.get("components", [])
+            if isinstance(record, dict)
+        ]
+        fixture_evidence = [
+            record.get("evidence_id")
+            for record in fixture.get("component_results", [])
+            if isinstance(record, dict)
+        ]
+        if tuple(model_evidence) != EVIDENCE_IDS:
+            errors.append(_error("$cross.model_evidence", "identity_mismatch"))
+        if tuple(fixture_evidence) != EVIDENCE_IDS:
+            errors.append(_error("$cross.fixture_evidence", "identity_mismatch"))
+    if mapping is not None:
+        mapping_risks = [
+            record.get("risk_id")
+            for record in mapping.get("risk_mappings", [])
+            if isinstance(record, dict)
+        ]
+        if tuple(mapping_risks) != RISK_IDS:
+            errors.append(_error("$cross.risks", "identity_mismatch"))
+
+    text_assets = {
+        "$policy": (
+            POLICY_PATH,
+            (
+                "Business loop",
+                "Core objects",
+                "Data flow",
+                "Operators",
+                "AI and human judgment boundary",
+                "Proof of operation",
+                "Authority ceiling",
+                "Component contracts",
+                "Risk mapping",
+                "Stop and withdrawal",
+                "Lifecycle",
+                "BLOCKED / NO-GO",
+                "needs_human_governance",
+                "汇沣电商",
+                "BUW",
+                "PC",
+                "六合通",
+            ),
+        ),
+        "$guide": (
+            GUIDE_PATH,
+            (
+                "AIOS non-production readiness validation PASSED",
+                "python -m pip install --requirement requirements-dev.txt",
+                "python3 Tests/validate_aios_nonproduction_readiness.py",
+                "python3 -m unittest Tests.test_nonproduction_readiness -v",
+                "python3 -m unittest discover -s Tests -p 'test_*.py' -v",
+                "does not authorize deployment",
+            ),
+        ),
+        "$workflow": (
+            WORKFLOW_PATH,
+            (
+                "pull_request:",
+                "permissions:\n  contents: read",
+                "persist-credentials: false",
+                "python -m pip install --requirement requirements-dev.txt",
+                "python3 Tests/validate_aios_nonproduction_readiness.py",
+                "python3 -m unittest Tests.test_nonproduction_readiness -v",
+                "python3 -m unittest discover -s Tests -p 'test_*.py' -v",
+                "python3 Tests/validate_aios_workflow_schema.py",
+                "python3 -m compileall -q Runtime Tests",
+            ),
+        ),
+    }
+    for label, (relative_path, tokens) in text_assets.items():
+        try:
+            content = (root / relative_path).read_text(encoding="utf-8")
+        except Exception as exc:
+            errors.append(_error(label, f"load_error:{type(exc).__name__}"))
+            continue
+        for token in tokens:
+            if token not in content:
+                errors.append(_error(label, f"missing:{token}"))
+        if label == "$workflow":
+            for forbidden in (
+                "push:",
+                "workflow_dispatch:",
+                "contents: write",
+                "pull-requests: write",
+                "issues: write",
+                "git push",
+                "curl ",
+                "wget ",
+                "secrets.",
+                "deployment",
+            ):
+                if forbidden in content:
+                    errors.append(_error(label, f"forbidden:{forbidden}"))
+
+    try:
+        stage_registry = (root / STAGE_REGISTRY_PATH).read_text(encoding="utf-8")
+        stage10 = next(
+            (
+                line
+                for line in stage_registry.splitlines()
+                if line.startswith("| 10 |")
+            ),
+            "",
+        )
+        stage15 = next(
+            (
+                line
+                for line in stage_registry.splitlines()
+                if line.startswith("| 15 |")
+            ),
+            "",
+        )
+        if "BLOCKED / NO-GO" not in stage10:
+            errors.append(_error("$registry.stage10", "posture_not_frozen"))
+        if not stage15:
+            errors.append(_error("$registry.stage15", "missing"))
+        if "| Reviewed |" not in stage15:
+            errors.append(_error("$registry.stage15", "reviewed_status_required"))
+        if "| Reported |" in stage15 or "| Archived |" in stage15:
+            errors.append(_error("$registry.stage15", "authority_exceeded"))
+    except Exception as exc:
+        errors.append(
+            _error("$registry.stage", f"load_error:{type(exc).__name__}")
+        )
+
+    return list(dict.fromkeys(errors))
+
+
+def main() -> int:
+    errors = validate_repository(ROOT)
+    if errors:
+        print("AIOS non-production readiness validation FAILED")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+    model = load_repository_yaml(ROOT, MODEL_PATH)
+    fixture = load_repository_yaml(ROOT, FIXTURE_PATH)
+    decision = evaluate_nonproduction_readiness(model, fixture)
+    if decision["result"] != "needs_human_governance":
+        print("AIOS non-production readiness validation FAILED")
+        print(f"- $decision:unexpected_result:{decision['result']}")
+        return 1
+    print("AIOS non-production readiness validation PASSED")
+    print(f"result={decision['result']}")
+    print("external_actions_performed=[]")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,271 @@
+{
+  "schema_version": "aios_stage15_local_python_rehearsal_receipt/v1",
+  "run_id": "STAGE15-LOCAL-33e2216976b7",
+  "started_at_utc": "2026-08-08T02:33:27.186870Z",
+  "finished_at_utc": "2026-08-08T02:33:27.858972Z",
+  "company": "汇沣电商",
+  "brand": "BUW",
+  "stage": "Stage 15 / NR-01",
+  "mode": "local_isolated_python_synthetic_only",
+  "result": "local_python_test_deployment_rehearsal_passed_not_cloud_proof",
+  "source_commit": "33e2216976b73ebaff4368ca8b8d5dc206ebf894",
+  "source_tree": "eff75180da120fa7deffdd15b1daa2a13bcb8ab5",
+  "file_inventory_sha256": "bfabad910aa9efe738732650dc7486de6ce35af37a2a00efa559a11b96a07c67",
+  "python_runtime": {
+    "implementation": "CPython",
+    "version": "3.9.6",
+    "executable_label": "approved_local_python",
+    "user_site_enabled": false,
+    "online_install_used": false
+  },
+  "local_dependencies": {
+    "PyYAML": "6.0.3"
+  },
+  "fixture_ids": [
+    "NR-LOCAL-PYTHON-REHEARSAL-001"
+  ],
+  "fixture_checksums": {
+    "NR-LOCAL-PYTHON-REHEARSAL-001": "4e4d00d15ead4a45e5dd1c1c6a56dba7a62f5053d431f962ae1842878e1bcaec"
+  },
+  "ordered_checks": [
+    "exact_candidate_export_verified",
+    "closed_contract_verified",
+    "synthetic_fixture_verified",
+    "local_dependency_verified_without_install",
+    "minimal_environment_and_network_guard_active",
+    "controlled_orchestrator_smoke_one_passed",
+    "controlled_orchestrator_smoke_two_passed",
+    "normalized_smoke_output_deterministic",
+    "authority_ceiling_preserved"
+  ],
+  "smoke_result": {
+    "agent": "Retail",
+    "approval_request": {
+      "approval_owners": [
+        "SYNTHETIC-ROLE-RETAIL-APPROVER-001"
+      ],
+      "approval_status": "pending",
+      "evidence_links": [
+        "synthetic://store/SYNTHETIC-STORE-001/alert/001"
+      ],
+      "execution_performed": false,
+      "reason": "prepare_only steps cannot execute in Harness v0",
+      "requested_action": "assign_supervisor_response",
+      "step_id": "assign_supervisor_response",
+      "synthetic_only": true,
+      "workflow_id": "synthetic_store_anomaly_rehearsal"
+    },
+    "blockers": [],
+    "business_impact": "Synthetic-only validation; no external or production effect.",
+    "completed": [
+      {
+        "evidence_links": [
+          "synthetic://store/SYNTHETIC-STORE-001/alert/001"
+        ],
+        "item": "validate_scope"
+      },
+      {
+        "evidence_links": [
+          "synthetic://store/SYNTHETIC-STORE-001/alert/001"
+        ],
+        "item": "request_data_validation"
+      }
+    ],
+    "confidence": "medium",
+    "decisions_required": [
+      {
+        "decision": "Approve or reject assign_supervisor_response",
+        "latest_decision_time": null,
+        "options": [
+          "approve",
+          "reject",
+          "request_more_evidence"
+        ],
+        "recommended_option": "review"
+      }
+    ],
+    "domain_payload": {
+      "audit_log": [
+        {
+          "event": "run_started",
+          "status": "partial"
+        },
+        {
+          "event": "step_simulated",
+          "owner": "Retail",
+          "status": "partial",
+          "step_id": "validate_scope"
+        },
+        {
+          "event": "handoff_prepared",
+          "status": "partial",
+          "step_id": "request_data_validation",
+          "to_agent": "Data"
+        },
+        {
+          "event": "step_simulated",
+          "owner": "Data",
+          "status": "partial",
+          "step_id": "request_data_validation"
+        },
+        {
+          "event": "handoff_prepared",
+          "status": "partial",
+          "step_id": "assign_supervisor_response",
+          "to_agent": "Retail"
+        },
+        {
+          "event": "approval_package_prepared",
+          "status": "needs_approval",
+          "step_id": "assign_supervisor_response"
+        }
+      ],
+      "completed_steps": [
+        "validate_scope",
+        "request_data_validation"
+      ],
+      "dry_run": true,
+      "duplicate_run": false,
+      "external_writes_performed": false,
+      "harness_version": "0.1.0",
+      "idempotency_key": "synthetic_store_anomaly_rehearsal:BUW:SYNTHETIC-STORE-001:2099-01-01:SYNTHETIC-EVENT-STORE-ALERT-001",
+      "pending_step": "assign_supervisor_response",
+      "synthetic_only": true,
+      "workflow_id": "synthetic_store_anomaly_rehearsal"
+    },
+    "evidence_used": [
+      "synthetic://store/SYNTHETIC-STORE-001/alert/001"
+    ],
+    "executive_status": "Yellow",
+    "findings": [],
+    "handoffs": [
+      {
+        "acceptance_criteria": [
+          "issue_classified",
+          "owner_confirmed",
+          "safe_actions_recorded",
+          "escalation_resolved_or_accepted"
+        ],
+        "approval_required": false,
+        "confidence": "medium",
+        "data_cutoff": "2099-01-01",
+        "deadline_or_review_date": null,
+        "evidence": [
+          "synthetic://store/SYNTHETIC-STORE-001/alert/001"
+        ],
+        "from_agent": "Retail",
+        "requested_outcome": "complete workflow step request_data_validation",
+        "risk_level": "low",
+        "scope_in": "使用不可联系、不可路由的纯合成对象验证门店异常审批停止点。",
+        "scope_out": [
+          "external_write",
+          "production_execution",
+          "human_decision"
+        ],
+        "situation": "synthetic_settlement_delay",
+        "to_agent": "Data"
+      },
+      {
+        "acceptance_criteria": [
+          "issue_classified",
+          "owner_confirmed",
+          "safe_actions_recorded",
+          "escalation_resolved_or_accepted"
+        ],
+        "approval_required": true,
+        "confidence": "medium",
+        "data_cutoff": "2099-01-01",
+        "deadline_or_review_date": null,
+        "evidence": [
+          "synthetic://store/SYNTHETIC-STORE-001/alert/001"
+        ],
+        "from_agent": "Data",
+        "requested_outcome": "complete workflow step assign_supervisor_response",
+        "risk_level": "low",
+        "scope_in": "使用不可联系、不可路由的纯合成对象验证门店异常审批停止点。",
+        "scope_out": [
+          "external_write",
+          "production_execution",
+          "human_decision"
+        ],
+        "situation": "synthetic_settlement_delay",
+        "to_agent": "Retail"
+      }
+    ],
+    "in_progress": [
+      {
+        "current_status": "awaiting_human_approval",
+        "item": "assign_supervisor_response",
+        "owner": "Retail",
+        "target_date": null
+      }
+    ],
+    "kpi_snapshot": {
+      "items": [],
+      "not_applicable_reason": "Synthetic control-flow validation does not calculate business KPIs."
+    },
+    "missing_information": [],
+    "next_priorities": [
+      "Obtain explicit approval from SYNTHETIC-ROLE-RETAIL-APPROVER-001"
+    ],
+    "next_review": null,
+    "recommended_actions": [],
+    "reporting_period": {
+      "data_updated_through": "2099-01-01",
+      "period": "2099-01-01"
+    },
+    "risks_and_exceptions": [],
+    "status": "needs_approval",
+    "summary": "Workflow paused before assign_supervisor_response; an approval package was prepared."
+  },
+  "normalized_smoke_sha256": "b6eed5c9d6c8e388bc4921a390a80d51d5702bf1f0ab57e326573b8afd1c1df6",
+  "network_guard": {
+    "active": true,
+    "attempted_operations": []
+  },
+  "material_scan": {
+    "credentials_found": false,
+    "real_data_found": false,
+    "external_endpoints_found": false,
+    "nonempty_connectors_found": false,
+    "infrastructure_material_found": false
+  },
+  "cleanup": {
+    "execution_directory_removed": true,
+    "bytecode_directory_removed": true,
+    "evidence_directory_preserved": false,
+    "repository_unchanged": true
+  },
+  "risk_states": {
+    "PR-RISK-001": "open_blocked_unaccepted",
+    "PR-RISK-002": "open_blocked_unaccepted",
+    "PR-RISK-003": "open_blocked_unaccepted",
+    "PR-RISK-004": "open_blocked_unaccepted",
+    "PR-RISK-005": "open_blocked_unaccepted",
+    "PR-RISK-006": "open_blocked_unaccepted",
+    "PR-RISK-007": "open_blocked_unaccepted",
+    "PR-RISK-008": "open_blocked_unaccepted",
+    "PR-RISK-009": "open_blocked_unaccepted",
+    "PR-RISK-010": "open_blocked_unaccepted"
+  },
+  "stage10_state": "BLOCKED / NO-GO",
+  "pr41_state": "draft_open_unmerged",
+  "cloud_capability_proven": false,
+  "pilot_authorized": false,
+  "production_ready": false,
+  "release_authorized": false,
+  "deployment_authorized": false,
+  "risks_accepted": false,
+  "external_actions_performed": [],
+  "reason_codes": [],
+  "evidence_refs": [
+    "Governance/AIOS-Stage15-Local-Python-Rehearsal-Contract-v1.yaml",
+    "Tests/Fixtures/nonproduction-readiness/local-python-rehearsal-synthetic.yaml",
+    "Tests/Fixtures/nonproduction-readiness/local-python-store-anomaly-workflow.yaml",
+    "Tests/Fixtures/nonproduction-readiness/local-python-store-anomaly-input.yaml"
+  ],
+  "required_human_decisions": [
+    "Stone independent boundary and evidence review",
+    "Tony decision on any later PR lifecycle, risk, pilot, release or deployment action"
+  ]
+}

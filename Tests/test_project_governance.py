@@ -1,3 +1,4 @@
+import ast
 from pathlib import Path
 import re
 import unittest
@@ -8,6 +9,136 @@ BASELINE = ROOT / "Governance" / "AIOS-Project-Governance-Baseline-v1.md"
 PROJECT_REGISTRY = ROOT / "Governance" / "AIOS-Project-Registry.md"
 STAGE_REGISTRY = ROOT / "Governance" / "AIOS-Stage-Registry.md"
 WORKFLOW = ROOT / ".github" / "workflows" / "validate-aios-project-governance.yml"
+STAGE15_SPEC = (
+    ROOT
+    / "docs"
+    / "superpowers"
+    / "specs"
+    / "2026-07-23-nonproduction-readiness-remediation-integration-design.md"
+)
+STAGE15_PLAN = (
+    ROOT
+    / "docs"
+    / "superpowers"
+    / "plans"
+    / "2026-07-23-nonproduction-readiness-remediation-integration.md"
+)
+STAGE15_VALIDATOR = ROOT / "Tests" / "validate_aios_nonproduction_readiness.py"
+STAGE15_TEST = ROOT / "Tests" / "test_nonproduction_readiness.py"
+STAGE15_POLICY = (
+    ROOT / "Governance" / "AIOS-Nonproduction-Readiness-Integration-v1.md"
+)
+STAGE15_MODEL = (
+    ROOT
+    / "Governance"
+    / "AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml"
+)
+STAGE15_FIXTURE = (
+    ROOT
+    / "Tests"
+    / "Fixtures"
+    / "nonproduction-readiness"
+    / "synthetic-local-integration.yaml"
+)
+STAGE15_MAPPING = (
+    ROOT
+    / "Governance"
+    / "AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml"
+)
+STAGE15_MATRIX = (
+    ROOT
+    / "Governance"
+    / "AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml"
+)
+STAGE15_GUIDE = ROOT / "Tests" / "AIOS-Nonproduction-Readiness-Validation.md"
+STAGE15_WORKFLOW = (
+    ROOT / ".github" / "workflows" / "validate-aios-nonproduction-readiness.yml"
+)
+STAGE15_CANDIDATE_MODEL = (
+    ROOT / "Governance" / "AIOS-Deployment-Free-Candidate-Evidence-v1.yaml"
+)
+STAGE15_CANDIDATE_GUIDE = (
+    ROOT / "Tests" / "AIOS-Deployment-Free-Candidate-Validation.md"
+)
+STAGE15_CANDIDATE_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_deployment_free_candidate.py"
+)
+STAGE15_GATE_PROPOSAL_MODEL = (
+    ROOT / "Governance" / "AIOS-Stage15-Human-Gate-Proposals-v1.yaml"
+)
+STAGE15_GATE_PROPOSAL_GUIDE = (
+    ROOT / "Tests" / "AIOS-Stage15-Human-Gate-Proposals-Validation.md"
+)
+STAGE15_GATE_PROPOSAL_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_stage15_human_gate_proposals.py"
+)
+STAGE15_COMPLETION_AUDIT_MODEL = (
+    ROOT / "Governance" / "AIOS-Predeployment-Completion-Audit-v1.yaml"
+)
+STAGE15_COMPLETION_AUDIT_GUIDE = (
+    ROOT / "Tests" / "AIOS-Predeployment-Completion-Audit-Validation.md"
+)
+STAGE15_COMPLETION_AUDIT_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_predeployment_completion_audit.py"
+)
+STAGE15_CANDIDATE_RECEIPT_MODEL = (
+    ROOT / "Governance" / "AIOS-Deployment-Free-Candidate-Receipt-v1.yaml"
+)
+STAGE15_CANDIDATE_RECEIPT_GUIDE = (
+    ROOT / "Tests" / "AIOS-Deployment-Free-Candidate-Receipt-Validation.md"
+)
+STAGE15_CANDIDATE_RECEIPT_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_deployment_free_candidate_receipt.py"
+)
+STAGE15_LOCAL_REHEARSAL_CONTRACT = (
+    ROOT / "Governance" / "AIOS-Stage15-Local-Python-Rehearsal-Contract-v1.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_SCHEMA = (
+    ROOT
+    / "Governance"
+    / "AIOS-Stage15-Local-Python-Rehearsal-Receipt-Schema-v1.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_RECEIPT = (
+    ROOT / "Governance" / "AIOS-Stage15-Local-Python-Rehearsal-Receipt-v1.json"
+)
+STAGE15_LOCAL_REHEARSAL_MANDATORY_RETURN = (
+    ROOT
+    / "Governance"
+    / "AIOS-Stage15-Local-Python-Rehearsal-Mandatory-Return-v1.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_RUNNER = (
+    ROOT / "Runtime" / "stage15_local_python_rehearsal.py"
+)
+STAGE15_LOCAL_REHEARSAL_FIXTURE = (
+    ROOT
+    / "Tests"
+    / "Fixtures"
+    / "nonproduction-readiness"
+    / "local-python-rehearsal-synthetic.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_SYNTHETIC_WORKFLOW = (
+    ROOT
+    / "Tests"
+    / "Fixtures"
+    / "nonproduction-readiness"
+    / "local-python-store-anomaly-workflow.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_SYNTHETIC_INPUT = (
+    ROOT
+    / "Tests"
+    / "Fixtures"
+    / "nonproduction-readiness"
+    / "local-python-store-anomaly-input.yaml"
+)
+STAGE15_LOCAL_REHEARSAL_TEST = (
+    ROOT / "Tests" / "test_stage15_local_python_rehearsal.py"
+)
+STAGE15_LOCAL_REHEARSAL_VALIDATOR = (
+    ROOT / "Tests" / "validate_aios_stage15_local_python_rehearsal.py"
+)
+STAGE15_LOCAL_REHEARSAL_GUIDE = (
+    ROOT / "Tests" / "AIOS-Stage15-Local-Python-Rehearsal-Validation.md"
+)
 
 
 class ProjectGovernanceValidation(unittest.TestCase):
@@ -103,6 +234,486 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("142804f", self.project_registry)
         self.assertIn("published through PR #37", self.project_registry)
 
+    def test_stage15_is_reviewed_at_the_exact_approved_head(self):
+        stage15_rows = [
+            line for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        ]
+        self.assertEqual(1, len(stage15_rows))
+        stage15 = stage15_rows[0]
+        for token in (
+            "NR-01",
+            "Non-production Readiness Remediation and Integration Validation",
+            "Issue #40",
+            "gov/aios-stage15-nonproduction-readiness-design",
+            "PR #41",
+            "019fb137-f0bc-7e60-b8ad-efe1a8e250b1",
+            "| Reviewed |",
+            "written specification approved",
+            "implementation head `9812105be0478d6e192db13c596b11a461de1a18`",
+            "tree `6c5083ae30c3a398e049f5b665b8147f7c868d3d`",
+            "reviewed target head `b27614ba2ebebb772888c3a4b1ff3d829b47532e`",
+            "reviewed target tree `d3fec0a73e1f5b90d3c5829b387095da1e2ff5e4`",
+            "11/11 focused",
+            "14/14 Project Governance",
+            "108/108 repository",
+            "9/9 exact-head CI",
+            "Mandatory Return",
+            "needs_human_governance",
+            "Human Governance Thread review passed",
+            "implementation-evidence gate accepted",
+            "not merged, published, archived or deployed",
+            "no cloud resource",
+        ):
+            self.assertIn(token, stage15)
+
+        for token in (
+            "Stage 14 Archived / Stage 15 Reviewed",
+            "Issue #40",
+            "PR #41",
+            "019fb137-f0bc-7e60-b8ad-efe1a8e250b1",
+            "written specification approved",
+            "implementation head `9812105be0478d6e192db13c596b11a461de1a18`",
+            "tree `6c5083ae30c3a398e049f5b665b8147f7c868d3d`",
+            "reviewed target head `b27614ba2ebebb772888c3a4b1ff3d829b47532e`",
+            "reviewed target tree `d3fec0a73e1f5b90d3c5829b387095da1e2ff5e4`",
+            "11/11 focused",
+            "14/14 Project Governance",
+            "108/108 repository",
+            "9/9 exact-head CI",
+            "Mandatory Return submitted",
+            "Human Governance Thread review passed",
+            "implementation-evidence gate accepted",
+            "Reviewed is not merged, published, archived or deployed",
+            "needs_human_governance",
+        ):
+            self.assertIn(token, self.project_registry)
+
+        spec = STAGE15_SPEC.read_text(encoding="utf-8")
+        for token in (
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "AI and human judgment boundary",
+            "Proof of operation",
+            "PR-RISK-001",
+            "PR-RISK-010",
+            "needs_human_governance",
+            "汇沣电商",
+            "BUW",
+            "PC",
+            "六合通",
+            "synthetic",
+            "local",
+            "fail closed",
+            "Stage 10",
+            "BLOCKED / NO-GO",
+            "dedicated Execution Task",
+            "PR #41",
+        ):
+            self.assertIn(token, spec)
+        for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
+            self.assertNotIn(unresolved, spec)
+
+    def test_stage15_gate5_owner_decision_is_registered_without_extra_authority(self):
+        stage15 = next(
+            line
+            for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        )
+        for token in (
+            "Issue #42",
+            "Gate 5",
+            "Tony",
+            "Stone",
+            "Gate 5 decision originally left gates 6–12 unauthorized",
+        ):
+            self.assertIn(token, stage15)
+            self.assertIn(token, self.project_registry)
+
+    def test_stage15_gate6_architecture_security_decision_is_registered_without_resources(
+        self,
+    ):
+        stage15 = next(
+            line
+            for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        )
+        for token in (
+            "Issue #43",
+            "Gate 6",
+            "platform-neutral",
+            "synthetic data",
+            "isolated non-production",
+            "Stone",
+            "Developer Agent",
+            "gates 7–12 remain unauthorized",
+            "no cloud resource, credential, real-data, connector, pilot, merge, publication, release or deployment authority",
+        ):
+            self.assertIn(token, stage15)
+            self.assertIn(token, self.project_registry)
+
+    def test_stage15_gate7_proposal_and_release_withholding_are_registered(self):
+        stage15 = next(
+            line
+            for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        )
+        for path in (
+            STAGE15_CANDIDATE_MODEL,
+            STAGE15_CANDIDATE_GUIDE,
+            STAGE15_CANDIDATE_VALIDATOR,
+        ):
+            self.assertTrue(path.is_file(), path)
+        for token in (
+            "Issue #44",
+            "Issue #49",
+            "Gate 7 proposal",
+            "synthetic_non_personal",
+            "synthetic_personal_like_clearly_fictitious_non_routable",
+            "Tony",
+            "Stone",
+            "Data Agent",
+            "Developer Agent",
+            "preparation_incomplete_pending_human_gates",
+            "not_ready_pending_human_governance",
+            "gates 7–12 remain unauthorized",
+            "release expressly withheld",
+        ):
+            self.assertIn(token, stage15)
+            self.assertIn(token, self.project_registry)
+
+    def test_stage15_ordered_gate8_through_11_proposals_are_registered(self):
+        stage15 = next(
+            line
+            for line in self.stage_registry.splitlines()
+            if line.startswith("| 15 |")
+        )
+        for path in (
+            STAGE15_GATE_PROPOSAL_MODEL,
+            STAGE15_GATE_PROPOSAL_GUIDE,
+            STAGE15_GATE_PROPOSAL_VALIDATOR,
+        ):
+            self.assertTrue(path.is_file(), path)
+        for token in (
+            "Issue #45",
+            "Issue #46",
+            "Issue #47",
+            "Issue #48",
+            "ordered Gate 7–11 proposals",
+            "prepared_unapproved_ordered_human_gate_proposals",
+            "Stone",
+            "Tony",
+            "Developer Agent",
+            "Data Agent",
+            "CustomerService Agent",
+            "CEO Agent",
+            "mitigate_and_remain_open_blocked_unaccepted",
+            "synthetic_rehearsal_only_no_real_pilot",
+            "synthetic_rehearsal_evidence_only",
+            "gates 7–12 remain unauthorized",
+            "release expressly withheld",
+        ):
+            self.assertIn(token, stage15)
+            self.assertIn(token, self.project_registry)
+
+    def test_stage15_gate7_decision_overlay_is_registered_without_real_authority(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 7 accepted",
+                "Owner authorization / Issue #44",
+                "gate7_accepted_gate8_through_11_pending",
+                "Gate 8 is the only valid next decision",
+                "synthetic_non_personal",
+                "synthetic_personal_like_clearly_fictitious_non_routable",
+                "Tony",
+                "Stone",
+                "Data Agent",
+                "Developer Agent",
+                "Gates 8–12 remain unauthorized",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_gate8_decision_overlay_is_registered_without_real_operations(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 8 accepted",
+                "Owner authorization / Issue #45",
+                "gates7_and_8_accepted_gate9_through_11_pending",
+                "Gate 9 is the only valid next decision",
+                "synthetic_operations_recovery_incident_support_only",
+                "Stone",
+                "Tony",
+                "Developer Agent",
+                "CustomerService Agent",
+                "Data Agent",
+                "CT-2",
+                "RTO 240",
+                "RPO 60",
+                "Gates 9–12 and every real operations",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_gate9_decision_overlay_is_registered_without_risk_acceptance(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 9 accepted",
+                "Owner authorization / Issue #46",
+                "gates7_through_9_accepted_gates10_and_11_pending",
+                "Gate 10 is the only valid next decision",
+                "PR-RISK-001 through PR-RISK-010",
+                "mitigate_and_remain_open_blocked_unaccepted",
+                "Tony is human approver and overall risk owner",
+                "Stone is independent reviewer and escalation contact",
+                "Developer Agent",
+                "Data Agent",
+                "CustomerService Agent",
+                "CEO Agent",
+                "all ten risks remain open, blocked and unaccepted",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_gate10_decision_overlay_is_registered_without_real_pilot(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 10 accepted",
+                "Owner authorization / Issue #47",
+                "gates7_through_10_accepted_gate11_pending",
+                "Gate 11 is the only valid next decision",
+                "synthetic_rehearsal_only_no_real_pilot",
+                "zero real customers, employees or operators, stores",
+                "Tony is human approver",
+                "Stone is backup and escalation contact",
+                "Developer Agent is technical owner",
+                "CustomerService Agent plus Data Agent contribute evidence",
+                "No real pilot, real data, credential, connector, infrastructure, external action, risk acceptance, merge, publication, release or deployment authority was granted",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_gate11_evidence_readiness_is_registered_without_approval(
+        self,
+    ):
+        for registry in (self.stage_registry, self.project_registry):
+            for token in (
+                "Gate 11 evidence technically confirmed",
+                "ready_for_stone_human_evidence_decision_not_approved",
+                "AIOS-Stage15-Gate11-Synthetic-Rehearsal-Evidence-Readiness-Audit-v1.yaml",
+                "Stone remains the required human evidence approver",
+                "SYNTHETIC-HUMAN-ROLE-CS-001",
+                "Gate 11 remains unaccepted",
+                "Gate 12 remains expressly withheld",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_implementation_plan_is_complete_and_executable(self):
+        if not STAGE15_PLAN.is_file():
+            self.fail(f"missing Stage 15 implementation plan: {STAGE15_PLAN}")
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        for token in (
+            "# Non-production Readiness Remediation and Integration Implementation Plan",
+            "**Goal:**",
+            "**Architecture:**",
+            "**Tech Stack:**",
+            "## Global Constraints",
+            "Governance/AIOS-Nonproduction-Readiness-Integration-v1.md",
+            "Governance/AIOS-Nonproduction-Readiness-Integration-Model-v1.yaml",
+            "Governance/AIOS-Nonproduction-Readiness-Stage10-14-Mapping-v1.yaml",
+            "Governance/AIOS-Nonproduction-Readiness-Acceptance-Matrix-v1.yaml",
+            "Tests/Fixtures/nonproduction-readiness/synthetic-local-integration.yaml",
+            "Tests/validate_aios_nonproduction_readiness.py",
+            "Tests/test_nonproduction_readiness.py",
+            "Tests/AIOS-Nonproduction-Readiness-Validation.md",
+            ".github/workflows/validate-aios-nonproduction-readiness.yml",
+            "load_repository_yaml(root: Path, relative_path: Path) -> dict[str, Any]",
+            "validate_model(model: dict[str, Any]) -> list[str]",
+            "validate_fixture(fixture: dict[str, Any]) -> list[str]",
+            "evaluate_nonproduction_readiness(",
+            "validate_repository(root: Path) -> list[str]",
+            "needs_human_governance",
+            "dedicated Execution Task",
+            "implementation branch",
+            "Stage 15 `Reported`",
+        ):
+            self.assertIn(token, plan)
+        for task_number in range(1, 13):
+            self.assertIn(f"## Task {task_number}:", plan)
+        for unresolved in ("TBD", "TODO", "PLACEHOLDER"):
+            self.assertNotIn(unresolved, plan)
+
+    def test_stage15_plan_tasks_are_machine_checkable(self):
+        """Reject task-level plans that are prose-only or lack runnable evidence."""
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        task_matches = list(
+            re.finditer(
+                r"(?ms)^## Task (\d+):.*?(?=^## Task \d+:|^## Plan self-review checklist|\Z)",
+                plan,
+            )
+        )
+        self.assertEqual([str(number) for number in range(1, 13)], [match.group(1) for match in task_matches])
+
+        code_fence = re.compile(r"```(?:bash|python|yaml|markdown|diff)\n.+?\n```", re.DOTALL)
+        run_command = re.compile(r"(?m)^\s*(?:python3|git|test|gh|python -m pip)\b")
+        evidence_language = re.compile(
+            r"\b(?:Expected|expect|expects|confirm|verify|proves?|pass(?:es|ed)?|validat(?:e|es|ed|ion)|run)\b",
+            re.IGNORECASE,
+        )
+        commit_command = re.compile(r"git commit -m \"[^\"]+\"")
+
+        for match in task_matches:
+            task_number = match.group(1)
+            section = match.group(0)
+            with self.subTest(task=task_number):
+                self.assertIn("**Files**", section)
+                self.assertIn("**Interfaces**", section)
+                self.assertRegex(section, r"(?m)^- \[ \] ")
+                fences = code_fence.findall(section)
+                self.assertGreaterEqual(len(fences), 2, "task must contain runnable/code evidence fences")
+                self.assertTrue(any(run_command.search(fence) for fence in fences), "task must contain an exact runnable command")
+                self.assertRegex(section, evidence_language)
+                self.assertRegex(section, commit_command)
+
+        for requirement_id in (
+            "AC-ENVIRONMENT",
+            "AC-IDENTITY",
+            "AC-DATA",
+            "AC-EVIDENCE",
+            "AC-OBSERVATION",
+            "AC-RECOVERY",
+            "AC-INCIDENT",
+            "AC-SUPPORT",
+            "AC-RISK-MAPPING",
+            "AC-AUTHORITY",
+        ):
+            self.assertIn(requirement_id, plan)
+        for policy_section in (
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "AI and human judgment boundary",
+            "Proof of operation",
+            "Authority ceiling",
+            "Component contracts",
+            "Risk mapping",
+            "Stop and withdrawal",
+            "Lifecycle",
+        ):
+            self.assertIn(policy_section, plan)
+        for return_field in (
+            "exact remote head and tree",
+            "changed-file allowlist",
+            "final-head CI links",
+            "maximum result `needs_human_governance`",
+        ):
+            self.assertIn(return_field, plan)
+
+    def test_stage15_plan_pins_capability_and_malformed_input_regressions(self):
+        """Keep the exact fail-closed correction contract machine-checkable."""
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        for token in (
+            "ALLOWED_EMPTY_CAPABILITY_PATHS",
+            "$.environment.external_endpoints",
+            "$.environment.connectors",
+            "$.environment.credentials",
+            "allowed_empty_capability",
+            "forbidden_capability_value",
+            "test_empty_capability_fields_are_allowed",
+            "test_nonempty_or_misplaced_capability_fields_are_denied",
+            "test_malformed_input_types_are_denied_without_exceptions",
+            "except (AttributeError, KeyError, TypeError, ValueError)",
+            "self.assertEqual(\"needs_human_governance\", result[\"result\"])",
+            "self.assertEqual(\"denied\", result[\"result\"])",
+        ):
+            self.assertIn(token, plan)
+
+        self.assertNotIn(
+            'if normalized in FORBIDDEN_KEYS:\n                errors.append(_error(f"{path}.{key}", "forbidden_key"))',
+            plan,
+        )
+
+    def test_stage15_as_built_closure_is_executable_not_token_only(self):
+        plan = STAGE15_PLAN.read_text(encoding="utf-8")
+        self.assertIn("## As-built executable closure", plan)
+        for token in (
+            "load_controlled_yaml_text",
+            "_scan_capabilities",
+            "ALLOWED_EMPTY_CAPABILITY_PATHS",
+            "_fail_closed",
+            "yaml.scan",
+            "AnchorToken",
+            "AliasToken",
+            "ScalarToken",
+            "validation_exception",
+            "python3 Tests/validate_aios_nonproduction_readiness.py",
+            "python3 -m unittest Tests.test_nonproduction_readiness -v",
+            "python3 -m unittest discover -s Tests -p 'test_*.py' -v",
+        ):
+            self.assertIn(token, plan)
+
+        assets = (
+            STAGE15_VALIDATOR,
+            STAGE15_TEST,
+            STAGE15_POLICY,
+            STAGE15_MODEL,
+            STAGE15_FIXTURE,
+            STAGE15_MAPPING,
+            STAGE15_MATRIX,
+            STAGE15_GUIDE,
+            STAGE15_WORKFLOW,
+        )
+        for asset in assets:
+            self.assertTrue(asset.is_file(), asset)
+            self.assertGreater(asset.stat().st_size, 100, asset)
+
+        validator_source = STAGE15_VALIDATOR.read_text(encoding="utf-8")
+        validator_tree = ast.parse(validator_source)
+        defined = {
+            node.name
+            for node in validator_tree.body
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+        self.assertTrue(
+            {
+                "load_repository_yaml",
+                "load_controlled_yaml_text",
+                "validate_model",
+                "validate_fixture",
+                "evaluate_nonproduction_readiness",
+                "validate_repository",
+            }.issubset(defined)
+        )
+
+        policy = STAGE15_POLICY.read_text(encoding="utf-8")
+        sections = re.split(r"(?m)^## ", policy)[1:]
+        section_bodies = {
+            section.splitlines()[0]: "\n".join(section.splitlines()[1:]).strip()
+            for section in sections
+        }
+        for heading in (
+            "Business loop",
+            "Core objects",
+            "Data flow",
+            "Operators",
+            "AI and human judgment boundary",
+            "Proof of operation",
+            "Authority ceiling",
+            "Component contracts",
+            "Risk mapping",
+            "Stop and withdrawal",
+            "Lifecycle",
+        ):
+            self.assertIn(heading, section_bodies)
+            self.assertGreater(len(section_bodies[heading]), 80, heading)
+
     def test_ci_is_pull_request_only_and_read_only(self):
         self.assertIn("pull_request:", self.workflow)
         self.assertNotIn("push:", self.workflow)
@@ -110,6 +721,93 @@ class ProjectGovernanceValidation(unittest.TestCase):
         self.assertIn("persist-credentials: false", self.workflow)
         for prohibited in ("contents: write", "pull-requests: write", "git push"):
             self.assertNotIn(prohibited, self.workflow)
+
+    def test_stage15_predeployment_completion_audit_is_registered_truthfully(self):
+        for asset in (
+            STAGE15_COMPLETION_AUDIT_MODEL,
+            STAGE15_COMPLETION_AUDIT_GUIDE,
+            STAGE15_COMPLETION_AUDIT_VALIDATOR,
+        ):
+            self.assertTrue(asset.is_file(), asset)
+            self.assertGreater(asset.stat().st_size, 100, asset)
+        for registry in (self.project_registry, self.stage_registry):
+            for token in (
+                "AIOS-Predeployment-Completion-Audit-v1.yaml",
+                "incomplete_pending_ordered_human_governance",
+                "not_complete_pending_human_governance",
+                "Gates 7–11",
+                "Issue #49",
+                "release expressly withheld",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_candidate_receipt_is_registered_without_release_authority(self):
+        for asset in (
+            STAGE15_CANDIDATE_RECEIPT_MODEL,
+            STAGE15_CANDIDATE_RECEIPT_GUIDE,
+            STAGE15_CANDIDATE_RECEIPT_VALIDATOR,
+        ):
+            self.assertTrue(asset.is_file(), asset)
+            self.assertGreater(asset.stat().st_size, 100, asset)
+        for registry in (self.project_registry, self.stage_registry):
+            for token in (
+                "AIOS-Deployment-Free-Candidate-Receipt-v1.yaml",
+                "36716abc76373d053c75e68352f46589f4ddc8f1",
+                "verified_technical_evidence_pending_human_gates",
+                "technical_evidence_verified_pending_human_gates",
+                "127/127",
+                "10/10",
+                "9/9",
+                "Gates 7–11",
+                "release expressly withheld",
+            ):
+                self.assertIn(token, registry)
+
+    def test_stage15_local_python_rehearsal_assets_preserve_the_authority_ceiling(self):
+        assets = (
+            STAGE15_LOCAL_REHEARSAL_CONTRACT,
+            STAGE15_LOCAL_REHEARSAL_SCHEMA,
+            STAGE15_LOCAL_REHEARSAL_RECEIPT,
+            STAGE15_LOCAL_REHEARSAL_MANDATORY_RETURN,
+            STAGE15_LOCAL_REHEARSAL_RUNNER,
+            STAGE15_LOCAL_REHEARSAL_FIXTURE,
+            STAGE15_LOCAL_REHEARSAL_SYNTHETIC_WORKFLOW,
+            STAGE15_LOCAL_REHEARSAL_SYNTHETIC_INPUT,
+            STAGE15_LOCAL_REHEARSAL_TEST,
+            STAGE15_LOCAL_REHEARSAL_VALIDATOR,
+            STAGE15_LOCAL_REHEARSAL_GUIDE,
+        )
+        for asset in assets:
+            self.assertTrue(asset.is_file(), asset)
+            self.assertGreater(asset.stat().st_size, 100, asset)
+
+        contract = STAGE15_LOCAL_REHEARSAL_CONTRACT.read_text(encoding="utf-8")
+        schema = STAGE15_LOCAL_REHEARSAL_SCHEMA.read_text(encoding="utf-8")
+        workflow = STAGE15_WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "local_python_test_deployment_rehearsal_passed_not_cloud_proof",
+            "cloud_capability_proven: false",
+            "pilot_authorized: false",
+            "production_ready: false",
+            "release_authorized: false",
+            "deployment_authorized: false",
+            "risks_accepted: false",
+            "external_actions_performed: []",
+        ):
+            self.assertIn(token, contract)
+        self.assertIn("additional_properties: false", schema)
+        self.assertIn("test_stage15_local_python_rehearsal", workflow)
+        self.assertIn("validate_aios_stage15_local_python_rehearsal.py", workflow)
+        for registry in (self.project_registry, self.stage_registry):
+            for token in (
+                "Issue #51",
+                "2d3d186d1930d18bfd0a8d604240694f11e1af6c",
+                "local isolated Python rehearsal",
+                "PR #41 remains Draft/open/unmerged",
+                "Stage 10 remains `BLOCKED / NO-GO`",
+                "no cloud, real-pilot or production capability",
+            ):
+                self.assertIn(token, registry)
 
 
 if __name__ == "__main__":
