@@ -113,17 +113,17 @@ governance_state:
   pr41: draft_open_unmerged
   issue51: open
   exact_head_ci: 9_of_9_success
-  exact_head_commit: 81ff4db681fdc91543aecf72825540aab994e299
+  exact_head_commit: 809e87a719f48c6311f79805b669c4be78eea95e
   exact_head_workflows:
-    - {workflow: Validate AIOS Production Readiness Assessment, run_id: 31236597746, conclusion: success}
-    - {workflow: Validate Runtime Orchestrator v1, run_id: 31236597755, conclusion: success}
-    - {workflow: Validate AIOS Workflow Schema, run_id: 31236597751, conclusion: success}
-    - {workflow: Validate AIOS Privacy and Data Governance, run_id: 31236597723, conclusion: success}
-    - {workflow: Validate AIOS Architecture and Security Foundations, run_id: 31236597732, conclusion: success}
-    - {workflow: Validate AIOS Project Governance, run_id: 31236597728, conclusion: success}
-    - {workflow: Validate AIOS Support Controlled Pilot, run_id: 31236597736, conclusion: success}
-    - {workflow: Validate AIOS Non-production Readiness, run_id: 31236597724, conclusion: success}
-    - {workflow: Validate AIOS Operational Resilience, run_id: 31236597725, conclusion: success}
+    - {workflow: Validate AIOS Production Readiness Assessment, run_id: 31236665963, conclusion: success}
+    - {workflow: Validate Runtime Orchestrator v1, run_id: 31236665947, conclusion: success}
+    - {workflow: Validate AIOS Workflow Schema, run_id: 31236665951, conclusion: success}
+    - {workflow: Validate AIOS Privacy and Data Governance, run_id: 31236665964, conclusion: success}
+    - {workflow: Validate AIOS Architecture and Security Foundations, run_id: 31236665953, conclusion: success}
+    - {workflow: Validate AIOS Project Governance, run_id: 31236665956, conclusion: success}
+    - {workflow: Validate AIOS Support Controlled Pilot, run_id: 31236665945, conclusion: success}
+    - {workflow: Validate AIOS Non-production Readiness, run_id: 31236665948, conclusion: success}
+    - {workflow: Validate AIOS Operational Resilience, run_id: 31236665965, conclusion: success}
 authority_claims:
   cloud_capability_proven: false
   ready_for_review_authorized: false
