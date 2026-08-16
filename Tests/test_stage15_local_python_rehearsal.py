@@ -500,13 +500,13 @@ class Stage15LocalPythonRehearsalTests(unittest.TestCase):
         runner = load_runner()
         receipt = runner.load_closed_yaml(RECEIPT_PATH)
         self.assertEqual([], runner.validate_receipt(receipt))
-        self.assertEqual("STAGE15-LOCAL-33e2216976b7", receipt["run_id"])
+        self.assertEqual("STAGE15-LOCAL-ad8373c2401e", receipt["run_id"])
         self.assertEqual(
-            "33e2216976b73ebaff4368ca8b8d5dc206ebf894",
+            "ad8373c2401ee80daf2425a2faf84cdef1874610",
             receipt["source_commit"],
         )
         self.assertEqual(
-            "eff75180da120fa7deffdd15b1daa2a13bcb8ab5",
+            "4bbf8fd1d4371dd4788b965315b27b6899165b4a",
             receipt["source_tree"],
         )
         self.assertEqual([], receipt["network_guard"]["attempted_operations"])

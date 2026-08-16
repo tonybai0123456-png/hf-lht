@@ -35,11 +35,11 @@ repository Python environment and must not install a package.
 From the repository root, with the existing local isolated interpreter:
 
 ```bash
-.venv/bin/python -m unittest Tests.test_stage15_local_python_rehearsal -v
-.venv/bin/python Tests/validate_aios_stage15_local_python_rehearsal.py
-.venv/bin/python -m unittest Tests.test_project_governance -v
-.venv/bin/python -m unittest discover -s Tests -p 'test_*.py' -v
-.venv/bin/python -X pycache_prefix=/private/tmp/buw-stage15-pycache -m compileall -q Runtime Tests
+PYTHONDONTWRITEBYTECODE=1 ../.venv/bin/python -m unittest Tests.test_stage15_local_python_rehearsal -v
+PYTHONDONTWRITEBYTECODE=1 ../.venv/bin/python Tests/validate_aios_stage15_local_python_rehearsal.py
+PYTHONDONTWRITEBYTECODE=1 ../.venv/bin/python -m unittest Tests.test_project_governance -v
+PYTHONDONTWRITEBYTECODE=1 ../.venv/bin/python -m unittest discover -s Tests -p 'test_*.py' -v
+../.venv/bin/python -X pycache_prefix=/private/tmp/buw-stage15-pycache -m compileall -q Runtime Tests
 git diff --check
 ```
 
@@ -56,7 +56,7 @@ secret, credential, proxy, cloud or connector variable:
 
 ```bash
 env -i PATH="$PATH" LANG="C.UTF-8" LC_ALL="C.UTF-8" \
-  .venv/bin/python Runtime/stage15_local_python_rehearsal.py \
+  ../.venv/bin/python Runtime/stage15_local_python_rehearsal.py \
   --repository "$PWD" --commit "<exact-40-character-local-commit>"
 ```
 
@@ -81,15 +81,15 @@ yet satisfy these four requirements. It must not be cited as a passed run.
 
 ## Executed run evidence
 
-- Run ID: `STAGE15-LOCAL-33e2216976b7`
-- Source commit: `33e2216976b73ebaff4368ca8b8d5dc206ebf894`
-- Source tree: `eff75180da120fa7deffdd15b1daa2a13bcb8ab5`
+- Run ID: `STAGE15-LOCAL-ad8373c2401e`
+- Source commit: `ad8373c2401ee80daf2425a2faf84cdef1874610`
+- Source tree: `4bbf8fd1d4371dd4788b965315b27b6899165b4a`
 - Result: `local_python_test_deployment_rehearsal_passed_not_cloud_proof`
 - Receipt: `Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-v1.json`
 - Receipt SHA-256:
-  `2dae30bc8444d5ffb2b4b59e5df0c419921b40a5b4385d577c333c964f66b261`
+  `15be5937bde65364d7958084f3d95d3e52241b119e22fb3ed7a5abf3253e850c`
 - Candidate inventory SHA-256:
-  `bfabad910aa9efe738732650dc7486de6ce35af37a2a00efa559a11b96a07c67`
+  `6b48605796e55c0ee91566e4e09c0af7e4153152f61fbe1d29b1245d650c6008`
 - Normalized smoke SHA-256:
   `b6eed5c9d6c8e388bc4921a390a80d51d5702bf1f0ab57e326573b8afd1c1df6`
 - Fixture SHA-256:

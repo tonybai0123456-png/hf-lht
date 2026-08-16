@@ -104,9 +104,9 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     errors.extend(runner.validate_receipt(receipt))
     if receipt.get("result") != runner.RESULTS[0]:
         errors.append("receipt:passed_not_cloud_proof_required")
-    if receipt.get("source_commit") != "33e2216976b73ebaff4368ca8b8d5dc206ebf894":
+    if receipt.get("source_commit") != "ad8373c2401ee80daf2425a2faf84cdef1874610":
         errors.append("receipt:source_commit_drift")
-    if receipt.get("source_tree") != "eff75180da120fa7deffdd15b1daa2a13bcb8ab5":
+    if receipt.get("source_tree") != "4bbf8fd1d4371dd4788b965315b27b6899165b4a":
         errors.append("receipt:source_tree_drift")
     if any(receipt.get("material_scan", {}).values()):
         errors.append("receipt:material_scan_must_be_all_false")

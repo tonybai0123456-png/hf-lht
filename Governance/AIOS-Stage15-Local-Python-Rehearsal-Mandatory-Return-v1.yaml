@@ -13,19 +13,15 @@ authorization:
   evidence_reviewer: Data Agent
   boundary_reviewer: Stone
 source_candidate:
-  commit: 33e2216976b73ebaff4368ca8b8d5dc206ebf894
-  tree: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
-  remote_branch_head: 81ff4db681fdc91543aecf72825540aab994e299
-  remote_branch_tree: c54b730a421d5d92c75dc936fce510cbba6ed4aa
-  changed_file_count: 15
+  commit: ad8373c2401ee80daf2425a2faf84cdef1874610
+  tree: 4bbf8fd1d4371dd4788b965315b27b6899165b4a
+  changed_file_count: 13
   changed_files:
     - .github/workflows/validate-aios-nonproduction-readiness.yml
     - Governance/AIOS-Project-Registry.md
     - Governance/AIOS-Stage-Registry.md
     - Governance/AIOS-Stage15-Local-Python-Rehearsal-Contract-v1.yaml
-    - Governance/AIOS-Stage15-Local-Python-Rehearsal-Mandatory-Return-v1.yaml
     - Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-Schema-v1.yaml
-    - Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-v1.json
     - Runtime/stage15_local_python_rehearsal.py
     - Tests/AIOS-Stage15-Local-Python-Rehearsal-Validation.md
     - Tests/Fixtures/nonproduction-readiness/local-python-rehearsal-synthetic.yaml
@@ -44,9 +40,9 @@ test_driven_development:
     - computed_material_scan
     - python_url_credential_private_key_detection
   source_candidate_green:
-    focused_rehearsal: {passed: 16, total: 16}
+    focused_rehearsal: {passed: 14, total: 14}
     project_governance: {passed: 26, total: 26}
-    repository: {passed: 188, total: 188}
+    repository: {passed: 186, total: 186}
     validators: {passed: 19, total: 19}
     python_compilation: passed
     approved_baseline_diff_check: passed
@@ -63,13 +59,11 @@ rehearsal:
     - commit: e87f7fdc7ae235d365afc8f44816c5854877f1b2
       tree: 05038e24106a779bf42f3492e5d287f687a95a6a
       disposition: stone_stopped_receipt_invalid_not_committed
-  run_id: STAGE15-LOCAL-33e2216976b7
+  run_id: STAGE15-LOCAL-ad8373c2401e
   result: local_python_test_deployment_rehearsal_passed_not_cloud_proof
-  source_commit: 33e2216976b73ebaff4368ca8b8d5dc206ebf894
-  source_tree: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
   receipt_path: Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-v1.json
-  receipt_sha256: 2dae30bc8444d5ffb2b4b59e5df0c419921b40a5b4385d577c333c964f66b261
-  file_inventory_sha256: bfabad910aa9efe738732650dc7486de6ce35af37a2a00efa559a11b96a07c67
+  receipt_sha256: 15be5937bde65364d7958084f3d95d3e52241b119e22fb3ed7a5abf3253e850c
+  file_inventory_sha256: 6b48605796e55c0ee91566e4e09c0af7e4153152f61fbe1d29b1245d650c6008
   fixture_sha256: 4e4d00d15ead4a45e5dd1c1c6a56dba7a62f5053d431f962ae1842878e1bcaec
   normalized_smoke_sha256: b6eed5c9d6c8e388bc4921a390a80d51d5702bf1f0ab57e326573b8afd1c1df6
   python: CPython 3.9.6
@@ -112,18 +106,7 @@ governance_state:
   stage15: Reviewed
   pr41: draft_open_unmerged
   issue51: open
-  exact_head_ci: 9_of_9_success
-  exact_head_commit: bea8e625534284fbce90c4c8db8258f1ffa8d386
-  exact_head_workflows:
-    - {workflow: Validate AIOS Production Readiness Assessment, run_id: 31236750472, conclusion: success}
-    - {workflow: Validate Runtime Orchestrator v1, run_id: 31236750480, conclusion: success}
-    - {workflow: Validate AIOS Workflow Schema, run_id: 31236750477, conclusion: success}
-    - {workflow: Validate AIOS Privacy and Data Governance, run_id: 31236750461, conclusion: success}
-    - {workflow: Validate AIOS Architecture and Security Foundations, run_id: 31236750479, conclusion: success}
-    - {workflow: Validate AIOS Project Governance, run_id: 31236750453, conclusion: success}
-    - {workflow: Validate AIOS Support Controlled Pilot, run_id: 31236750469, conclusion: success}
-    - {workflow: Validate AIOS Non-production Readiness, run_id: 31236750459, conclusion: success}
-    - {workflow: Validate AIOS Operational Resilience, run_id: 31236750458, conclusion: success}
+  exact_head_ci: pending_final_evidence_commit_push
 authority_claims:
   cloud_capability_proven: false
   ready_for_review_authorized: false
