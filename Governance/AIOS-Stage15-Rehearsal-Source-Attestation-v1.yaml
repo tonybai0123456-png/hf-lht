@@ -1,0 +1,79 @@
+schema_version: aios_stage15_rehearsal_source_attestation/v1
+status: source_tree_reproducibility_bounded_correction_complete_machine_evidence_only
+recorded_at_utc: 2026-08-16T14:36:24Z
+scope:
+  stage: Stage 15 / NR-01
+  company: 汇沣电商
+  brand: BUW
+  issue: 52
+  controlled_pr: 41
+
+original_rehearsal_record:
+  run_id: STAGE15-LOCAL-33e2216976b7
+  source_commit_claim: 33e2216976b73ebaff4368ca8b8d5dc206ebf894
+  source_commit_remote_dereferenceable: false
+  source_tree_claim: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
+  canonical_inventory_sha256_claim: bfabad910aa9efe738732650dc7486de6ce35af37a2a00efa559a11b96a07c67
+  binding_records_at_pr_head:
+    pr_head: 8f73e1c54fe9bffb67c0c07600420aab4924c329
+    receipt_path: Governance/AIOS-Stage15-Local-Python-Rehearsal-Receipt-v1.json
+    receipt_blob_sha: e2ef87c424806d829b3800ed251b738da0b00c20
+    mandatory_return_path: Governance/AIOS-Stage15-Local-Python-Rehearsal-Mandatory-Return-v1.yaml
+    mandatory_return_blob_sha: 5fa7aedfd3045176d422745d54748568e19346c5
+
+remote_preservation:
+  branch: evidence/stage15-rehearsal-source-eff75180
+  preservation_commit: 5eb675bbff33a5c0400fd37ccb4fc361840260e4
+  preservation_commit_tree: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
+  preservation_commit_parent: 8f73e1c54fe9bffb67c0c07600420aab4924c329
+  exact_tree_match: true
+  purpose: preserve_the_recorded_rehearsal_source_tree_as_a_remote_dereferenceable_commit_without_rerunning_rehearsal
+
+independent_inventory_reconstruction:
+  workflow: Validate Stage15 Rehearsal Source Attestation
+  workflow_file: .github/workflows/validate-stage15-rehearsal-source-attestation.yml
+  workflow_commit: 4b4fda99942f92f93d9550864fd7f2272dce511f
+  workflow_run_id: 31953187391
+  workflow_run_conclusion: success
+  source_used_for_reconstruction: 5eb675bbff33a5c0400fd37ccb4fc361840260e4
+  source_tree_verified: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
+  file_count: 186
+  method: git_ls_tree_plus_git_show_content_sha256_then_runner_canonical_json
+  canonicalization:
+    records_sorted_by_path: true
+    record_fields: [path, size, sha256]
+    json_ensure_ascii: false
+    json_sort_keys: true
+    json_separators: [comma, colon]
+    final_digest: sha256_of_utf8_canonical_json
+  recomputed_inventory_sha256: bfabad910aa9efe738732650dc7486de6ce35af37a2a00efa559a11b96a07c67
+  expected_inventory_sha256: bfabad910aa9efe738732650dc7486de6ce35af37a2a00efa559a11b96a07c67
+  inventory_match: true
+  artifact:
+    id: 9265218554
+    name: stage15-rehearsal-source-attestation
+    zip_sha256: 321164b408929567f4deb3d3fb0fdd769fcfd1f1334749e6da70267ab51eaea2
+
+correction_assessment:
+  prior_problem: original_local_source_commit_is_not_remote_dereferenceable
+  corrected_fact_1: recorded_source_tree_is_now_preserved_by_a_remote_dereferenceable_commit
+  corrected_fact_2: canonical_inventory_sha256_has_been_independently_recomputed_from_that_exact_tree
+  corrected_fact_3: recomputed_inventory_matches_the_committed_receipt_and_mandatory_return
+  no_second_rehearsal_performed: true
+  maximum_machine_conclusion: source_tree_reproducibility_gap_corrected_original_commit_object_metadata_remains_unrecoverable
+
+limitations:
+  - the original local commit object 33e2216976b73ebaff4368ca8b8d5dc206ebf894 is still not remotely dereferenceable
+  - this attestation proves the exact recorded root tree and its canonical file inventory, not the missing original commit object's parent, author, committer, timestamp or message
+  - acceptance of this correction remains a human governance decision under Issue #52
+  - this attestation does not authorize Ready for Review, merge, risk acceptance, real pilot, production, release or deployment
+
+authority_ceiling:
+  ready_for_review_authorized: false
+  merge_authorized: false
+  risk_acceptance_authorized: false
+  real_pilot_authorized: false
+  production_ready: false
+  release_authorized: false
+  deployment_authorized: false
+  external_actions_performed: []
