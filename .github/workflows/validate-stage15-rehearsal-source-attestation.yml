@@ -1,0 +1,112 @@
+name: Validate Stage15 Rehearsal Source Attestation
+
+on:
+  push:
+    branches:
+      - evidence/stage15-rehearsal-source-eff75180
+    paths:
+      - .github/workflows/validate-stage15-rehearsal-source-attestation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-source-tree:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out evidence branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Recompute canonical inventory from preserved source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          PRESERVATION_COMMIT = "5eb675bbff33a5c0400fd37ccb4fc361840260e4"
+          EXPECTED_TREE = "eff75180da120fa7deffdd15b1daa2a13bcb8ab5"
+          ORIGINAL_REHEARSAL_SOURCE_COMMIT = "33e2216976b73ebaff4368ca8b8d5dc206ebf894"
+          EXPECTED_INVENTORY_SHA256 = "bfabad910aa9efe738732650dc7486de6ce35af37a2a00efa559a11b96a07c67"
+
+          source_commit = subprocess.check_output(
+              ["git", "rev-parse", "HEAD^"], text=True
+          ).strip()
+          if source_commit != PRESERVATION_COMMIT:
+              raise SystemExit(
+                  f"unexpected preservation parent: {source_commit} != {PRESERVATION_COMMIT}"
+              )
+
+          source_tree = subprocess.check_output(
+              ["git", "rev-parse", f"{source_commit}^{{tree}}"], text=True
+          ).strip()
+          if source_tree != EXPECTED_TREE:
+              raise SystemExit(
+                  f"source tree mismatch: {source_tree} != {EXPECTED_TREE}"
+              )
+
+          raw_paths = subprocess.check_output(
+              ["git", "ls-tree", "-r", "-z", "--name-only", source_commit]
+          )
+          paths = sorted(
+              item.decode("utf-8")
+              for item in raw_paths.split(b"\0")
+              if item
+          )
+
+          records = []
+          for path in paths:
+              data = subprocess.check_output(["git", "show", f"{source_commit}:{path}"])
+              records.append(
+                  {
+                      "path": path,
+                      "size": len(data),
+                      "sha256": hashlib.sha256(data).hexdigest(),
+                  }
+              )
+
+          canonical = json.dumps(
+              records,
+              ensure_ascii=False,
+              sort_keys=True,
+              separators=(",", ":"),
+          ).encode("utf-8")
+          inventory_sha256 = hashlib.sha256(canonical).hexdigest()
+
+          result = {
+              "schema_version": "aios_stage15_rehearsal_source_attestation_result/v1",
+              "original_rehearsal_source_commit_claim": ORIGINAL_REHEARSAL_SOURCE_COMMIT,
+              "preservation_commit": source_commit,
+              "preserved_source_tree": source_tree,
+              "file_count": len(records),
+              "canonical_inventory_sha256": inventory_sha256,
+              "expected_inventory_sha256": EXPECTED_INVENTORY_SHA256,
+              "inventory_match": inventory_sha256 == EXPECTED_INVENTORY_SHA256,
+              "method": "git-ls-tree-plus-git-show-content-sha256-then-runner-canonical-json",
+          }
+          Path("stage15-source-attestation-result.json").write_text(
+              json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+
+          if inventory_sha256 != EXPECTED_INVENTORY_SHA256:
+              raise SystemExit(
+                  "canonical inventory SHA-256 mismatch: "
+                  f"{inventory_sha256} != {EXPECTED_INVENTORY_SHA256}"
+              )
+          PY
+
+      - name: Upload attestation result
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage15-rehearsal-source-attestation
+          path: stage15-source-attestation-result.json
+          if-no-files-found: error
+          retention-days: 30
