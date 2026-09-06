@@ -1,0 +1,75 @@
+ledger_version: aios_stage15_local_python_rehearsal_execution_ledger/v1
+stage: Stage 15 / NR-01
+scope:
+  company: 汇沣电商
+  brand: BUW
+  excluded_entities: [PC, 六合通]
+status: human_owner_disposition_required
+controlled_target:
+  parent_governance_issue: 40
+  authorization_issue: 51
+  reconciliation_issue: 55
+  evidence_acceptance_issue: 52
+  lifecycle_issue: 53
+  controlled_pr: 41
+  controlled_pr_head: 8f73e1c54fe9bffb67c0c07600420aab4924c329
+authorization_ceiling:
+  owner: Tony
+  authorized_execution_count: 1
+  authorization_evidence_url: https://github.com/tonybai0123456-png/hf-lht/issues/51#issuecomment-5211821955
+  rule: one_bounded_local_isolated_python_rehearsal_only
+recorded_executions:
+  - run_id: STAGE15-LOCAL-ad8373c2401e
+    source_commit: ad8373c2401ee80daf2425a2faf84cdef1874610
+    source_tree: 4bbf8fd1d4371dd4788b965315b27b6899165b4a
+    first_registry_date: "2026-08-07"
+    registry_claim: valid_run_reviewed_by_data_agent_and_stone
+    execution_occurred: true
+    authorization_treatment: pending_explicit_tony_disposition
+    evidence_eligibility_for_issue52: pending_explicit_tony_disposition
+    invalidated_or_superseded: not_determined
+  - run_id: STAGE15-LOCAL-33e2216976b7
+    source_commit: 33e2216976b73ebaff4368ca8b8d5dc206ebf894
+    source_tree: eff75180da120fa7deffdd15b1daa2a13bcb8ab5
+    first_registry_date: "2026-08-08"
+    registry_claim: re_executed_clean_export_local_python_rehearsal
+    mandatory_return_primary_run: true
+    execution_occurred: true
+    authorization_treatment: pending_explicit_tony_disposition
+    evidence_eligibility_for_issue52: pending_explicit_tony_disposition
+    invalidated_or_superseded: not_determined
+invalidated_preacceptance_attempts:
+  - commit: e87f7fdc7ae235d365afc8f44816c5854877f1b2
+    tree: 05038e24106a779bf42f3492e5d287f687a95a6a
+    disposition: stone_stopped_receipt_invalid_not_committed
+machine_derived_state:
+  distinct_recorded_execution_count: 2
+  authorized_execution_ceiling: 1
+  unresolved_authorization_disposition_count: 2
+  unresolved_execution_ids:
+    - STAGE15-LOCAL-ad8373c2401e
+    - STAGE15-LOCAL-33e2216976b7
+  mandatory_return_declared_valid_run_count: 1
+  cross_asset_count_reconciled: false
+  issue52_evidence_acceptance_blocked: true
+  issue53_ready_for_review_blocked: true
+  maximum_machine_conclusion: execution_count_authorization_reconciliation_required_before_evidence_acceptance
+downstream_authority:
+  ready_for_review_authorized: false
+  merge_authorized: false
+  risk_acceptance_authorized: false
+  real_pilot_authorized: false
+  real_data_authorized: false
+  credentials_or_permissions_authorized: false
+  connectors_or_external_endpoints_authorized: false
+  infrastructure_or_cloud_authorized: false
+  production_authorized: false
+  release_authorized: false
+  deployment_authorized: false
+append_only_rules:
+  - preserve_every_distinct_recorded_run_id
+  - never_relabel_a_recorded_execution_invalid_without_explicit_human_disposition
+  - never_infer_authorization_from_green_ci_commit_message_or_general_continue_instruction
+  - resolve_authorization_and_evidence_eligibility_only_from_explicit_owner_disposition
+  - do_not_execute_another_rehearsal_to_repair_governance_evidence
+external_actions_performed: []
