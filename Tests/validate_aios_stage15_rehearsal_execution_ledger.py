@@ -45,6 +45,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     ledger = _load_yaml(resolved / LEDGER_PATH)
     mandatory_return = _load_yaml(resolved / MANDATORY_RETURN_PATH)
     guard = _load_yaml(resolved / AUTHORIZATION_GUARD_PATH)
+    guard_text = (resolved / AUTHORIZATION_GUARD_PATH).read_text(encoding="utf-8")
     project_registry = (resolved / PROJECT_REGISTRY_PATH).read_text(encoding="utf-8")
     stage_registry = (resolved / STAGE_REGISTRY_PATH).read_text(encoding="utf-8")
 
@@ -121,8 +122,10 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         errors.append("authorization_guard:status_drift")
     if guard.get("owner_decision_evidence", {}).get("actor") != "Tony":
         errors.append("authorization_guard:owner_actor_drift")
-    guard_notes = "\n".join(str(item) for item in guard.get("notes", []))
-    if "one bounded local rehearsal" not in guard_notes:
+    # The legacy guard contains an unquoted `Issue #51` note. YAML treats the
+    # hash as a comment delimiter, so inspect the controlled raw text here
+    # rather than silently trusting the truncated parsed scalar.
+    if "one bounded local rehearsal" not in guard_text:
         errors.append("authorization_guard:one_rehearsal_ceiling_missing")
 
     declared_count = mandatory_return.get("rehearsal", {}).get("valid_run_count")
