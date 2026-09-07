@@ -1,0 +1,82 @@
+contract_version: aios_stage15_rehearsal_execution_disposition_contract/v1
+stage: Stage 15 / NR-01
+status: awaiting_explicit_tony_disposition
+purpose: define_a_fail_closed_human_decision_record_for_issue55_without_making_the_decision
+controlled_target:
+  reconciliation_issue: 55
+  authorization_issue: 51
+  evidence_acceptance_issue: 52
+  lifecycle_issue: 53
+  controlled_pr: 41
+  controlled_pr_head: 8f73e1c54fe9bffb67c0c07600420aab4924c329
+  execution_ledger: Governance/AIOS-Stage15-Local-Python-Rehearsal-Execution-Ledger-v1.yaml
+required_execution_ids:
+  - STAGE15-LOCAL-ad8373c2401e
+  - STAGE15-LOCAL-33e2216976b7
+original_authorization_boundary:
+  owner: Tony
+  authorized_execution_count: 1
+  source_issue: 51
+  source_comment_id: 5211821955
+  rule: one_bounded_local_isolated_python_rehearsal_only
+human_decision_requirements:
+  actor_must_be: Tony
+  issue_must_be: 55
+  decision_must_name_exact_pr_head: true
+  decision_must_cover_every_required_execution_id: true
+  execution_occurred_must_be_explicit: true
+  authorization_treatment_must_be_explicit: true
+  evidence_eligibility_for_issue52_must_be_explicit: true
+  rationale_required_per_execution: true
+  generic_continue_instruction_is_not_a_decision: true
+allowed_authorization_treatments:
+  - within_original_one_run_authorization
+  - outside_documented_authorization
+  - separately_ratified_bounded_governance_exception
+allowed_evidence_eligibility_treatments:
+  - eligible_for_issue52_evidence_review
+  - ineligible_for_issue52_evidence_review
+  - superseded_for_issue52_evidence_only_execution_history_preserved
+ratification_constraints:
+  separately_ratified_bounded_governance_exception:
+    historical_execution_record_must_be_preserved: true
+    does_not_rewrite_original_one_run_authorization: true
+    does_not_authorize_another_rehearsal: true
+    does_not_authorize_ready_for_review: true
+    does_not_authorize_merge: true
+    does_not_authorize_risk_acceptance: true
+    does_not_authorize_real_pilot_or_real_data: true
+    does_not_authorize_permissions_connectors_infrastructure: true
+    does_not_authorize_production_release_or_deployment: true
+anti_replay_invalid_substitutes:
+  - recurring_or_general_continue_instruction
+  - machine_authored_packet_or_recommendation
+  - green_tests_validators_or_actions
+  - pull_request_mergeability_or_draft_state
+  - issue_assignment_label_reaction_or_elapsed_time
+  - silence_or_failure_to_object
+  - a_decision_for_a_different_issue_pr_head_or_execution_set
+resolution_rule:
+  unresolved_until_one_explicit_tony_record_covers_both_required_execution_ids: true
+  machine_must_not_infer_which_run_consumed_original_authorization: true
+  machine_must_not_retroactively_invalidate_a_recorded_execution: true
+  no_new_rehearsal_as_repair_mechanism: true
+current_decision_record:
+  recorded: false
+  record_url: null
+  actor: null
+  per_execution_disposition: []
+downstream_authority:
+  issue52_evidence_acceptance_authorized: false
+  ready_for_review_authorized: false
+  merge_authorized: false
+  risk_acceptance_authorized: false
+  real_pilot_authorized: false
+  real_data_authorized: false
+  credentials_or_permissions_authorized: false
+  connectors_or_external_endpoints_authorized: false
+  infrastructure_or_cloud_authorized: false
+  production_authorized: false
+  release_authorized: false
+  deployment_authorized: false
+external_actions_performed: []
