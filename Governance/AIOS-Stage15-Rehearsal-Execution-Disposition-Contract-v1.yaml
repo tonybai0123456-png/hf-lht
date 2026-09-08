@@ -65,6 +65,8 @@ current_decision_record:
   recorded: false
   record_url: null
   actor: null
+  issue: null
+  controlled_pr_head: null
   per_execution_disposition: []
 downstream_authority:
   issue52_evidence_acceptance_authorized: false
