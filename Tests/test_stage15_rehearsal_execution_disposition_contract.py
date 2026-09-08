@@ -1,13 +1,17 @@
+from copy import deepcopy
 from pathlib import Path
 import unittest
 
 import yaml
+
+from Tests.validate_aios_stage15_rehearsal_execution_disposition_contract import validate_documents
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "Governance" / "AIOS-Stage15-Rehearsal-Execution-Disposition-Contract-v1.yaml"
 LEDGER = ROOT / "Governance" / "AIOS-Stage15-Local-Python-Rehearsal-Execution-Ledger-v1.yaml"
 
+EXPECTED_PR_HEAD = "8f73e1c54fe9bffb67c0c07600420aab4924c329"
 EXPECTED_RUN_IDS = [
     "STAGE15-LOCAL-ad8373c2401e",
     "STAGE15-LOCAL-33e2216976b7",
@@ -20,12 +24,43 @@ class Stage15RehearsalExecutionDispositionContractTests(unittest.TestCase):
         cls.contract = yaml.safe_load(CONTRACT.read_text(encoding="utf-8"))
         cls.ledger = yaml.safe_load(LEDGER.read_text(encoding="utf-8"))
 
-    def test_contract_is_preparation_only_and_has_no_human_decision(self):
+    def _resolved_contract(self):
+        contract = deepcopy(self.contract)
+        contract["status"] = "explicit_tony_disposition_recorded_repository_reconciliation_pending"
+        contract["current_decision_record"] = {
+            "recorded": True,
+            "record_url": "https://github.com/tonybai0123456-png/hf-lht/issues/55#issuecomment-9999999999",
+            "actor": "Tony",
+            "issue": 55,
+            "controlled_pr_head": EXPECTED_PR_HEAD,
+            "per_execution_disposition": [
+                {
+                    "run_id": EXPECTED_RUN_IDS[0],
+                    "execution_occurred": True,
+                    "authorization_treatment": "within_original_one_run_authorization",
+                    "evidence_eligibility_for_issue52": "eligible_for_issue52_evidence_review",
+                    "rationale": "Synthetic validator fixture for a complete human decision record.",
+                },
+                {
+                    "run_id": EXPECTED_RUN_IDS[1],
+                    "execution_occurred": True,
+                    "authorization_treatment": "separately_ratified_bounded_governance_exception",
+                    "evidence_eligibility_for_issue52": "eligible_for_issue52_evidence_review",
+                    "rationale": "Synthetic validator fixture; does not represent an actual Tony disposition.",
+                },
+            ],
+        }
+        return contract
+
+    def test_repository_contract_is_currently_unresolved_and_valid(self):
+        self.assertEqual([], validate_documents(self.contract, self.ledger))
         self.assertEqual("awaiting_explicit_tony_disposition", self.contract["status"])
         decision = self.contract["current_decision_record"]
         self.assertFalse(decision["recorded"])
         self.assertIsNone(decision["record_url"])
         self.assertIsNone(decision["actor"])
+        self.assertIsNone(decision["issue"])
+        self.assertIsNone(decision["controlled_pr_head"])
         self.assertEqual([], decision["per_execution_disposition"])
 
     def test_contract_covers_exact_append_only_execution_set(self):
@@ -66,6 +101,41 @@ class Stage15RehearsalExecutionDispositionContractTests(unittest.TestCase):
         self.assertTrue(constraints["does_not_authorize_real_pilot_or_real_data"])
         self.assertTrue(constraints["does_not_authorize_permissions_connectors_infrastructure"])
         self.assertTrue(constraints["does_not_authorize_production_release_or_deployment"])
+
+    def test_resolved_record_shape_is_machine_validatable_without_granting_downstream_authority(self):
+        contract = self._resolved_contract()
+        self.assertEqual([], validate_documents(contract, self.ledger))
+        self.assertTrue(all(value is False for value in contract["downstream_authority"].values()))
+
+    def test_recorded_decision_rejects_wrong_actor_target_or_comment_url(self):
+        contract = self._resolved_contract()
+        contract["current_decision_record"]["actor"] = "Developer Agent"
+        contract["current_decision_record"]["issue"] = 52
+        contract["current_decision_record"]["controlled_pr_head"] = "deadbeef"
+        contract["current_decision_record"]["record_url"] = (
+            "https://github.com/tonybai0123456-png/hf-lht/issues/52#issuecomment-9999999999"
+        )
+        errors = validate_documents(contract, self.ledger)
+        self.assertIn("contract:recorded_decision_actor_must_be_tony", errors)
+        self.assertIn("contract:recorded_decision_issue_must_be_55", errors)
+        self.assertIn("contract:recorded_decision_pr_head_drift", errors)
+        self.assertIn("contract:recorded_decision_url_must_pin_issue55_comment", errors)
+
+    def test_recorded_decision_rejects_missing_run_rationale_or_explicit_occurrence(self):
+        contract = self._resolved_contract()
+        rows = contract["current_decision_record"]["per_execution_disposition"]
+        rows[0]["rationale"] = "   "
+        rows[1].pop("execution_occurred")
+        errors = validate_documents(contract, self.ledger)
+        self.assertIn(f"contract:rationale_required:{EXPECTED_RUN_IDS[0]}", errors)
+        self.assertIn(f"contract:execution_occurred_boolean_required:{EXPECTED_RUN_IDS[1]}", errors)
+
+    def test_original_one_run_authorization_cannot_be_assigned_to_both_executions(self):
+        contract = self._resolved_contract()
+        rows = contract["current_decision_record"]["per_execution_disposition"]
+        rows[1]["authorization_treatment"] = "within_original_one_run_authorization"
+        errors = validate_documents(contract, self.ledger)
+        self.assertIn("contract:original_one_run_authorization_cannot_cover_multiple_executions", errors)
 
     def test_all_downstream_authority_remains_false(self):
         self.assertTrue(all(value is False for value in self.contract["downstream_authority"].values()))
