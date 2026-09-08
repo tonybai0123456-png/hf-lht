@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = Path("Governance/AIOS-Stage15-Rehearsal-Execution-Disposition-Contract-v1.yaml")
 LEDGER_PATH = Path("Governance/AIOS-Stage15-Local-Python-Rehearsal-Execution-Ledger-v1.yaml")
 
+EXPECTED_PR_HEAD = "8f73e1c54fe9bffb67c0c07600420aab4924c329"
 EXPECTED_RUN_IDS = [
     "STAGE15-LOCAL-ad8373c2401e",
     "STAGE15-LOCAL-33e2216976b7",
@@ -36,6 +38,9 @@ EXPECTED_INVALID_SUBSTITUTES = {
     "silence_or_failure_to_object",
     "a_decision_for_a_different_issue_pr_head_or_execution_set",
 }
+ISSUE55_COMMENT_RE = re.compile(
+    r"^https://github\.com/tonybai0123456-png/hf-lht/issues/55#issuecomment-\d+$"
+)
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -45,22 +50,90 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     return loaded
 
 
-def validate_repository(root: Path = ROOT) -> list[str]:
-    resolved = Path(root).resolve()
-    errors: list[str] = []
-    for path in (CONTRACT_PATH, LEDGER_PATH):
-        if not (resolved / path).is_file():
-            errors.append(f"missing:{path.as_posix()}")
-    if errors:
-        return errors
+def _validate_current_decision(contract: dict[str, Any], errors: list[str]) -> None:
+    decision = contract.get("current_decision_record")
+    if not isinstance(decision, dict):
+        errors.append("contract:current_decision_record_mapping_required")
+        return
 
-    contract = _load_yaml(resolved / CONTRACT_PATH)
-    ledger = _load_yaml(resolved / LEDGER_PATH)
+    recorded = decision.get("recorded")
+    if recorded not in (True, False):
+        errors.append("contract:current_decision_recorded_boolean_required")
+        return
+
+    if recorded is False:
+        if contract.get("status") != "awaiting_explicit_tony_disposition":
+            errors.append("contract:unresolved_status_drift")
+        if decision.get("record_url") is not None or decision.get("actor") is not None:
+            errors.append("contract:human_decision_reference_must_be_empty_while_unresolved")
+        if decision.get("issue") is not None or decision.get("controlled_pr_head") is not None:
+            errors.append("contract:human_decision_target_must_be_empty_while_unresolved")
+        if decision.get("per_execution_disposition") != []:
+            errors.append("contract:per_execution_disposition_must_be_empty_while_unresolved")
+        return
+
+    if contract.get("status") != "explicit_tony_disposition_recorded_repository_reconciliation_pending":
+        errors.append("contract:resolved_record_status_must_be_reconciliation_pending")
+    if decision.get("actor") != "Tony":
+        errors.append("contract:recorded_decision_actor_must_be_tony")
+    if decision.get("issue") != 55:
+        errors.append("contract:recorded_decision_issue_must_be_55")
+    if decision.get("controlled_pr_head") != EXPECTED_PR_HEAD:
+        errors.append("contract:recorded_decision_pr_head_drift")
+    record_url = decision.get("record_url")
+    if not isinstance(record_url, str) or not ISSUE55_COMMENT_RE.fullmatch(record_url):
+        errors.append("contract:recorded_decision_url_must_pin_issue55_comment")
+
+    rows = decision.get("per_execution_disposition")
+    if not isinstance(rows, list):
+        errors.append("contract:recorded_per_execution_disposition_list_required")
+        return
+    if len(rows) != len(EXPECTED_RUN_IDS):
+        errors.append("contract:recorded_decision_must_cover_exact_execution_count")
+
+    run_ids = [row.get("run_id") for row in rows if isinstance(row, dict)]
+    if run_ids != EXPECTED_RUN_IDS:
+        errors.append("contract:recorded_decision_execution_set_or_order_drift")
+
+    original_authorization_claims = 0
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            errors.append(f"contract:recorded_disposition_mapping_required:{index}")
+            continue
+        run_id = row.get("run_id")
+        if run_id not in EXPECTED_RUN_IDS:
+            errors.append(f"contract:recorded_disposition_unknown_run_id:{index}")
+        if row.get("execution_occurred") not in (True, False):
+            errors.append(f"contract:execution_occurred_boolean_required:{run_id or index}")
+
+        auth = row.get("authorization_treatment")
+        if auth not in EXPECTED_AUTH_TREATMENTS:
+            errors.append(f"contract:authorization_treatment_invalid:{run_id or index}")
+        if auth == "within_original_one_run_authorization":
+            original_authorization_claims += 1
+
+        evidence = row.get("evidence_eligibility_for_issue52")
+        if evidence not in EXPECTED_EVIDENCE_TREATMENTS:
+            errors.append(f"contract:evidence_eligibility_treatment_invalid:{run_id or index}")
+
+        rationale = row.get("rationale")
+        if not isinstance(rationale, str) or not rationale.strip():
+            errors.append(f"contract:rationale_required:{run_id or index}")
+
+    if original_authorization_claims > 1:
+        errors.append("contract:original_one_run_authorization_cannot_cover_multiple_executions")
+
+
+def validate_documents(contract: dict[str, Any], ledger: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
 
     if contract.get("contract_version") != "aios_stage15_rehearsal_execution_disposition_contract/v1":
         errors.append("contract:version_drift")
-    if contract.get("status") != "awaiting_explicit_tony_disposition":
-        errors.append("contract:must_remain_awaiting_explicit_tony_disposition")
+    if contract.get("status") not in {
+        "awaiting_explicit_tony_disposition",
+        "explicit_tony_disposition_recorded_repository_reconciliation_pending",
+    }:
+        errors.append("contract:status_invalid")
 
     target = contract.get("controlled_target")
     if not isinstance(target, dict):
@@ -72,7 +145,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         "evidence_acceptance_issue": 52,
         "lifecycle_issue": 53,
         "controlled_pr": 41,
-        "controlled_pr_head": "8f73e1c54fe9bffb67c0c07600420aab4924c329",
+        "controlled_pr_head": EXPECTED_PR_HEAD,
         "execution_ledger": "Governance/AIOS-Stage15-Local-Python-Rehearsal-Execution-Ledger-v1.yaml",
     }
     for key, expected in expected_target.items():
@@ -162,16 +235,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         if resolution.get(key) is not True:
             errors.append(f"contract:resolution_rule_must_be_true:{key}")
 
-    decision = contract.get("current_decision_record")
-    if not isinstance(decision, dict):
-        errors.append("contract:current_decision_record_mapping_required")
-        decision = {}
-    if decision.get("recorded") is not False:
-        errors.append("contract:machine_must_not_record_human_disposition")
-    if decision.get("record_url") is not None or decision.get("actor") is not None:
-        errors.append("contract:human_decision_reference_must_be_empty_while_unresolved")
-    if decision.get("per_execution_disposition") != []:
-        errors.append("contract:per_execution_disposition_must_be_empty_while_unresolved")
+    _validate_current_decision(contract, errors)
 
     downstream = contract.get("downstream_authority")
     if not isinstance(downstream, dict) or not downstream:
@@ -184,6 +248,20 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     return list(dict.fromkeys(errors))
 
 
+def validate_repository(root: Path = ROOT) -> list[str]:
+    resolved = Path(root).resolve()
+    errors: list[str] = []
+    for path in (CONTRACT_PATH, LEDGER_PATH):
+        if not (resolved / path).is_file():
+            errors.append(f"missing:{path.as_posix()}")
+    if errors:
+        return errors
+
+    contract = _load_yaml(resolved / CONTRACT_PATH)
+    ledger = _load_yaml(resolved / LEDGER_PATH)
+    return validate_documents(contract, ledger)
+
+
 def main() -> int:
     errors = validate_repository(ROOT)
     if errors:
@@ -191,8 +269,13 @@ def main() -> int:
         for error in errors:
             print(f"- {error}")
         return 1
+
+    contract = _load_yaml(ROOT / CONTRACT_PATH)
+    recorded = contract["current_decision_record"]["recorded"]
     print("AIOS Stage 15 rehearsal execution disposition contract validation PASSED")
-    print("decision_state=awaiting_explicit_tony_disposition")
+    print(
+        f"decision_state={'recorded_reconciliation_pending' if recorded else 'awaiting_explicit_tony_disposition'}"
+    )
     print("required_execution_count=2")
     print("generic_continue_instruction_valid=false")
     print("downstream_authority_granted=false")
